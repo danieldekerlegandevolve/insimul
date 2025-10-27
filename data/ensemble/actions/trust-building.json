@@ -1,0 +1,283 @@
+{
+  "category": "trust-building",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Show off knowledge through small talk",
+        "%x% thinks they know what %y% knows and more!",
+        "Humorous recitation",
+        "Perform a playful recitation",
+        "Don't really engage with joke, but show off",
+        "Be self-congratulatory",
+        "Pretend to understand",
+        "One up them",
+        "Brag about something you've done",
+        "Make them see how awesome you are",
+        "Leave while bragging about self"
+      ],
+      "name": "BE CANDID"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Backhanded Compliment",
+        "Has thing",
+        "Begrudgingly refuse to acquire thing",
+        "misunderstand insult trustingly action"
+      ],
+      "name": "ACT TRUSTINGLY"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Politely ask for something in exchange"
+      ],
+      "name": "BE CANDID"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "raise trust 1",
+        "raise trust 2",
+        "raise trust 3",
+        "raise trust 4"
+      ],
+      "name": "ACT TRUSTWORTHY"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "swearOathSuccess",
+        "swearOathFail"
+      ],
+      "name": "SWEAR OATH"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "true but partial explanation turns into open conflict",
+        "virtuous tells clergy of being preyed upon, is disbelieved by devout",
+        "admit that you are of low status despite virtue & comportment",
+        "confess true virtuous feelings",
+        "tell truth successfully",
+        "tell truth unsuccessfully"
+      ],
+      "name": "TELL THE TRUTH"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "trust",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "raise trust 4"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "trust",
+          "value": 100
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "raise trust 1"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "trust",
+          "value": 100
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "lucky",
+              "value": true
+            }
+          ],
+          "effects": [],
+          "name": "lucky people are more likely to do this.",
+          "weight": 10
+        }
+      ],
+      "isAccept": true,
+      "name": "raise trust 2"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "trust",
+          "value": 100
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "lucky",
+              "value": true
+            }
+          ],
+          "effects": [],
+          "name": "lucky people are more likely to do this.",
+          "weight": 5
+        }
+      ],
+      "isAccept": true,
+      "name": "raise trust 3"
+    },
+    {
+      "conditions": [],
+      "displayName": "Swear Oath <SUCCESS>",
+      "effects": [
+        {
+          "category": "bond",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "kinship",
+          "value": 2
+        }
+      ],
+      "influenceRules": [],
+      "name": "swearOathSuccess"
+    },
+    {
+      "conditions": [],
+      "displayName": "Swear Oath <FAIL>",
+      "effects": [
+        {
+          "category": "bond",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "kinship",
+          "value": 1
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "swearOathFail"
+    },
+    {
+      "conditions": [],
+      "displayName": "tell truth successfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "tell truth successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "tell truth unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "tell truth unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": ">",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": true
+        }
+      ],
+      "displayName": "move listeners to tears through honesty, virtue",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": "+",
+          "type": "sensitiveness",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "feeling socially connected",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "move listeners to tears through honesty, virtue"
+    }
+  ]
+}

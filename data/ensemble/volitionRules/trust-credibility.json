@@ -1,0 +1,1097 @@
+{
+  "fileName": "trust-credibility",
+  "type": "volition",
+  "category": "trust-credibility",
+  "rules": [
+    {
+      "name": "An elegantly dressed man inspires credibility and attention",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Innocent looking women inspire trust",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "innocent looking",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 2,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "For a member of the clergy, an elegantly dressed academic has no credibility",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "clergy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "academic",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "People are often suspicious of flatterery",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "unctuous",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "An unattractive, honest man does not want to mingle",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 30,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "eccentric",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Attractive and trustworthy people lead suspicious people to have increased credibility in them",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "suspicious of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "innocent looking",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Generous, honest, rich people arise less suspicion from others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "suspicious of",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Happy, trusting people see others as credible",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "happy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "trusts",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Honest, trustworthy, self-assured rich people may inspire admiration",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "trustworthy",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Those who are resented and distrusted may want to improve their credibility",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "resentful of",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "directed status",
+          "type": "trusts",
+          "first": "y",
+          "value": false,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Rich, credulous men increase affinity for devout provincials",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "trustworthy",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Poor people may desire to gain the trust of rich people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "jealous of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Devout and trustworthy clergy members inspire respect",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "clergy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "trustworthy",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Someone in love will trust their loved one if he/she rejects other suitors",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 80,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "directed status",
+          "type": "jealous of",
+          "first": "x",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "value": 33,
+          "second": "x",
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Workers are not likely to increase affinity, esteem, and credibility for their employers",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "stagehand",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "resentful of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People are more likely to consider strong individuals as potential partners based on trust levels.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 7,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are less likely to date those they don't trust significantly more than others.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are inclined to form connections with individuals they trust more than others in their social network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "z",
+          "value": 4,
+          "operator": "<"
+        },
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "y",
+          "second": "z",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have a strong inclination to form closer bonds with individuals they trust significantly.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to connect with individuals they trust more than others.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to associate with individuals they trust more than others.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase trust with stronger individuals but may inadvertently decrease their own intentional",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to trust stronger individuals in their network when the number of strong connections exceeds six.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase trust with individuals they perceive as strong.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to trust and form closer relationships with individuals they respect significantly.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase trust with weaker individuals but decrease it when interacting with stronger ones.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek trust with those who are highly respected in their network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with xenophobic traits may struggle to build trust in others.",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "xenophobic",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards strong individuals over time.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards strong individuals over time when they have had positive interactions.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase trust with strong individuals within a recent timeframe.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards strong individuals when they have been consistently attracted to them for at least",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase trust with those they are already somewhat close to within the last 9-",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to shut down someone you don't trust",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 3,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "shutdown",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

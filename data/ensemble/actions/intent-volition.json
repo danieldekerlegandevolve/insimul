@@ -1,0 +1,795 @@
+{
+  "category": "intent-volition",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "deny"
+      },
+      "leadsTo": [
+        "DENY"
+      ],
+      "name": "deny-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "candid"
+      },
+      "leadsTo": [
+        "BE CANDID"
+      ],
+      "name": "candid-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "favor"
+      },
+      "leadsTo": [
+        "FAVOR"
+      ],
+      "name": "favor-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "manipulate"
+      },
+      "leadsTo": [
+        "MANIPULATE"
+      ],
+      "name": "manipulate-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "antagonize"
+      },
+      "leadsTo": [
+        "ANTAGONIZE"
+      ],
+      "name": "antagonize-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "humble"
+      },
+      "leadsTo": [
+        "BE HUMBLE"
+      ],
+      "name": "humble-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "depressed"
+      },
+      "leadsTo": [
+        "BE DEPRESSED"
+      ],
+      "name": "depressed-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "jokearound"
+      },
+      "leadsTo": [
+        "JOKE AROUND"
+      ],
+      "name": "jokearound-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "suckup"
+      },
+      "leadsTo": [
+        "SUCK UP"
+      ],
+      "name": "suckup-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "trust"
+      },
+      "leadsTo": [
+        "ACT TRUSTINGLY"
+      ],
+      "name": "trust-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "putdown"
+      },
+      "leadsTo": [
+        "PUT DOWN"
+      ],
+      "name": "putdown-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "dismiss"
+      },
+      "leadsTo": [
+        "DISMISS"
+      ],
+      "name": "dismiss-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "romance"
+      },
+      "leadsTo": [
+        "ROMANCE"
+      ],
+      "name": "romance-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "befriend"
+      },
+      "leadsTo": [
+        "BEFRIEND"
+      ],
+      "name": "befriend-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "kind"
+      },
+      "leadsTo": [
+        "BE KIND"
+      ],
+      "name": "kind-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "dominate"
+      },
+      "leadsTo": [
+        "DOMINATE"
+      ],
+      "name": "dominate-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "flirt"
+      },
+      "leadsTo": [
+        "FLIRT"
+      ],
+      "name": "flirt-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "help"
+      },
+      "leadsTo": [
+        "HELP"
+      ],
+      "name": "help-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "impress"
+      },
+      "leadsTo": [
+        "IMPRESS"
+      ],
+      "name": "impress-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "reluctant"
+      },
+      "leadsTo": [
+        "BE RELUCTANT"
+      ],
+      "name": "reluctant-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "hospitable"
+      },
+      "leadsTo": [
+        "BE HOSPITABLE"
+      ],
+      "name": "hospitable-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "indifferent"
+      },
+      "leadsTo": [
+        "BE INDIFFERENT"
+      ],
+      "name": "indifferent-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "rude"
+      },
+      "leadsTo": [
+        "BE RUDE"
+      ],
+      "name": "rude-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "respect"
+      },
+      "leadsTo": [
+        "RESPECT"
+      ],
+      "name": "respect-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "trust"
+      },
+      "leadsTo": [
+        "ACT TRUSTWORTHY"
+      ],
+      "name": "trust-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "closeness"
+      },
+      "leadsTo": [
+        "WRITE LOVE NOTE",
+        "KISS"
+      ],
+      "name": "closeness-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "play with"
+      },
+      "leadsTo": [],
+      "name": "play with-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "play with"
+      },
+      "leadsTo": [],
+      "name": "play with-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "beg"
+      },
+      "leadsTo": [],
+      "name": "beg-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "beg"
+      },
+      "leadsTo": [],
+      "name": "beg-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "express affection"
+      },
+      "leadsTo": [],
+      "name": "express affection-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "express affection"
+      },
+      "leadsTo": [],
+      "name": "express affection-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "rest"
+      },
+      "leadsTo": [],
+      "name": "rest-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "rest"
+      },
+      "leadsTo": [],
+      "name": "rest-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "get exercise"
+      },
+      "leadsTo": [],
+      "name": "get exercise-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "get exercise"
+      },
+      "leadsTo": [],
+      "name": "get exercise-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "express anxiety"
+      },
+      "leadsTo": [],
+      "name": "express anxiety-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "express anxiety"
+      },
+      "leadsTo": [],
+      "name": "express anxiety-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "fight"
+      },
+      "leadsTo": [
+        "BITE",
+        "YELL AT"
+      ],
+      "name": "fight-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "fight"
+      },
+      "leadsTo": [],
+      "name": "fight-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "romance"
+      },
+      "leadsTo": [],
+      "name": "be romantic-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "intent",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "romance"
+      },
+      "leadsTo": [],
+      "name": "be romantic-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "affinity"
+      },
+      "leadsTo": [
+        "COMPLIMENT",
+        "HELP",
+        "GIVE A GIFT",
+        "SEDUCE",
+        "REMINISCE",
+        "TELL JOKE"
+      ],
+      "name": "affinity-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "affinity"
+      },
+      "leadsTo": [
+        "EMBARRASS",
+        "INSULT"
+      ],
+      "name": "affinity-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "emulation"
+      },
+      "leadsTo": [
+        "DISPLAY WIT",
+        "DISPLAY INITIATIVE",
+        "DISPLAY WORLDLINESS"
+      ],
+      "name": "emulation-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "emulation"
+      },
+      "leadsTo": [
+        "DISPLAY ECCENTRICITY"
+      ],
+      "name": "emulation-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "credibility"
+      },
+      "leadsTo": [
+        "BRAG",
+        "LIE",
+        "TELL THE TRUTH"
+      ],
+      "name": "credibility-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "credibility"
+      },
+      "leadsTo": [
+        "REVEAL IGNORANCE",
+        "TEAR OFF THE MASK"
+      ],
+      "name": "credibility-down"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "curiosity"
+      },
+      "leadsTo": [
+        "IMPRESS",
+        "MAKE A SCENE (NOT SUBTLE)",
+        "DRAW ATTENTION (SUBTLE)"
+      ],
+      "name": "curiosity-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "network",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "curiosity"
+      },
+      "leadsTo": [
+        "DEFLECT",
+        "BLEND IN"
+      ],
+      "name": "curiosity-down"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "someone",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "someone",
+          "type": "ally",
+          "value": true
+        }
+      ],
+      "displayName": "encourages friend's friend with a pick-me-up (a)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "grateful",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "encourages friend's friend with a pick-me-up (a)"
+    }
+  ]
+}

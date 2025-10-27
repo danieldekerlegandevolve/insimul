@@ -1,0 +1,149 @@
+{
+  "category": "virtue-morality",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "apologize successfully",
+        "apologize unsuccessfully"
+      ],
+      "name": "APOLOGIZE"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": true
+        }
+      ],
+      "displayName": "admit that you are of low status despite virtue & comportment",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "credibility",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "cares for",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "social standing",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "admit that you are of low status despite virtue & comportment"
+    },
+    {
+      "conditions": [],
+      "displayName": "apologize successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "apologize successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "apologize unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "apologize unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "respectful",
+          "value": true
+        }
+      ],
+      "name": "Honorable villager, could you please tell me where the water is?"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Apologize"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Apologize for misunderstanding"
+    }
+  ]
+}

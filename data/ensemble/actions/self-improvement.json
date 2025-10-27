@@ -1,0 +1,264 @@
+{
+  "category": "self-improvement",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "attribute",
+        "first": "initiator",
+        "intentType": true,
+        "type": "strength"
+      },
+      "leadsTo": [
+        "LIFT WEIGHTS",
+        "DO PUSHUPS"
+      ],
+      "name": "strength-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "attribute",
+        "first": "initiator",
+        "intentType": true,
+        "type": "intelligence"
+      },
+      "leadsTo": [
+        "STUDY",
+        "TRAIN",
+        "READ"
+      ],
+      "name": "intelligence-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "bond",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "kinship"
+      },
+      "leadsTo": [
+        "SWEAR OATH",
+        "INCREASE PHYSICAL KINSHIP"
+      ],
+      "name": "kinship-up"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "hug"
+      ],
+      "name": "INCREASE PHYSICAL KINSHIP"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "studyMath",
+        "studyAnatomy"
+      ],
+      "name": "STUDY"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "train vocabulary"
+      ],
+      "name": "TRAIN"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "read a book"
+      ],
+      "name": "READ"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "pushup1"
+      ],
+      "name": "DO PUSHUPS"
+    },
+    {
+      "conditions": [],
+      "displayName": "Study Math",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "intelligence",
+          "value": 10
+        },
+        {
+          "category": "event undirected",
+          "first": "initiator",
+          "type": "self-involved",
+          "value": true
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "anyone",
+              "value": true
+            }
+          ],
+          "effects": [],
+          "name": "People in this world are inclined to study math.",
+          "weight": 10
+        }
+      ],
+      "name": "studyMath"
+    },
+    {
+      "conditions": [],
+      "displayName": "Study Anatomy",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "strength",
+          "value": 10
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "intelligence",
+          "value": 10
+        },
+        {
+          "category": "event undirected",
+          "first": "initiator",
+          "type": "self-involved",
+          "value": true
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "attribute",
+              "first": "initiator",
+              "operator": ">",
+              "type": "strength",
+              "value": 10
+            }
+          ],
+          "effects": [],
+          "name": "Strong people in this world are inclined to study anatomy.",
+          "weight": 30
+        }
+      ],
+      "name": "studyAnatomy"
+    },
+    {
+      "conditions": [],
+      "displayName": "train vocabulary",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "intelligence",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "name": "train vocabulary"
+    },
+    {
+      "conditions": [],
+      "displayName": "read a book",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "intelligence",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "name": "read a book"
+    },
+    {
+      "conditions": [],
+      "displayName": "Weightlift",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "strength",
+          "value": 5
+        },
+        {
+          "category": "event undirected",
+          "first": "initiator",
+          "type": "self-involved",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "name": "weightLiftSuccess"
+    },
+    {
+      "conditions": [],
+      "displayName": "Weight Lift <FAIL>",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "-",
+          "type": "strength",
+          "value": 10
+        },
+        {
+          "category": "event undirected",
+          "first": "initiator",
+          "type": "self-involved",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "name": "weightLiftFail"
+    },
+    {
+      "conditions": [],
+      "displayName": "Do Pushups",
+      "effects": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "strength",
+          "value": 10
+        },
+        {
+          "category": "event undirected",
+          "first": "initiator",
+          "type": "self-involved",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "name": "pushup1"
+    }
+  ]
+}

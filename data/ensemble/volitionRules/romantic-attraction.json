@@ -1,0 +1,4229 @@
+{
+  "fileName": "romantic-attraction",
+  "type": "volition",
+  "category": "romantic-attraction",
+  "rules": [
+    {
+      "name": "People Want to Date Their Crush",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "crushing on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Attraction makes people want to start dating.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "attracted to",
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "involved with",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Similar interest suggests affinity up (movies).",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "cinema buff",
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "cinema buff",
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Similar interest (movies) makes people LESS Likely to start dating",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "cinema buff",
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "cinema buff",
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "involved with",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "In fact, Similar interest  (movies) makes people MORE Likely to STOP dating",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "cinema buff",
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "cinema buff",
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "involved with",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A flirtatious, innocent looking man can gain the trust of a rich woman",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "innocent looking",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A beautiful female inspires greater affection from flirtatious males",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Non-reciprocal same-sex flirtation can be unwanted",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 33,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "x",
+          "value": 66,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "y",
+          "value": 66,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 10,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A poor young girl can have an affinity for a rich older man",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People have an affinity for older, rich, male government officials",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "government official",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An old man in love with young woman is often rejected",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 75,
+          "operator": ">",
+          "second": "x"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 50,
+          "second": "y",
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -10,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -10,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": -10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A lover is jealous of a handsome and rich rival",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "y",
+          "second": "x",
+          "weight": 10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A kind and charming man inspires increased affinity in women",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "charming",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A lover is moved by extreme emotions of their upset partner",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 75,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A poor girl is harassed and attacked by a seductive man",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "wearing a first responder uniform",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "harassed",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "event",
+          "type": "impressed",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "y",
+          "second": "x",
+          "weight": 10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An old clergy seducer harasses a young criminal",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "clergy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "harassed",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "criminal",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Gratitude for a service increases affinity and emulation",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "owes a favor to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 50,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "status",
+          "type": "grateful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People may leverage the influence of their friends' lovers",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "z",
+          "value": 80,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Poor, provincial, seductive, joker men more frequently attempt to seduce women",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "joker",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "innocent looking",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "deceptive",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Men flirting with several women tend to want the female with a higher rank",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "innocent looking",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 1,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "If a male flirts with a female and shows less interest, she will be more likely to want him",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 60,
+          "operator": "<",
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "flirted with",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 60,
+          "operator": ">",
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Beautiful, flirty people will seek to attact attention",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A rich man seducing a poor young woman is less likely to take no for an answer",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "intimidating",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Married people dislike people who flirt with their spouse",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "z",
+          "weight": -10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Old, generous, rich women may have an affinity for poor, attractive men",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "innocent looking",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A shy man may be less enterprising toward the woman he loves",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "shy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 75,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Rich men may be more attentive to charming women in order to seduce that woman's acquaintance",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "charming",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 80,
+          "second": "z",
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A seductive and attractive woman doesn't want to be financially controlled by a rich man",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": false,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Young, unsophisticated women may have increased affinity for charming, charismatic men",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "charming",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 60,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Charismatic lovers may encourage inpropriety",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Rich people may enjoy a financially imbalanced relationship with an attractive lover",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "y",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Charming lovers may draw positive attention despite their mocking behavior",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "mocking",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "charming",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Daughters caught with their lovers may become more cautious",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A young boy may fall in love with a young caring woman",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Mothers can become angry with their unmarried daughter's lover",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": false,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 2,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People's desire to get closer in a romantic network when the difference between their current connection",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "value": 3,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's crushes have a strong influence on their social behavior within the last year.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have a strong antipathy towards both individual A and their crush.",
+      "conditions": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek romantic connections with individuals perceived as stronger than themselves and have recently expressed interest in",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's desire to get closer within a strong social network and recent romantic events increase the",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are romantically committed to their crushes and have a strong intent towards dating",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "publicly romantically committed to",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek friends within a moderate friendship proximity range to their crush.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "value": 3,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a successful status are more likely to be interested in dating their crush.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "successful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek companions with greater wisdom when they desire a closer relationship or potential romantic interest.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "wisdom",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are attracted to individuals with high charisma levels when seeking a romantic partner.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to date their crushes after a positive social interaction within the last month.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are interested in strong individuals and have a significant desire to date their crushes who also",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seeking romance with strong individuals and having a high interest in their crush within the past",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong desire to form romantic connections seek out individuals who are highly sought after by",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong familial network of at least 6 connections are likely to develop romantic",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People in publicly romantic commitment seek to honor their relationship status.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "publicly romantically committed to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to honor their crush within a close-knit social circle over time.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "value": 6,
+          "operator": ">",
+          "second": "z"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "value": true,
+          "second": "z",
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire stronger connections with those they are romantically interested in.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to date their crush after feeling a strong connection within the last week.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's desire to be in a romantic relationship with their crush increases as they get",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase respect from others while dating their crushes.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are influenced to form friendships with both strong individuals and their crushes simultaneously.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek stronger connections with both their peers and crushes to increase romantic interest.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People in a publicly romantic relationship with someone else are likely to pursue dating their",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "publicly romantically committed to",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are inclined to form romantic interests towards individuals they perceive as strong.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to increase their romantic connections with individuals who have a strong social network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seeking solace after a breakup aim to form romantic connections.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "heartbroken",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop romantic intent towards strong individuals within the last week.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop romantic intent towards strong individuals after a significant event within the past month.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have romantic intent towards their crush within the last month.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop romantic intent towards strong individuals over time.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek romantic connections with individuals who have a strong social network within the last 8 turns",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong desire for friendship and who have been in close proximity to their crush",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong desire for friendship and having had romantic intent towards their crush within the",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek romantic connections with individuals who are well-connected within their social circles.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire romantic connections with individuals they perceive as strong within a close network when the average",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to form romantic connections with individuals who are highly regarded within their social circles.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek trust from public friends when they have a crush.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "public friends",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to trust individuals they are romantically committed with.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "publicly romantically committed to",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's average trust in strong individuals decreases over time if they have not been dating",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire stronger connections with both crush and peers to increase trust.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards their crush after frequent positive encounters within the last week.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards their crush when they have been in a romantic event within the past",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek romantic connections with individuals who have a strong social network and whom they've had",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "romantic",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek stronger connections when they have a high romantic interest in someone and trust has been established",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek stronger connections with individuals they are romantically interested in when their trust level towards those",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase trust with their crush within 8 turns based on a strong network connection",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to be romantic towards someone you have high romance with",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "value": 7,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to be romantic if you are happy",
+      "conditions": [
+        {
+          "category": "mood",
+          "type": "happy",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to suck up towards someone you feel romantic towards",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "value": 7,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "suckup",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are much more kind to people they are dating",
+      "title": "Happy Relationship Happy Life",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People aren't nice to people they are dating if that person is dating someone else.",
+      "title": "Cheater!",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "y",
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are a little kind to those who have flirted with them recently",
+      "title": "Feeling Flattered",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "flirted with",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are less rude to people they are dating",
+      "title": "Honeymoon Mood",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are more rude to people they are dating but unattracted to",
+      "title": "The Spark is Gone",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People aren't nice to people they are dating if that person is dating someone else.",
+      "title": "Cheater!",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "y",
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are less rude to those who have flirted with them recently",
+      "title": "Memory: Flirting Begets Politeness",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "flirted with",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are much more rude to those that they aren't attracted to if they have flirted with them recently",
+      "title": "Memory: Unsolicited Flirting Begets Rudeness",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "flirted with",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are more rude to those they are unattracted to who have ever flirted with them ever",
+      "title": "Deep Memory: I'll Never Love You",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "flirted with",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            0
+          ]
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are much less rude to those who they are attracted to if they flirted with them recently",
+      "title": "Memory: I Think They Like Me",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "flirted with",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't flirt with their family",
+      "title": "No Incest, Please",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "family",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -999,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are more inclined in general to flirt with their coworkers",
+      "title": "Don't Tell HR",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "coworker",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 3
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 8
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are more inclined in general to flirt with their coworkers even if they aren't attracted to them",
+      "title": "Take What You Can Get",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "coworker",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are much more flirty with people they are dating",
+      "title": "Fun and Frisky",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People flirt less with people they don't have friendly feeling towards",
+      "title": "Don't Date Strangers",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Friend zone. People flirt less with people they have a lot of friendly feeling towards as long as they aren't dating",
+      "title": "The Friend Zone",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        },
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": false,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't flirt with people they are unattracted to",
+      "title": "Don't Date Uggos",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to flirt a little by default",
+      "title": "Playing the Field",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 3
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 8
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are flirty with people they are attracted to",
+      "title": "Hunting for Hotties",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't want to flirt with people they don't respect",
+      "title": "Not That Desperate",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People flirt less with people they respect a lot",
+      "title": "Out of My League",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Friendly people are a little flirty",
+      "title": "Social Butterfly",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "friendly",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Shy people are less flirty",
+      "title": "Social Recluse",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "shy",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Employees are less flirty with non-employees",
+      "title": "Title IX",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": false,
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Hangry people are less flirty",
+      "title": "Stomach > Heart",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "hangry",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Employees are flirty with one another when on break",
+      "title": "Side Hustle",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "on_break",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Bosses are less flirty with their employees",
+      "title": "Keeping it Professional",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to flirt with people who were nice to them recently",
+      "title": "Memory: Nice People",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't want to flirt with people who were rude to them recently",
+      "title": "Memory: Mean People",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "rude",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to flirt with people who flirted with them recently",
+      "title": "Memory: Reciprocation",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "flirted with",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": 3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't want to flirt with people who have embarrassed themself recently",
+      "title": "Memory: Don't Date Losers",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "embarrassment",
+          "value": true,
+          "first": "y",
+          "second": "z",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        },
+        {
+          "category": "trait",
+          "type": "anyone",
+          "value": true,
+          "first": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "flirt",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

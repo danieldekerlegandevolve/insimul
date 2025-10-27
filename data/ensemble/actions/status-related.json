@@ -1,0 +1,230 @@
+{
+  "category": "status-related",
+  "actions": [
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "provincial",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "financially dependent on",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "married",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "elegantly dressed",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "wearing a first responder uniform",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "attendee",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "poor",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "provincial",
+          "value": false
+        }
+      ],
+      "displayName": "dressing up compared to one's social rank",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "other",
+          "type": "credibility",
+          "value": 10
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "self-assuredness",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 3
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "social standing",
+          "value": 5
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "charisma",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "other",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 3
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "dressing up compared to one's social rank"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "sensitiveness",
+          "value": 50
+        }
+      ],
+      "displayName": "insist on low status to drive off high status lover",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "charisma",
+          "value": 5
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "flattered",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "insist on low status to drive off high status lover"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "eccentric",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "eccentric",
+          "value": false
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "strangers",
+          "value": true
+        }
+      ],
+      "displayName": "dress up as stranger",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "made a faux pas around",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "dress up as stranger"
+    }
+  ]
+}

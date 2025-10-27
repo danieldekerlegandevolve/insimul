@@ -1,0 +1,13 @@
+{
+  "category": "emotional-expression",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Respond Negatively"
+      ],
+      "name": "BE DEPRESSED"
+    }
+  ]
+}

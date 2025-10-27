@@ -1,0 +1,134 @@
+{
+  "category": "impression-bragging",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Flatter"
+      ],
+      "name": "SUCK UP"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "engage in a rich person dance while not rich person",
+        "dressing up compared to one's social rank",
+        "brag successfully",
+        "brag unsuccessfully"
+      ],
+      "name": "BRAG"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "too tired for gossips",
+        "gift given meant to impress but does not impress receiver",
+        "flatter with kindness and attention",
+        "impress successfully",
+        "impress unsuccessfully"
+      ],
+      "name": "IMPRESS"
+    },
+    {
+      "conditions": [],
+      "displayName": "brag successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "brag successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "brag unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "brag unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "impress successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "impress successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "impress unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "impress unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "network",
+              "first": "initiator",
+              "operator": ">",
+              "second": "responder",
+              "type": "respect",
+              "value": 7
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "impress",
+              "weight": 5
+            }
+          ],
+          "name": "Now Rule for Brag about something you've done"
+        }
+      ],
+      "name": "Brag about something you've done"
+    }
+  ]
+}

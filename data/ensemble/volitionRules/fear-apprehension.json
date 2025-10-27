@@ -1,0 +1,299 @@
+{
+  "fileName": "fear-apprehension",
+  "type": "volition",
+  "category": "fear-apprehension",
+  "rules": [
+    {
+      "name": "Generous mentor has no fear of mentoree",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Man with low self-confidence fears rival in love",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "x",
+          "value": 40,
+          "operator": "<"
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Hypocrites are afraid of being exposed by others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "hypocritical",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "threatened by",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People with a fearful status seek candid relationships to overcome their apprehension.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "fearful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are afraid of being disliked by others.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are afraid of both their crush and strong individuals. They have a candid intent to get",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People manipulate their fear to get closer to strong individuals.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a fearful status seek trust from others.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "fearful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are afraid of being judged by others when they trust their crush.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

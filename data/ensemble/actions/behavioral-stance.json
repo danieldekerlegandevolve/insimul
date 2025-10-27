@@ -1,0 +1,106 @@
+{
+  "category": "behavioral-stance",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Reluctantly give info",
+        "Subtle Frown"
+      ],
+      "name": "BE RELUCTANT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Hello honorable villager.",
+        "Nice Greet Reply",
+        "Honorable villager, could you please tell me where the water is?"
+      ],
+      "name": "BE HOSPITABLE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Say Goodbye",
+        "Goodbye Response",
+        "Hi.",
+        "Would you tell me where I can find water?",
+        "Greet",
+        "Respond to Insult Neutrally",
+        "Introduce self action, going first",
+        "Respond to introduction nicely",
+        "Respond to introduction feeling forgotten",
+        "Ask Opinion on Subject",
+        "Very positive towards Subject",
+        "Positive towards subject",
+        "Indifferent towards subject answer",
+        "Ask reciprocal question of opinion on subject",
+        "antagonize refusal to answer on opinion of subject",
+        "Indifferent refusal to answer opinion about subject",
+        "ask for facts about subject action",
+        "Indifferent refusal to answer with facts",
+        "Say that don't know facts though knowing",
+        "Not knowing any facts and answering with that action",
+        "reciprocal question about facts about subject action",
+        "Thank for info about facts about subject"
+      ],
+      "name": "BE INDIFFERENT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Reintroduce Self",
+        "Humorous Correction",
+        "Appreciative Response",
+        "Excuse Self Politely",
+        "Misunderstanding",
+        "Try to repair conversation",
+        "Oblige them",
+        "Apologize for misunderstanding",
+        "Polite ask if they have",
+        "Don't have",
+        "Polite ask for",
+        "Politely refuse",
+        "Gladly acquire thing",
+        "Polite refuse to acquire",
+        "Respond to greeting",
+        "Respond positively and caring to insult action",
+        "apologise for insult",
+        "Say Goodbye kindly",
+        "Goodbye Response",
+        "kind refusal to answer opinion of subject",
+        "Polite hello",
+        "Friendly response to a greeting",
+        "Talk about love of pizza",
+        "What should we get?",
+        "Respond kindly about pizza",
+        "Normal chit chat",
+        "Just a normal chat chat response to someone %x% likes",
+        "Politely try to end the conversation",
+        "Stop the conversation",
+        "Cool, nice chatting",
+        "Friendly attempt to make the conversation go well",
+        "Let's agree to disagree",
+        "Tell a joke",
+        "Joke around with a stranger",
+        "Laugh, and make a joke",
+        "That was sort of offensive...",
+        "Compliment",
+        "Politely excuse self",
+        "Try to make another joke",
+        "Apologize",
+        "Chuckle",
+        "Introduce Self",
+        "Introduce Self Back",
+        "Learn more about them",
+        "Share something about yourself",
+        "Share something you are excited about"
+      ],
+      "name": "BE KIND"
+    }
+  ]
+}

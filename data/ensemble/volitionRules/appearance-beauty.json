@@ -1,0 +1,277 @@
+{
+  "fileName": "appearance-beauty",
+  "type": "volition",
+  "category": "appearance-beauty",
+  "rules": [
+    {
+      "name": "A beautiful worker is envied by other workers",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "jealous of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "deceitful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "An upset and beautiful woman can charm a sensitive rich man",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "charming",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Being well-dressed for an occasion will tend to positively attract others",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "inconsistent",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Unattractive, poor, independent women are less likely to marry",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "charming",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": false,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "intelligent",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Beautiful, kind, unhappy poor people may gain sympathy from young, generous, sensitive rich people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "status",
+          "type": "happy",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    }
+  ]
+}

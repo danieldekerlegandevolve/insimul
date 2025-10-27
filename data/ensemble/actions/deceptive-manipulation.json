@@ -1,0 +1,372 @@
+{
+  "category": "deceptive-manipulation",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Have but say they don't"
+      ],
+      "name": "MANIPULATE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "blackmail-default-insults",
+        "blackmail unsuccessfully"
+      ],
+      "name": "BLACKMAIL"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "play trick successfully",
+        "play trick unsuccessfully"
+      ],
+      "name": "PLAY A TRICK"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "honest",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "devout",
+          "value": false
+        }
+      ],
+      "displayName": "steal something for a friend _a",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "grateful",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "steal something for a friend _a"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "honest",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "devout",
+          "value": false
+        }
+      ],
+      "displayName": "steal something for a friend _r",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "credibility",
+          "value": 5
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "made a faux pas around",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "steal something for a friend _r"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "married",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": ">",
+          "second": "responder",
+          "type": "credibility",
+          "value": 66
+        }
+      ],
+      "displayName": "squander husband",
+      "effects": [
+        {
+          "category": "network",
+          "first": "third",
+          "operator": "-",
+          "second": "responder",
+          "type": "credibility",
+          "value": 3
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "made a faux pas around",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": false
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "inconsistent",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "squander husband"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "stagehand",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "credulous",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "cunningness",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "greedy",
+          "value": true
+        }
+      ],
+      "displayName": "greedy domestique steals all of rich man's money",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 25
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "greedy domestique steals all of rich man's money"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "joker",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "security guard",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "eccentric",
+          "value": true
+        }
+      ],
+      "displayName": "play a bad trick",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "someone",
+          "type": "esteem",
+          "value": false
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "offended by",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "play a bad trick"
+    },
+    {
+      "conditions": [],
+      "displayName": "blackmail unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "blackmail unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "play trick successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "play trick successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "play trick unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "play trick unsuccessfully"
+    }
+  ]
+}

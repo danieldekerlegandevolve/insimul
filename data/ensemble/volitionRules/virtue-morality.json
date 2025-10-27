@@ -1,0 +1,532 @@
+{
+  "fileName": "virtue-morality",
+  "type": "volition",
+  "category": "virtue-morality",
+  "rules": [
+    {
+      "name": "Devout women have affinity for men who show propriety",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "female poor virtuous no dishonor to love",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A rich old man can have an affinity for non-virtuous young women",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "The clergy disapproves of improper speech",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "clergy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "indiscreet",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A virtuous beautiful poor girl does not affinity for man",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Kind, virtuous, sensitive women have increased affinity for shy men",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "shy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Being talkative and deceitful is annoying to virtuous people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "deceitful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People seek companions with higher social standing when their own honor is moderately low.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek companionship with individuals of higher honor status.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to honor strong individuals in their social network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "value": 6,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase their honor by associating with individuals of higher honor.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to increase their social honor by associating with individuals of higher status.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek companionship with individuals of higher honor status.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek companionship with individuals of higher honor status.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to influence their social circle by associating with individuals of higher honor.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

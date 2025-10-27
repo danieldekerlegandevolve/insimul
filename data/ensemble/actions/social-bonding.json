@@ -1,0 +1,80 @@
+{
+  "category": "social-bonding",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Respond Positively to Compliment",
+        "Friendly Compliment",
+        "Say Goodbye",
+        "Goodbye Response"
+      ],
+      "name": "BEFRIEND"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "bondTerminal"
+      ],
+      "name": "BOND"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "intervene between a and b in favor of a",
+        "fight to help an unknown man",
+        "help withheld because person unable to pay",
+        "formalliance successfully",
+        "formalliance unsuccessfully"
+      ],
+      "name": "FORM ALLIANCE"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "friends",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "bondTerminal"
+    },
+    {
+      "conditions": [],
+      "displayName": "formalliance successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "formalliance successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "formalliance unsuccessfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "formalliance unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond Romantically"
+    }
+  ]
+}

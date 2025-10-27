@@ -1,0 +1,74 @@
+{
+  "fileName": "cultural-provincial",
+  "type": "volition",
+  "category": "cultural-provincial",
+  "rules": [
+    {
+      "name": "Foreigners may dislike mocking locals",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "foreigner",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "mocking",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Foreigners may become flattered by locals",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "foreigner",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "status",
+          "type": "flattered",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "value": 60,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    }
+  ]
+}

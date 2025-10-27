@@ -1,0 +1,133 @@
+{
+  "category": "relationship-changes",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "involved with"
+      },
+      "leadsTo": [
+        "ASK OUT",
+        "PICKUP LINE"
+      ],
+      "name": "dating-start"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "friends"
+      },
+      "leadsTo": [
+        "BOND",
+        "LAUGH"
+      ],
+      "name": "friends-start"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "rivals"
+      },
+      "leadsTo": [
+        "ATTACK",
+        "INSULT HONOR",
+        "BLACKMAIL"
+      ],
+      "name": "rivals-start"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "rivals"
+      },
+      "leadsTo": [
+        "FORGIVE",
+        "APOLOGIZE"
+      ],
+      "name": "rivals-stop"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "esteem"
+      },
+      "leadsTo": [
+        "CRITICIZE",
+        "PLAY A TRICK",
+        "BEHAVE RUDELY"
+      ],
+      "name": "esteem-stop"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "ally"
+      },
+      "leadsTo": [
+        "ASK FOR A FAVOR",
+        "FORM ALLIANCE"
+      ],
+      "name": "ally-start"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": true,
+        "second": "responder",
+        "type": "esteem"
+      },
+      "leadsTo": [
+        "DEMONSTRATE VIRTUE"
+      ],
+      "name": "esteem-start"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "intent": {
+        "category": "relationship",
+        "first": "initiator",
+        "intentType": false,
+        "second": "responder",
+        "type": "ally"
+      },
+      "leadsTo": [
+        "BETRAY"
+      ],
+      "name": "ally-stop"
+    }
+  ]
+}

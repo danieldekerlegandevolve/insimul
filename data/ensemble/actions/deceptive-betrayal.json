@@ -1,0 +1,102 @@
+{
+  "category": "deceptive-betrayal",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "greedy ally betrays rich man",
+        "follow advice and break up",
+        "betray successfully",
+        "betray unsuccessfully"
+      ],
+      "name": "BETRAY"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "greedy",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "credulous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "deceptive",
+          "value": true
+        }
+      ],
+      "displayName": "greedy ally betrays rich man",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "ally",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "greedy ally betrays rich man"
+    },
+    {
+      "conditions": [],
+      "displayName": "betray successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "betray successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "betray unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "betray unsuccessfully"
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+{
+  "fileName": "general",
+  "type": "volition",
+  "category": "general",
+  "rules": [
+    {
+      "name": "Beg when you are hungry",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "hungry",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "beg",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Being self assured and appropriate makes one likeable",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 1,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Wine makes discussion more enjoyable",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "inebriated",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 60,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "No Greet and neutral for high status -> dismiss",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "met",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            20
+          ]
+        },
+        {
+          "category": "event",
+          "type": "neutral",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "dismiss",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People may develop negative feelings towards strong individuals when they witness or experience unpleasant events involving them",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People may develop negative feelings towards strong individuals when they perceive them as a threat within the last",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are likely to be more candid with those they perceive as less altruistic.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "altruism",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with selfish traits seek out strong individuals as potential partners.",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "selfish",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "default indifference",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 5,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "indifferent",
+          "first": "x",
+          "second": "y",
+          "weight": 0,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seeking solace after a breakup",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "heartbroken",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to act depressed if you are depressed",
+      "conditions": [
+        {
+          "category": "mood",
+          "type": "depressed",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "depressed",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to joke around if you have high humor",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "humor",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "jokearound",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are nice to those who have been nice to them recently",
+      "title": "The Golden Rule: Upside",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

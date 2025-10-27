@@ -1,0 +1,152 @@
+{
+  "category": "gratitude-reciprocity",
+  "actions": [
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "innocent looking",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "social standing",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "kind",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": false
+        }
+      ],
+      "displayName": "bonne physionomie man grateful to benefactor",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "owes a favor to",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "bonne physionomie man grateful to benefactor"
+    },
+    {
+      "conditions": [
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "owes a favor to",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "grateful",
+          "value": true
+        }
+      ],
+      "displayName": "express gratitude toward benefactor",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "propriety",
+          "value": 5
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "affinity",
+          "value": 5
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "grateful",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "express gratitude toward benefactor"
+    },
+    {
+      "conditions": [
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "owes a favor to",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "grateful",
+          "value": false
+        }
+      ],
+      "displayName": "express ingratitude toward benefactor",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "-",
+          "type": "propriety",
+          "value": 10
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "resentful of",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "express ingratitude toward benefactor"
+    }
+  ]
+}

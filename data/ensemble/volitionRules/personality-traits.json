@@ -1,0 +1,501 @@
+{
+  "fileName": "personality-traits",
+  "type": "volition",
+  "category": "personality-traits",
+  "rules": [
+    {
+      "name": "Young children may find joy in spending time with caring adults",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "y",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A young and shy man may be less enterprising toward women",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "shy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to be humble if you are depressed",
+      "conditions": [
+        {
+          "category": "mood",
+          "type": "depressed",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "humble",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are less kind to people they haven't met",
+      "title": "Stranger Danger",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "met",
+          "value": false,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are less kind to those they are unattracted to",
+      "title": "Eww Gross",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are a very kind to those they are very attracted to",
+      "title": "Crushing Hard",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Loyal people are kind",
+      "title": "Stalwart and Noble",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "loyal",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Shy people are less kind",
+      "title": "Reclusive and Solitary",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "shy",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Jerks are much less likely to be kind",
+      "title": "Schoolyard Bully",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "jerk",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Fans of the restaurant are kind because they are in a good mood at the restaurant",
+      "title": "Happiest Place on Earth",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "fan_of_restaurant",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are less kind to those who have been rude to them recently",
+      "title": "The Golden Rule: Downside",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "rude",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are more rude to people they haven't met",
+      "title": "Who are you?",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "met",
+          "value": false,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are a little more rude to those they are unattracted to",
+      "title": "Cruelty to the Ugly",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are much less rude to those that they are attracted to",
+      "title": "Respect to the Beautiful",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Loyal people are less rude",
+      "title": "A polite approach",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "loyal",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Shy people are less rude",
+      "title": "Mousey",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "shy",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Jerks are very rude",
+      "title": "Insult King",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "jerk",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Fans of the restaurant are less rude",
+      "title": "In My Happy Place",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "fan_of_restaurant",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are less rude to those who have been nice to them recently",
+      "title": "Memory: Kindness Begets Politeness",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are more rude to those who have been rude to them recently",
+      "title": "Memory: Rudeness Begets Rudeness",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "rude",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

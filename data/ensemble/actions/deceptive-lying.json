@@ -1,0 +1,400 @@
+{
+  "category": "deceptive-lying",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "attractive woman lies about relationship status (a)",
+        "attractive woman lies about relationship status (r)",
+        "lie successfully",
+        "lie unsuccessfully"
+      ],
+      "name": "LIE"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "someone",
+          "type": "married",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "charisma",
+          "value": 70
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "cunningness",
+          "value": 50
+        }
+      ],
+      "displayName": "attractive woman lies about relationship status (a)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "attractive woman lies about relationship status (a)"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "charisma",
+          "value": 70
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 60
+        }
+      ],
+      "displayName": "attractive woman lies about relationship status (r)",
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "caught in a lie by",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 30
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "affinity",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "attractive woman lies about relationship status (r)"
+    },
+    {
+      "conditions": [],
+      "displayName": "lie successfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "lie successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "lie unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "lie unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "young",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "clergy",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "devout",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        },
+        {
+          "category": "relationship",
+          "first": "third",
+          "second": "responder",
+          "type": "strangers",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "third",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "third",
+          "type": "hypocritical",
+          "value": true
+        }
+      ],
+      "displayName": "virtuous tells clergy of being preyed upon, is disbelieved by devout",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": false
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "event",
+          "first": "third",
+          "second": "initiator",
+          "type": "flirted with",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "upset",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "-",
+          "type": "self-assuredness",
+          "value": 15
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "suspicious of",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "virtuous tells clergy of being preyed upon, is disbelieved by devout"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 60
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "deceptive",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "credulous",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "cunningness",
+          "value": 50
+        }
+      ],
+      "displayName": "lie about not liking something to get attention",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "lie about not liking something to get attention"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "third",
+          "type": "strangers",
+          "value": false
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 60
+        }
+      ],
+      "displayName": "lover catches virtuous partner, disbelieves display of virtue",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": false
+        },
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "caught in a lie by",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "third",
+          "type": "resentful of",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "third",
+          "second": "responder",
+          "type": "flirted with",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "lover catches virtuous partner, disbelieves display of virtue"
+    },
+    {
+      "conditions": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "caught in a lie by",
+          "value": true
+        }
+      ],
+      "displayName": "look with disdain after discovering a lie",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": false
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "look with disdain after discovering a lie"
+    }
+  ]
+}

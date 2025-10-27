@@ -1,0 +1,3156 @@
+{
+	"history": [
+		{
+			"pos": 0,
+			"data": [
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 40,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "provincial",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 60,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 1,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "nosiness",
+					"value": 60,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "flirtatious",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "charming",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "wearing a first responder uniform",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "elegantly dressed",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "disdainful",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "cunningness",
+					"value": 60,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "relationship",
+					"type": "married",
+					"value": true,
+					"first": "Jacob Chauvin",
+					"second": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "joker",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "relationship",
+					"type": "ally",
+					"value": true,
+					"first": "Jacob Chauvin",
+					"second": "Adrianne Billedeaux"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Jacob Chauvin",
+					"second": "Adrianne Billedeaux"
+				},
+				{
+					"category": "relationship",
+					"type": "lovers",
+					"value": true,
+					"first": "Jacob Chauvin",
+					"second": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "inconsistent",
+					"value": true,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"value": 75,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "status",
+					"type": "upset",
+					"value": true,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "trait",
+					"type": "credulous",
+					"value": true,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Alphonse Martin",
+					"second": "Christophe Bertrand"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 25,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "trait",
+					"type": "greedy",
+					"value": true,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 80,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "trait",
+					"type": "charming",
+					"value": true,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "trait",
+					"type": "clergy",
+					"value": true,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "status",
+					"type": "inebriated",
+					"value": true,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "mocking",
+					"value": true,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "hypocritical",
+					"value": true,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "inconsistent",
+					"value": true,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "relationship",
+					"type": "ally",
+					"value": true,
+					"first": "Ralph Aucoin",
+					"second": "Francois LeBlanc"
+				},
+				{
+					"category": "trait",
+					"type": "devout",
+					"value": true,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "intelligent",
+					"value": false,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 15,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 40,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "modest",
+					"value": true,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 61,
+					"first": "Ralph Aucoin",
+					"second": "Christophe Bertrand"
+				},
+				{
+					"category": "trait",
+					"type": "stagehand",
+					"value": true,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 60,
+					"first": "Cora DeCuir",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "nosiness",
+					"value": 50,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "trait",
+					"type": "poor",
+					"value": true,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "event",
+					"type": "flirted with",
+					"value": true,
+					"first": "Cora DeCuir",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": false,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "trait",
+					"type": "devout",
+					"value": false,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "trait",
+					"type": "indiscreet",
+					"value": true,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "trait",
+					"type": "flirtatious",
+					"value": true,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "trait",
+					"type": "stagehand",
+					"value": true,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 45,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 45,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "directed status",
+					"type": "financially dependent on",
+					"value": true,
+					"first": "Francois LeBlanc",
+					"second": "Alphonse Martin"
+				},
+				{
+					"category": "trait",
+					"type": "wearing a uniform",
+					"value": true,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "network",
+					"type": "emulation",
+					"value": 61,
+					"first": "Francois LeBlanc",
+					"second": "Alexandre Nezat"
+				},
+				{
+					"category": "relationship",
+					"type": "strangers",
+					"value": false,
+					"first": "Francois LeBlanc",
+					"second": "Alphonse Martin"
+				},
+				{
+					"category": "relationship",
+					"type": "strangers",
+					"value": false,
+					"first": "Francois LeBlanc",
+					"second": "Ralph Aucoin"
+				},
+				{
+					"category": "directed status",
+					"type": "resentful of",
+					"value": true,
+					"first": "Francois LeBlanc",
+					"second": "Alphonse Martin"
+				},
+				{
+					"category": "network",
+					"type": "curiosity",
+					"value": 61,
+					"first": "Francois LeBlanc",
+					"second": "Grace Huval"
+				},
+				{
+					"category": "relationship",
+					"type": "ally",
+					"value": true,
+					"first": "Francois LeBlanc",
+					"second": "Alexandre Nezat"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": false,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "trait",
+					"type": "inconsistent",
+					"value": true,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "trait",
+					"type": "joker",
+					"value": true,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "trait",
+					"type": "ambitious",
+					"value": true,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "trait",
+					"type": "child",
+					"value": true,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "shy",
+					"value": true,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "awkward",
+					"value": true,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "unctuous",
+					"value": true,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "modest",
+					"value": false,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 25,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"value": 80,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "provincial",
+					"value": true,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "intelligent",
+					"value": true,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 95,
+					"first": "Jean Billeaud",
+					"second": "Victoria Guidry"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Jean Billeaud",
+					"second": "Victoria Guidry"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 31,
+					"first": "Christophe Bertrand",
+					"second": "Ralph Aucoin"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 75,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": true,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "trait",
+					"type": "clergy",
+					"value": true,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "trait",
+					"type": "devout",
+					"value": true,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Christophe Bertrand",
+					"second": "Alphonse Martin"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "trait",
+					"type": "kind",
+					"value": true,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "trait",
+					"type": "stagehand",
+					"value": true,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "attribute",
+					"type": "cunningness",
+					"value": 61,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 45,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 61,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "directed status",
+					"type": "jealous of",
+					"value": true,
+					"first": "Elizabeth Landry",
+					"second": "Grace Huval"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 70,
+					"first": "Elizabeth Landry",
+					"second": "Francois LeBlanc"
+				},
+				{
+					"category": "relationship",
+					"type": "ally",
+					"value": true,
+					"first": "Elizabeth Landry",
+					"second": "Jean Billeaud"
+				},
+				{
+					"category": "status",
+					"type": "happy",
+					"value": true,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "trait",
+					"type": "wearing a uniform",
+					"value": true,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": true,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "directed status",
+					"type": "financially dependent on",
+					"value": true,
+					"first": "Elizabeth Landry",
+					"second": "Celila Broussard"
+				},
+				{
+					"category": "directed status",
+					"type": "financially dependent on",
+					"value": true,
+					"first": "Elizabeth Landry",
+					"second": "Celila Broussard"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 50,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "devout",
+					"value": true,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "credulous",
+					"value": true,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "relationship",
+					"type": "married",
+					"value": true,
+					"first": "Renee Hebert",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": false,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "directed status",
+					"type": "trusts",
+					"value": true,
+					"first": "Renee Hebert",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 40,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "attendee",
+					"value": true,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": true,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Victoria Guidry"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Victoria Guidry"
+				},
+				{
+					"category": "directed status",
+					"type": "cares for",
+					"value": true,
+					"first": "Victoria Guidry",
+					"second": "Jean Billeaud"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 75,
+					"first": "Victoria Guidry",
+					"second": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Victoria Guidry"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Victoria Guidry"
+				},
+				{
+					"category": "trait",
+					"type": "provincial",
+					"value": true,
+					"first": "Victoria Guidry"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Victoria Guidry",
+					"second": "Jean Billeaud"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 70,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "attribute",
+					"type": "social standing",
+					"value": 80,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 70,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "trait",
+					"type": "penetrating",
+					"value": true,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "relationship",
+					"type": "ally",
+					"value": true,
+					"first": "Adrianne Billedeaux",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Adrianne Billedeaux",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "network",
+					"type": "credibility",
+					"value": 55,
+					"first": "Adrianne Billedeaux",
+					"second": "Elizabeth Huff"
+				},
+				{
+					"category": "network",
+					"type": "curiosity",
+					"value": 65,
+					"first": "Adrianne Billedeaux",
+					"second": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "trait",
+					"type": "child",
+					"value": true,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "trait",
+					"type": "shy",
+					"value": true,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Jeanne Comeaux",
+					"second": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "awkward",
+					"value": true,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": false,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 15,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "police officer",
+					"value": true,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "provincial",
+					"value": true,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": true,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 70,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 70,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "relationship",
+					"type": "rivals",
+					"value": true,
+					"first": "Dustin Gaspard",
+					"second": "Claude Robin"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Dustin Gaspard",
+					"second": "Alexandre Nezat"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 45,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "event",
+					"type": "harmed",
+					"value": true,
+					"first": "Dustin Gaspard",
+					"second": "Claude Robin"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 30,
+					"first": "Mary Delahoussaye"
+				},
+				{
+					"category": "trait",
+					"type": "merchant",
+					"value": true,
+					"first": "Mary Delahoussaye"
+				},
+				{
+					"category": "trait",
+					"type": "poor",
+					"value": true,
+					"first": "Mary Delahoussaye"
+				},
+				{
+					"category": "trait",
+					"type": "provincial",
+					"value": true,
+					"first": "Mary Delahoussaye"
+				},
+				{
+					"category": "trait",
+					"type": "boorish",
+					"value": true,
+					"first": "Mary Delahoussaye"
+				},
+				{
+					"category": "trait",
+					"type": "stagehand",
+					"value": true,
+					"first": "Théo Arnaud"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Théo Arnaud"
+				},
+				{
+					"category": "attribute",
+					"type": "cunningness",
+					"value": 70,
+					"first": "Théo Arnaud"
+				},
+				{
+					"category": "trait",
+					"type": "greedy",
+					"value": true,
+					"first": "Théo Arnaud"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 85,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": true,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 75,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 70,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 30,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "trait",
+					"type": "generous",
+					"value": true,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "status",
+					"type": "embarrassed",
+					"value": true,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": false,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "trait",
+					"type": "kind",
+					"value": true,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "relationship",
+					"type": "esteem",
+					"value": false,
+					"first": "Celila Broussard",
+					"second": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "relationship",
+					"type": "ally",
+					"value": true,
+					"first": "Celila Broussard",
+					"second": "Elizabeth Landry"
+				},
+				{
+					"category": "directed status",
+					"type": "intimidates",
+					"value": true,
+					"first": "Celila Broussard",
+					"second": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": false,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "directed status",
+					"type": "intimidates",
+					"value": true,
+					"first": "Amy Robichaux",
+					"second": "Jean Billeaud"
+				},
+				{
+					"category": "trait",
+					"type": "cold",
+					"value": true,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"value": 30,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "trait",
+					"type": "devout",
+					"value": true,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "trait",
+					"type": "disdainful",
+					"value": true,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": false,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 25,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "trait",
+					"type": "government official",
+					"value": true,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "status",
+					"type": "inebriated",
+					"value": true,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "trait",
+					"type": "kind",
+					"value": false,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "attribute",
+					"type": "cunningness",
+					"value": 60,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "trait",
+					"type": "poorly dressed",
+					"value": true,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "trait",
+					"type": "boorish",
+					"value": true,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "network",
+					"type": "credibility",
+					"value": 65,
+					"first": "Charles Devillier",
+					"second": "Elizabeth Huff"
+				},
+				{
+					"category": "network",
+					"type": "curiosity",
+					"value": 75,
+					"first": "Charles Devillier",
+					"second": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "criminal",
+					"value": true,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 20,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "trait",
+					"type": "flirtatious",
+					"value": true,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 20,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "trait",
+					"type": "security guard",
+					"value": true,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 20,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 80,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "trait",
+					"type": "flirtatious",
+					"value": true,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 50,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 75,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 78,
+					"first": "Claude Gaudet",
+					"second": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 90,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 30,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "attribute",
+					"type": "nosiness",
+					"value": 60,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 41,
+					"first": "Ralph Langlois",
+					"second": "Elie Charpentier"
+				},
+				{
+					"category": "relationship",
+					"type": "rivals",
+					"value": true,
+					"first": "Ralph Langlois",
+					"second": "Mary Delahoussaye"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 51,
+					"first": "Ralph Langlois",
+					"second": "Charles Devillier"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 51,
+					"first": "Ralph Langlois",
+					"second": "Renee Hebert"
+				},
+				{
+					"category": "trait",
+					"type": "organizer",
+					"value": true,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "trait",
+					"type": "security guard",
+					"value": true,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": true,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 90,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "network",
+					"type": "emulation",
+					"value": 70,
+					"first": "Ralph Langlois",
+					"second": "Elie Charpentier"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "trait",
+					"type": "indiscreet",
+					"value": true,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 60,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": false,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": false,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 60,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 60,
+					"first": "Jeanne Moutard",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "attribute",
+					"type": "social standing",
+					"value": 65,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "elegantly dressed",
+					"value": true,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "relationship",
+					"type": "lovers",
+					"value": true,
+					"first": "Jeanne Moutard",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "devout",
+					"value": true,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "inconsistent",
+					"value": true,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "trait",
+					"type": "modest",
+					"value": false,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 35,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "trait",
+					"type": "unctuous",
+					"value": true,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"value": 80,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 90,
+					"first": "Alexandre Nezat",
+					"second": "Victoria Guidry"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 55,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 60,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "directed status",
+					"type": "intimidates",
+					"value": true,
+					"first": "Lucien Noel",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "old",
+					"value": true,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": false,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "relationship",
+					"type": "strangers",
+					"value": true,
+					"first": "Lucien Noel",
+					"second": "Jacob Chauvin"
+				},
+				{
+					"category": "trait",
+					"type": "cold",
+					"value": true,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "trait",
+					"type": "attendee",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "attribute",
+					"type": "nosiness",
+					"value": 71,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 71,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 39,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 81,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "trait",
+					"type": "intimidating",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "trait",
+					"type": "impudent",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "trait",
+					"type": "eccentric",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "trait",
+					"type": "inconsistent",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "trait",
+					"type": "indiscreet",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "event",
+					"type": "flirted with",
+					"value": true,
+					"first": "Joseph Roy",
+					"second": "Jeanne Moutard"
+				},
+				{
+					"category": "event",
+					"type": "flirted with",
+					"value": true,
+					"first": "Joseph Roy",
+					"second": "Grace Huval"
+				},
+				{
+					"category": "trait",
+					"type": "flirtatious",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": true,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 45,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "directed status",
+					"type": "cares for",
+					"value": true,
+					"first": "Joseph Roy",
+					"second": "Alexis Autin"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 71,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"value": 61,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "directed status",
+					"type": "financially dependent on",
+					"value": true,
+					"first": "Marie-Claire Savoie",
+					"second": "Charles Devillier"
+				},
+				{
+					"category": "directed status",
+					"type": "trusts",
+					"value": true,
+					"first": "Marie-Claire Savoie",
+					"second": "Renee Hebert"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 71,
+					"first": "Marie-Claire Savoie",
+					"second": "Celila Broussard"
+				},
+				{
+					"category": "relationship",
+					"type": "esteem",
+					"value": true,
+					"first": "Marie-Claire Savoie",
+					"second": "Amy Robichaux"
+				},
+				{
+					"category": "status",
+					"type": "upset",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "charming",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "foreigner",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "honest",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "kind",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "modest",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": true,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "trait",
+					"type": "police officer",
+					"value": true,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 15,
+					"first": "Claude Robin",
+					"second": "Dustin Gaspard"
+				},
+				{
+					"category": "relationship",
+					"type": "rivals",
+					"value": true,
+					"first": "Claude Robin",
+					"second": "Dustin Gaspard"
+				},
+				{
+					"category": "trait",
+					"type": "impudent",
+					"value": true,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 15,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 25,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 5,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "trait",
+					"type": "eccentric",
+					"value": true,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "trait",
+					"type": "intelligent",
+					"value": true,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "trait",
+					"type": "mocking",
+					"value": true,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "trait",
+					"type": "penetrating",
+					"value": true,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 75,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 45,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "directed status",
+					"type": "financially dependent on",
+					"value": true,
+					"first": "Alexis Autin",
+					"second": "Joseph Roy"
+				},
+				{
+					"category": "directed status",
+					"type": "offended by",
+					"value": true,
+					"first": "Alexis Autin",
+					"second": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "trait",
+					"type": "impudent",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "trait",
+					"type": "eccentric",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "trait",
+					"type": "deceitful",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "relationship",
+					"type": "esteem",
+					"value": true,
+					"first": "Alexis Autin",
+					"second": "Elizabeth Landry"
+				},
+				{
+					"category": "status",
+					"type": "flattered",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "trait",
+					"type": "criminal",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "trait",
+					"type": "greedy",
+					"value": true,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 90,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 51,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "attribute",
+					"type": "cunningness",
+					"value": 60,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "attribute",
+					"type": "nosiness",
+					"value": 70,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 70,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 60,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "relationship",
+					"type": "rivals",
+					"value": true,
+					"first": "Judith Arceneaux",
+					"second": "Dustin Gaspard"
+				},
+				{
+					"category": "status",
+					"type": "amused",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "trait",
+					"type": "intelligent",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "trait",
+					"type": "elegantly dressed",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "trait",
+					"type": "wearing a first responder uniform",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "trait",
+					"type": "trustworthy",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "trait",
+					"type": "penetrating",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "trait",
+					"type": "deceptive",
+					"value": true,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 51,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 61,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "attribute",
+					"type": "social standing",
+					"value": 61,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 61,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "directed status",
+					"type": "hates",
+					"value": true,
+					"first": "Marie Guidroz",
+					"second": "Ralph Aucoin"
+				},
+				{
+					"category": "directed status",
+					"type": "owes a favor to",
+					"value": true,
+					"first": "Marie Guidroz",
+					"second": "Théo Arnaud"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 61,
+					"first": "Marie Guidroz",
+					"second": "Marie-Claire Savoie"
+				},
+				{
+					"category": "status",
+					"type": "inebriated",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "ambitious",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "disdainful",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "flirtatious",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "mocking",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "intimidating",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "unctuous",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "well-known",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "wearing a first responder uniform",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "directed status",
+					"type": "jealous of",
+					"value": true,
+					"first": "Marie Guidroz",
+					"second": "Adrianne Billedeaux"
+				},
+				{
+					"category": "network",
+					"type": "credibility",
+					"value": 55,
+					"first": "Marie Guidroz",
+					"second": "Elizabeth Huff"
+				},
+				{
+					"category": "network",
+					"type": "curiosity",
+					"value": 65,
+					"first": "Marie Guidroz",
+					"second": "Elizabeth Huff"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 65,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 55,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"value": 80,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "attribute",
+					"type": "social standing",
+					"value": 30,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": true,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "poor",
+					"value": true,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "young",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 61,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "attendee",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "charming",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "ambitious",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "vain",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "unctuous",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "greedy",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 61,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "directed status",
+					"type": "offended by",
+					"value": true,
+					"first": "Marie Lavergne",
+					"second": "Ralph Aucoin"
+				},
+				{
+					"category": "trait",
+					"type": "deceitful",
+					"value": true,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "trait",
+					"type": "modest",
+					"value": false,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 40,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "trait",
+					"type": "charming",
+					"value": true,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "trait",
+					"type": "eccentric",
+					"value": true,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 75,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 75,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "trait",
+					"type": "provincial",
+					"value": true,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "trait",
+					"type": "intelligent",
+					"value": true,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 80,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "trait",
+					"type": "attendee",
+					"value": true,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "trait",
+					"type": "academic",
+					"value": true,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "trait",
+					"type": "innocent looking",
+					"value": true,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "trait",
+					"type": "intelligent",
+					"value": true,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "trait",
+					"type": "joker",
+					"value": true,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "trait",
+					"type": "academic",
+					"value": true,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 61,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "status",
+					"type": "happy",
+					"value": true,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "attribute",
+					"type": "self-assuredness",
+					"value": 70,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 65,
+					"first": "Catherine Poirier",
+					"second": "Marie Guidroz"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"value": true,
+					"first": "Catherine Poirier",
+					"second": "Marie Guidroz"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 50,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "attribute",
+					"type": "propriety",
+					"value": 71,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "attribute",
+					"type": "sophistication",
+					"value": 61,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"value": 61,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "directed status",
+					"type": "offended by",
+					"value": true,
+					"first": "Marie-Louise Sorbier",
+					"second": "Nicolas Bordelon"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"value": 61,
+					"first": "Marie-Louise Sorbier",
+					"second": "Marie-Claire Savoie"
+				},
+				{
+					"category": "network",
+					"type": "emulation",
+					"value": 51,
+					"first": "Marie-Louise Sorbier",
+					"second": "Jeanne Moutard"
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"value": false,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"value": true,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "trait",
+					"type": "kind",
+					"value": true,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "trait",
+					"type": "modest",
+					"value": true,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": false,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "directed status",
+					"type": "ridicules",
+					"value": true,
+					"first": "Marie-Louise Sorbier",
+					"second": "Elizabeth Landry"
+				},
+				{
+					"category": "trait",
+					"type": "academic",
+					"value": true,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "trait",
+					"type": "security guard",
+					"value": true,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "attribute",
+					"type": "cultural knowledge",
+					"value": 95,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"value": 30,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "trait",
+					"type": "poorly dressed",
+					"value": true,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "trait",
+					"type": "poor",
+					"value": true,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": false,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "virtuous",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "devout",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "talkative",
+					"value": false,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "indifferent",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "cold",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "penetrating",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "trait",
+					"type": "greedy",
+					"value": true,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 95,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 45,
+					"first": "Jacob Chauvin"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 90,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 35,
+					"first": "Alphonse Martin"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 85,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 60,
+					"first": "Grace Huval"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 98,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 25,
+					"first": "Ralph Aucoin"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 92,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 40,
+					"first": "Cora DeCuir"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 88,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 55,
+					"first": "Francois LeBlanc"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 80,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 70,
+					"first": "Jean Billeaud"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 95,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 30,
+					"first": "Christophe Bertrand"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 90,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 50,
+					"first": "Elizabeth Landry"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 93,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 38,
+					"first": "Renee Hebert"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 87,
+					"first": "Victoria Guidry"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 65,
+					"first": "Victoria Guidry"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 75,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 80,
+					"first": "Adrianne Billedeaux"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 85,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 60,
+					"first": "Jeanne Comeaux"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 70,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 85,
+					"first": "Dustin Gaspard"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 95,
+					"first": "Mary Delahoussaye"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 20,
+					"first": "Mary Delahoussaye"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 92,
+					"first": "Théo Arnaud"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 42,
+					"first": "Théo Arnaud"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 88,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 55,
+					"first": "Celila Broussard"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 90,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 48,
+					"first": "Amy Robichaux"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 65,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 90,
+					"first": "Charles Devillier"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 93,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 35,
+					"first": "Elie Charpentier"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 82,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 72,
+					"first": "Claude Gaudet"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 78,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 75,
+					"first": "Ralph Langlois"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 94,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 40,
+					"first": "Jeanne Moutard"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 86,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 62,
+					"first": "Alexandre Nezat"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 97,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 28,
+					"first": "Lucien Noel"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 84,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 68,
+					"first": "Joseph Roy"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 91,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 52,
+					"first": "Marie-Claire Savoie"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 75,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 78,
+					"first": "Claude Robin"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 88,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 58,
+					"first": "Nicolas Bordelon"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 92,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 45,
+					"first": "Alexis Autin"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 89,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 56,
+					"first": "Judith Arceneaux"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 80,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 70,
+					"first": "Marie Guidroz"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 68,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 88,
+					"first": "Elizabeth Huff"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 93,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 42,
+					"first": "Marie Lavergne"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 87,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 64,
+					"first": "Pierre Melancon"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 85,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 66,
+					"first": "Catherine Poirier"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 94,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 38,
+					"first": "Marie-Louise Sorbier"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 96,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 32,
+					"first": "Anne Drouillon"
+				},
+				{
+					"category": "language",
+					"type": "French",
+					"value": 90,
+					"first": "Marcel Patin"
+				},
+				{
+					"category": "language",
+					"type": "English",
+					"value": 50,
+					"first": "Marcel Patin"
+				}
+			]
+		}
+	]
+}

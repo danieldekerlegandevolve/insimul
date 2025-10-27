@@ -1,0 +1,692 @@
+{
+  "category": "conversational-small-talk",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "hardy",
+              "value": true
+            }
+          ],
+          "effects": [],
+          "name": "Hardy people are more likely to reminisce.",
+          "weight": -10
+        }
+      ],
+      "leadsTo": [
+        "reminisce 1",
+        "reminisce 2",
+        "reminisce 3"
+      ],
+      "name": "REMINISCE"
+    },
+    {
+      "conditions": [],
+      "description": "reminisce generic accept",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "reminisce 1"
+    },
+    {
+      "conditions": [],
+      "description": "reminisce generic reject",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 40
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "reminisce 2",
+      "salience": 50
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "mutualFriend",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "mutualFriend",
+          "type": "friends",
+          "value": true
+        }
+      ],
+      "description": "reminisce FANCY accept (initiator and responder must have a mutualfriend)",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "involved with",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "reminisce 3",
+      "salience": 30
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "second": "third",
+          "type": "affinity",
+          "value": 80
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "third",
+          "type": "financially dependent on",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "male",
+          "value": true
+        }
+      ],
+      "displayName": "talk about the loved one",
+      "effects": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "flirtatious",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 3
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "feeling socially connected",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "talk about the loved one"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "sophistication",
+          "value": 70
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "feeling socially connected",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": "<",
+          "type": "sophistication",
+          "value": 70
+        }
+      ],
+      "displayName": "talk about science / philosophy",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "talk about science / philosophy"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "provincial",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "sophistication",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "cultural knowledge",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "provincial",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "other",
+          "type": "provincial",
+          "value": false
+        }
+      ],
+      "displayName": "respond in patois, but gain everyone's admiration",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "other",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "feeling socially connected",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "self-assuredness",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "other",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "respond in patois, but gain everyone's admiration"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "shy",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "third",
+          "type": "shy",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "third",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": ">",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 66
+        }
+      ],
+      "displayName": "look away",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "third",
+          "type": "curiosity",
+          "value": 5
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "cold",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "look away"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "intimidates",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": true
+        }
+      ],
+      "displayName": "remaining silent",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "remaining silent"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "informal",
+          "value": true
+        }
+      ],
+      "name": "Hi."
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "negative",
+          "value": true
+        }
+      ],
+      "name": "Subtle Frown"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "offended by",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "trust",
+          "value": 2
+        }
+      ],
+      "name": "Scowl"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "nice",
+          "value": true
+        }
+      ],
+      "name": "Respond to introduction nicely"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "turnsAgoBetween": [
+            0,
+            9999
+          ],
+          "type": "met",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Respond to introduction feeling forgotten"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond Negatively"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond Backhandedly"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond Humbly"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Talk about love of pizza"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Guilt about pizza"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Respond kindly about pizza"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Normal chit chat"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "network",
+              "first": "initiator",
+              "operator": ">",
+              "second": "responder",
+              "type": "friendship",
+              "value": 7
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": 1
+            }
+          ],
+          "name": "Now Rule for Just a normal chat chat response to someone %x% likes"
+        }
+      ],
+      "name": "Just a normal chat chat response to someone %x% likes"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "name": "Politely try to end the conversation"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": -10
+            }
+          ],
+          "name": "Now Rule for Stop the conversation"
+        }
+      ],
+      "name": "Stop the conversation"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Cool, nice chatting"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Friendly attempt to make the conversation go well"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "network",
+              "first": "initiator",
+              "operator": "+",
+              "second": "responder",
+              "type": "respect",
+              "value": 1
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": 5
+            }
+          ],
+          "name": "Now Rule for Appreciative Response"
+        }
+      ],
+      "name": "Appreciative Response"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Try to repair conversation"
+    }
+  ]
+}

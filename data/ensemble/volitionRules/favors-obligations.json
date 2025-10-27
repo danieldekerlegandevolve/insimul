@@ -1,0 +1,1871 @@
+{
+  "fileName": "favors-obligations",
+  "type": "volition",
+  "category": "favors-obligations",
+  "rules": [
+    {
+      "name": "Powerful, indifferent, rich people draw attention to themselves",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "indifferent",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "x",
+          "value": 70
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 60,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 85,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Someone who is grateful could do everything for the one he owes a favor to",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "grateful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "owes a favor to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Someone who is grateful could do everything for the one he owes a favor to",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "grateful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "owes a favor to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A person may want to befriend a powerful person's lover",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 80,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A happy, elegant man may be followed by other young men",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Some lower class urbanites may be nosy and unsophisticated",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "type": "nosiness",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 40,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 40,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People of high social standing may want less attention from inappropriately behaved people of lower social standing",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 60,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Grateful people who owe a favor to their friend may want to please that friend",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "owes a favor to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "status",
+          "type": "grateful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Honest people may want to increase their credibility with those they are indebted to",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "owes a favor to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Lower status people are more likely to be helpful if they were treated too formally by an outsider",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        },
+        {
+          "category": "event",
+          "type": "formal",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "status",
+          "type": "outsider",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "help",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Lower Status people are more likely to be helpful when you were positive and made a neutral request",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "positive",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "neutral",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "help",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People may develop negative feelings towards those they've been favored by.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People may develop negative feelings towards those who did a favor for them.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People may develop negative feelings towards those they have previously favored.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People favor getting closer to strong individuals in their social circle.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "public friends",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People favor strong individuals in a publicly romantic relationship with them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "publicly romantically committed to",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek favor from their superiors.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolize strong individuals and develop a favorable intent towards them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have a strong respect for individuals with high social influence and are inclined to develop favorable",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have a favorable intent towards stronger individuals when their indebtedness level exceeds that",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "indebted",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to favor closer friends over weaker acquaintances.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to favor strong individuals in their network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to favor stronger individuals in their social network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop a favorable intent towards strong individuals when they perceive themselves as successful.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "successful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop a favorable disposition towards strong individuals when they feel guilty.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "guilty",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People envy others' strong connections and favor forming relationships with those they admire. Rule Name",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "envy",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to increase their social standing by doing favors for influential individuals.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with high altruism seek to establish favorable relationships.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "altruism",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are inclined to favor strong individuals as friends.",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "friendly",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop a favorable intent towards strong individuals when they have recently experienced positive interactions with them.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People intend to do favors for influential individuals.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop a favorable intent towards strong individuals after observing positive interactions within the last month to",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop a favorable disposition towards strong individuals.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People intend to do favors for influential individuals due to past actions.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have a positive intent to do favors for strong individuals within the last month.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have a strong desire to favor their crush when they are within close proximity of friends",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to favor those with stronger connections when their crushes are within recent social circles.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are likely to do a favor for strong individuals they've recently become friends with.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are likely to do a favor for strong individuals if they have been friends with them for more",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to favor those with stronger connections when their crushes are within a close social circle",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have a strong social network with more than six friends and have recently done a favor for",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are inclined to form closer bonds with influential individuals and have a favorable intent",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop a favorable intent towards getting closer to strong individuals when they have been meaningfully interact",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People feel indebted to their strong connections and are likely to do favors for them.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have a strong familial network with more than six connections and have done a favor for",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are inclined to seek connections with influential individuals when they have recently done a favor for",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "antagonism",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to honor stronger connections when indebtedness level exceeds a certain threshold.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "indebted",
+          "first": "x",
+          "value": 6,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to honor strong individuals by doing favors.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "value": true,
+          "second": "y",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to ingratiate themselves with individuals they are indebted to more than others",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "indebted",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to ingratiate themselves with those they've done favors for recently.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People may develop feelings of envy towards those they perceive as more successful or powerful.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "envy",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are likely to develop a desire for friendship with strong individuals due to past favors.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong network of family connections who have recently done favors for their crush are",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to form closer bonds with influential individuals due to a favor received within the past",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have a strong familial network with more than six connections and have done a favor for",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are influenced to seek connections with individuals they perceive as more powerful.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People have a lower trust towards weaker connections compared to stronger ones in their social network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards those they have done favors for recently.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards those they have done favors for recently.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop trust towards those they've done favors for.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

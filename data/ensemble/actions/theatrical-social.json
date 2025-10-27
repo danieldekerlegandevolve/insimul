@@ -1,0 +1,335 @@
+{
+  "category": "theatrical-social",
+  "actions": [
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "cultural knowledge",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "self-assuredness",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "other",
+          "type": "security guard",
+          "value": true
+        }
+      ],
+      "displayName": "yell something witty at actor during play",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "other",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "other",
+          "type": "ridicules",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "yell something witty at actor during play"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "cultural knowledge",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "security guard",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "awkward",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "other",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        }
+      ],
+      "displayName": "refrain from yelling something witty at actor during play",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "other",
+          "operator": "+",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ridicules",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "other",
+          "second": "responder",
+          "type": "ridicules",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "amused",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "refrain from yelling something witty at actor during play"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "poor",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": false
+        },
+        {
+          "category": "network",
+          "first": "someone",
+          "operator": ">",
+          "second": "responder",
+          "type": "emulation",
+          "value": 50
+        }
+      ],
+      "displayName": "pay for someone applauding during the play",
+      "effects": [
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "mocking",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "someone",
+          "operator": "+",
+          "second": "responder",
+          "type": "emulation",
+          "value": 3
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "financially dependent on",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 3
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "pay for someone applauding during the play"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "stagehand",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "stagehand",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        }
+      ],
+      "displayName": "servant starts whistling",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "feeling socially connected",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "feeling socially connected",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "happy",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "servant starts whistling"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "cultural knowledge",
+          "value": 70
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": "<",
+          "type": "cultural knowledge",
+          "value": 50
+        }
+      ],
+      "displayName": "behave like the others at the theater",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "behave like the others at the theater"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "cultural knowledge",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "security guard",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "awkward",
+          "value": true
+        }
+      ],
+      "displayName": "shout criticism at bad actor",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "shout criticism at bad actor"
+    }
+  ]
+}

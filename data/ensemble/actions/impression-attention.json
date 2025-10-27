@@ -1,0 +1,302 @@
+{
+  "category": "impression-attention",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "embrace someone in public (a)",
+        "embrace someone in public (r)",
+        "play a bad trick",
+        "make a scene successfully",
+        "make a scene unsuccessfully"
+      ],
+      "name": "MAKE A SCENE (NOT SUBTLE)"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "lie about not liking something to get attention",
+        "someone not knowing how to behave draws attention to oneself",
+        "glorieuse making eyes at someone",
+        "draw attention successfully",
+        "draw attention unsuccessfully"
+      ],
+      "name": "DRAW ATTENTION (SUBTLE)"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "draw attention away from self by using third person ally to give a gift",
+        "look away",
+        "remaining silent",
+        "insist on low status to drive off high status lover",
+        "discretely leave the theatre and ask for ticket refurbishment, but being noticed",
+        "attempt to conceal information from friend fails",
+        "deflect successfully",
+        "deflect unsuccessfully"
+      ],
+      "name": "DEFLECT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "eccentric, unattractive man prefers staying on his own (a)",
+        "eccentric, unattractive person prefers staying on his own but nonetheless gets attention (r)",
+        "dress up as stranger",
+        "try to blend in while being new to the game",
+        "blendin successfully",
+        "blendin unsuccessfully"
+      ],
+      "name": "BLEND IN"
+    },
+    {
+      "conditions": [],
+      "displayName": "make a scene successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "make a scene successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "make a scene unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "make a scene unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "self-assuredness",
+          "value": 60
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "third",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "third",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": true
+        }
+      ],
+      "displayName": "someone not knowing how to behave draws attention to oneself",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "someone not knowing how to behave draws attention to oneself"
+    },
+    {
+      "conditions": [],
+      "displayName": "draw attention successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "draw attention successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "draw attention unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "draw attention unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "deflect successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "deflect successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "deflect unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "deflect unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "charisma",
+          "value": 30
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "eccentric",
+          "value": true
+        }
+      ],
+      "displayName": "eccentric, unattractive person prefers staying on his own but nonetheless gets attention (r)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "eccentric, unattractive person prefers staying on his own but nonetheless gets attention (r)"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        }
+      ],
+      "displayName": "try to blend in while being new to the game",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "flattered",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "try to blend in while being new to the game"
+    }
+  ]
+}

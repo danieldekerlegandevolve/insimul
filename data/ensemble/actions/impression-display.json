@@ -1,0 +1,296 @@
+{
+  "category": "impression-display",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "yell something witty at actor during play",
+        "refrain from yelling something witty at actor during play",
+        "display wit successfully",
+        "display wit unsuccessfully"
+      ],
+      "name": "DISPLAY WIT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "pay for someone applauding during the play",
+        "servant starts whistling",
+        "display initiative successfully",
+        "display initiative unsuccessfully"
+      ],
+      "name": "DISPLAY INITIATIVE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "behave like the others at the theater",
+        "talk about science / philosophy",
+        "display worldliness successfully",
+        "display worldliness unsuccessfully"
+      ],
+      "name": "DISPLAY WORLDLINESS"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "respond in patois, but gain everyone's admiration",
+        "display eccentricity successfully",
+        "display eccentricity unsuccessfully"
+      ],
+      "name": "DISPLAY ECCENTRICITY"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "reveal ignorance successfully",
+        "reveal ignorance unsuccessfully"
+      ],
+      "name": "REVEAL IGNORANCE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "lover catches virtuous partner, disbelieves display of virtue",
+        "virtuous behavior is convincing to friend, results in esteem",
+        "reject concurrent lover",
+        "move listeners to tears through honesty, virtue",
+        "express gratitude toward benefactor",
+        "demonstratevirtue successfully",
+        "demonstratevirtue unsuccessfully"
+      ],
+      "name": "DEMONSTRATE VIRTUE"
+    },
+    {
+      "conditions": [],
+      "displayName": "display wit successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "display wit successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "display wit unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "display wit unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "display initiative successfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "display initiative successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "display initiative unsuccessfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "display initiative unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "display worldliness successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "display worldliness successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "display worldliness unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "display worldliness unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "display eccentricity successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "display eccentricity successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "display eccentricity unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "display eccentricity unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "reveal ignorance successfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "reveal ignorance successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "reveal ignorance unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "reveal ignorance unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "caught in a lie by",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "someone",
+          "type": "made a faux pas around",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "someone",
+          "type": "propriety",
+          "value": 50
+        }
+      ],
+      "displayName": "reveal a dirty secret",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "reveal a dirty secret"
+    },
+    {
+      "conditions": [],
+      "displayName": "demonstratevirtue successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "demonstratevirtue successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "demonstratevirtue unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "demonstratevirtue unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Show off knowledge through small talk"
+    }
+  ]
+}

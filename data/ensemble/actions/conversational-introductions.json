@@ -1,0 +1,176 @@
+{
+  "category": "conversational-introductions",
+  "actions": [
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "third",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "social standing",
+          "value": 60
+        },
+        {
+          "category": "attribute",
+          "first": "third",
+          "operator": ">",
+          "type": "social standing",
+          "value": 85
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "third",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": false
+        }
+      ],
+      "displayName": "a rich person ask a non-rich person to introduce him to a higher rich person (a)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 10
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": "+",
+          "type": "self-assuredness",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "a rich person ask a non-rich person to introduce him to a higher rich person (a)"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Introduce self action, going first"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Introduce Self"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "attraction",
+          "value": 3
+        }
+      ],
+      "name": "Introduce Self Flirty"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Reintroduce Self"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Introduce Self Back"
+    }
+  ]
+}

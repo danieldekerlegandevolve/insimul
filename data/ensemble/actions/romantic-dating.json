@@ -1,0 +1,46 @@
+{
+  "category": "romantic-dating",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Romantic Compliment",
+        "Respond Romantically",
+        "Respond Positively to Romance"
+      ],
+      "name": "ROMANCE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "askoutTerminal",
+        "askoutTerminalReject"
+      ],
+      "name": "ASK OUT"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond Positively to Romance"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond Negatively to Romance"
+    },
+    {
+      "conditions": [
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "fan_of_restaurant",
+          "value": true
+        }
+      ],
+      "effects": [],
+      "name": "What should we order (with romance)"
+    }
+  ]
+}

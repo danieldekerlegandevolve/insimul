@@ -1,0 +1,286 @@
+{
+  "fileName": "social-connection",
+  "type": "volition",
+  "category": "social-connection",
+  "rules": [
+    {
+      "name": "People seek to connect with individuals who have strong familial ties.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong desire to connect and the recent positive mean interaction within 8 turns are likely",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong familial network of connections (with at least 6 members) and who",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong familial network of connections greater than 6 and who have had an interest",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People feel gratitude towards others with a higher network influence score than themselves.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "gratitude",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek companionship with those exhibiting high altruism levels.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "altruism",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek stronger connections when they have a moderate-sized network of acquaintances.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "value": 6,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire stronger connections with individuals of higher social influence in their network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to associate with individuals of greater influence due to gratitude.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "gratitude",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek companionship with those who exhibit high altruism levels.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "altruism",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

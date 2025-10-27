@@ -1,0 +1,162 @@
+{
+  "category": "conversational-farewell",
+  "actions": [
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "shy",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "financially dependent on",
+          "value": true
+        }
+      ],
+      "displayName": "discretely leave the theatre and ask for ticket refurbishment, but being noticed",
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "caught in a lie by",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "discretely leave the theatre and ask for ticket refurbishment, but being noticed"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Say Goodbye"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Goodbye Response"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Say Goodbye kindly"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Say Goodbye insultingly"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Goodbye Response"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Say Goodbye"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Goodbye Response"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Politely excuse self"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Excuse Self Politely"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "name": "Leave while bragging about self"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Leave while insulting them"
+    }
+  ]
+}

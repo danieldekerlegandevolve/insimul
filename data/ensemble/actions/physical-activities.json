@@ -1,0 +1,181 @@
+{
+  "category": "physical-activities",
+  "actions": [
+    {
+      "conditions": [],
+      "displayName": "bitten",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "fear",
+          "value": 4
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "bitten"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 70
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 60
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": "<",
+          "type": "propriety",
+          "value": 60
+        }
+      ],
+      "displayName": "get drunk together",
+      "effects": [
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "inebriated",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "inebriated",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "happy",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "happy",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "feeling socially connected",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "feeling socially connected",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "get drunk together"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 50
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": true
+        }
+      ],
+      "displayName": "engage in a rich person dance while not rich person",
+      "effects": [
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "made a faux pas around",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "impressed",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "engage in a rich person dance while not rich person"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Begrudgingly accept thing"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Begrudgingly refuse to acquire thing"
+    }
+  ]
+}

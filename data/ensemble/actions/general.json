@@ -1,0 +1,913 @@
+{
+  "category": "general",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "weightLiftSuccess",
+        "weightLiftFail"
+      ],
+      "name": "LIFT WEIGHTS"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": false
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 50
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 50
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "someone",
+          "type": "ally",
+          "value": true
+        }
+      ],
+      "displayName": "true but partial explanation turns into open conflict",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "someone",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "someone",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "true but partial explanation turns into open conflict"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 60
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "tired",
+          "value": true
+        }
+      ],
+      "displayName": "too tired for gossips",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "emulation",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "too tired for gossips"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "intimidating",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "charisma",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        }
+      ],
+      "displayName": "glorieuse making eyes at someone",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 7
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "intimidates",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "glorieuse making eyes at someone"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "charisma",
+          "value": 30
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "eccentric",
+          "value": true
+        }
+      ],
+      "displayName": "eccentric, unattractive man prefers staying on his own (a)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 30
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "eccentric, unattractive man prefers staying on his own (a)"
+    },
+    {
+      "conditions": [],
+      "displayName": "blendin successfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "blendin successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "blendin unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "blendin unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "devout",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        }
+      ],
+      "displayName": "virtuous behavior is convincing to friend, results in esteem",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "virtuous behavior is convincing to friend, results in esteem"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Have but say they don't"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Has thing"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "indebted",
+          "value": 1
+        }
+      ],
+      "name": "Gladly acquire thing"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "antagonism",
+          "value": 5
+        }
+      ],
+      "name": "Hate"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Very positive towards Subject"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Positive towards subject"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Indifferent towards subject answer"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "What should we get?"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "name": "%x% thinks they know what %y% knows and more!"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "name": "Ok, whatever"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 2
+        }
+      ],
+      "name": "Shut them down!"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "OK, sure..."
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Yeah, whatever. I gotta go."
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Let's agree to disagree"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Back off!"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Perform a playful recitation"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "flirted with",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "flirted with",
+          "value": true
+        }
+      ],
+      "name": "Oooooh, la la"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "relationship",
+              "first": "initiator",
+              "second": "responder",
+              "type": "met",
+              "value": false
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for That was sort of offensive..."
+        }
+      ],
+      "name": "That was sort of offensive..."
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        },
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "rude",
+          "value": true
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "relationship",
+              "first": "initiator",
+              "second": "responder",
+              "type": "met",
+              "value": false
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "rude",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for Hey! What was that???"
+        }
+      ],
+      "name": "Hey! What was that???"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Be self-congratulatory"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "That wasn't very funny"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Pretend to understand"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Lighten up"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Chuckle"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Roll eyes"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Make suggestive eyes at"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 3
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "jerk",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "rude",
+              "weight": 5
+            }
+          ],
+          "name": "Now Rule for Annoyed Resonse"
+        }
+      ],
+      "name": "Annoyed Resonse"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "jerk",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "impress",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for One up them"
+        }
+      ],
+      "name": "One up them"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "loyal",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": 5
+            }
+          ],
+          "name": "Now Rule for Learn more about them"
+        }
+      ],
+      "name": "Learn more about them"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "friendly",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for Share something about yourself"
+        }
+      ],
+      "name": "Share something about yourself"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "friendly",
+              "value": true
+            },
+            {
+              "category": "network",
+              "first": "initiator",
+              "operator": ">",
+              "second": "responder",
+              "type": "attraction",
+              "value": 7
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for Share something you are excited about"
+        }
+      ],
+      "name": "Share something you are excited about"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 3
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "friendship",
+          "value": 3
+        }
+      ],
+      "name": "Lash Out"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Misunderstanding"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Make them see how awesome you are"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Tear them down"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Oblige them"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "attraction",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "attraction",
+          "value": 1
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "network",
+              "first": "initiator",
+              "operator": ">",
+              "second": "responder",
+              "type": "attraction",
+              "value": 7
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "flirt",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for Looking forward to getting to know you better"
+        }
+      ],
+      "name": "Looking forward to getting to know you better"
+    }
+  ]
+}

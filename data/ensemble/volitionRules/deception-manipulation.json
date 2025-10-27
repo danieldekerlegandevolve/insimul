@@ -1,0 +1,1001 @@
+{
+  "fileName": "deception-manipulation",
+  "type": "volition",
+  "category": "deception-manipulation",
+  "rules": [
+    {
+      "name": "An intelligent provincial can have allies in low social classes",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 30,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A cunning, greedy person can take advantage of rich person's love for another",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Provincials believe rich people are credible",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A deceptive and charismatic man inspires a credulous honest woman to increase interest",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "deceptive",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A greedy, cunning, deceptive person wants to be believed by a credulous person",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "deceptive",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Being caught in a lie results in decreased affinity",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 10,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An young academic mocks cunning actresses",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "mocking",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "academic",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "ridicules",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "directed status",
+          "type": "resentful of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "x",
+          "value": 80,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "security guard",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A confidential servant wants to blackmail her naive mistress",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "stagehand",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "trustworthy",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "x",
+          "value": 30,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 50,
+          "second": "x",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Unsophisticated people encourage flirty hypocrites to like them",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "hypocritical",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "y",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Women who catch their lovers in a lie lose affinity for them",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "People who like others seek to emulate them and become allies",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 60,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Devout hypocrites are disdained by perceptive people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "hypocritical",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "deceptive",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 60,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "penetrating",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Ambitious, cunning people may take advantage of other people's friendships",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "ambitious",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 70,
+          "second": "z",
+          "operator": ">"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Vain, talkative people may gossip and be indiscreet to make friends",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "vain",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "indiscreet",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Virtuous women may not want to be friends or allies with non-virtuous women",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Credulous people have less desire to ally with others who are caught in a lie",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Two people catching a third in a lie may be more likely to become allies",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 50,
+          "operator": ">",
+          "second": "z"
+        },
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Cunning, seductive men may seek to increase affinity and attention from credulous young women",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Intelligent, virtuous women distrust seductive, cunning men",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "intelligent",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Gossips may repel others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "indiscreet",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": -3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People manipulate their subordinates to gain influence.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with selfish traits manipulate others to get closer.",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "selfish",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

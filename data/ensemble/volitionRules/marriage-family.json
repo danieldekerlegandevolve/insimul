@@ -1,0 +1,1911 @@
+{
+  "fileName": "marriage-family",
+  "type": "volition",
+  "category": "marriage-family",
+  "rules": [
+    {
+      "name": "An honest married woman has no affinity with another man",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 50,
+          "second": "x",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A sad, rich person can inspire sympathy",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "trustworthy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An unsophisticated and rude police officer can offend rich person",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "police officer",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "boorish",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A suspicious husband with an honest wife can become a rival of other men",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "suspicious of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "intimidating",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 70,
+          "second": "z",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "z",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A devout person's severity can repel vain people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "vain",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An unsophisticated person wants to be esteemed by rich person",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A financially dependent person will have less affinity for someone resented by their benefactor",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "resentful of",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "disdainful",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "hypocritical",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "deceptive",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "z",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People are more likely to ally themselves with kind person of similar social standing",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "trusts",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A rich, charming and talkative man loves a pretty attendeee married to another man ",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "charming",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "rich person less volition to increase affinity with attendee with low self-assurance",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "y",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "rich person lady who hates her provincial husband would try to compromise her husband",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "hates",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 66,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Provincial attendee males married to rich person women have less affinity with Provincial attendee",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "disdainful",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "value": 65,
+          "operator": ">",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "z",
+          "second": "y",
+          "weight": 3,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A charismatic and elegantly dressed person is more likely to draw attention",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 66,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 66,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Urbanite children have less affinity for their provincial parents",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "intimidating",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 40,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 30,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "merchant",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "disdainful",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Provincial attendee males married to a rich woman have less affinity with other provincial attendees",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "disdainful",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "value": 65,
+          "operator": ">",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Spineless, poor husbands let their ambitious wives walk all over them",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "tired",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "ambitious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": -3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People who trust another person are less likely to trust those distrusted by that person",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "hates",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "directed status",
+          "type": "trusts",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "deceptive",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 50,
+          "second": "z",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A foreign person may draw the attention of others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "foreigner",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "foreigner",
+          "first": "y",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Unhappy, resentful, non-rich people married to other non-rich people may be less likely to esteem their spouse",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "status",
+          "type": "happy",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "directed status",
+          "type": "resentful of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Two people with a high affinity for a third person may become rivals",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 80,
+          "second": "z",
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 80,
+          "operator": ">",
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "When flattered by someone they trust, a person may do a lot to please",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "flattered",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "trusts",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A naive woman may fail to recognize when her husband is jealous of a suitor",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "jealous of",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A rich person may use a non-rich person to gain the esteem of others",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "owes a favor to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "ambitious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "z",
+          "value": 85,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An esteemed, self-assured person has only little desire to increase another's affinity",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "y",
+          "value": 70,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 1,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Young women trust honest, older men when both esteem a third person",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "trusts",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An attendee with little education is talkative and will enjoy the company of a talkative person",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to be reluctable to somebody if a family member has low trust toward them.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "z",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        },
+        {
+          "category": "status",
+          "type": "family",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "family",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are less likely to be reluctable to somebody if a family member has low trust toward them.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "z",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "status",
+          "type": "family",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "family",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are more likely to deny someone something if that person has been rude",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "rude",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "deny",
+          "first": "x",
+          "second": "y",
+          "weight": 10,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If the someone is negative and is neutral to a high status person, one's volition for dismiss is increased",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "negative",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "neutral",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "dismiss",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If you negatively greet and respectfully requested to a low status person -> increase dismiss volition",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "negative",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "respectful",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "dismiss",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Low status person is more likely to be hospitable if treated informally",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "informal",
+          "first": "y",
+          "second": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "hospitable",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "A high status person is more hospitable if the other person is formal",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "formal",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "hospitable",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If someone is positive and neutral to a high status person then other increases volition for reluctance",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "positive",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "neutral",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's desire to get closer within their extended family network diminishes when they have recently experienced",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to seek stronger connections with those who have a larger social network within the same family.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to trust and connect with both of their closest family members.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "y",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's desire to get closer within their extended family network and having a long-standing interest",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Family members are kind to one another",
+      "title": "Family Comes First",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "family",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are less rude to their family",
+      "title": "Family Values",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "family",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

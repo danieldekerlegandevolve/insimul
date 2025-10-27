@@ -1,0 +1,831 @@
+{
+  "fileName": "social-distance",
+  "type": "volition",
+  "category": "social-distance",
+  "rules": [
+    {
+      "name": "People may avoid offending their friends' enemies",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Grateful, modest people receiving a gift may avoid making others jealous",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "grateful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "modest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "jealous of",
+          "first": "z",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "z",
+          "weight": -3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People with a high affinity for others want to avoid the attention of nosy friends",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "nosiness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "value": 70,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "z",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "If somebody's trustfulness is low, then they will be more likely to be reluctant.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "trustfulness",
+          "first": "x",
+          "value": 33,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If someone is interacting with an outsider, then they will be more likely to be reluctant.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "outsider",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If someone has positively met an outsider, then they are less likely to be reluctant.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "outsider",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "met",
+          "first": "x",
+          "second": "y",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "positive",
+          "first": "y",
+          "second": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If someone has negatively met an outsider, then they are more likely to be reluctant.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "outsider",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "met",
+          "first": "x",
+          "second": "y",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "negative",
+          "first": "y",
+          "second": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If you have low familiarity towards someone, you are more likely to be reluctant.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familiarity",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "If you have high familiarity towars someone you are less likely to be reluctant towards them.",
+      "conditions": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are more likely to be reluctant to somebody if their family members don't trust them.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "trust",
+          "first": "z",
+          "second": "y",
+          "value": 5,
+          "operator": "<"
+        },
+        {
+          "category": "status",
+          "type": "family",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "family",
+          "first": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "High status person has more likely to be reluctant if they are treated informally",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "informal",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            1
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "High Status person: Negative + Respectful Request -> inceased reluctant volition",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "negative",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "respectful",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "No greet + respectful request for high status--> increased reluctant volition",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "met",
+          "first": "y",
+          "second": "x",
+          "value": false,
+          "turnsAgoBetween": [
+            0,
+            100
+          ]
+        },
+        {
+          "category": "event",
+          "type": "respectful",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "No Greet + neutral request for a low status person -> reluctant volition increased",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "met",
+          "first": "x",
+          "second": "y",
+          "value": false,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "neutral",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Positive and respectful request to a low status person -> increased reluctant volition",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "positive",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "respectful",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Negative and neutral request to a low status person -> increased reluctant volition",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "negative",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "neutral",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "reluctant",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to distance themselves from average individuals when they have a strong attraction towards someone and it",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "romance",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid dating their rivals' partners.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to be in the presence of influential individuals while avoiding their crush.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid dating their rivals' partners.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid those they are afraid of and may favor getting closer to strong individuals.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid dating their rivals' partners when they desire to improve social standing.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid dating their rivals' partners.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid xenophobic individuals to seek companionship with others.",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "xenophobic",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid romantic advances when they feel embarrassed.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "embarrassed",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid dating their rivals' partners.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

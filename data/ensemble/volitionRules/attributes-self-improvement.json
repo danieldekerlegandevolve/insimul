@@ -1,0 +1,156 @@
+{
+  "fileName": "attributes-self-improvement",
+  "type": "volition",
+  "category": "attributes-self-improvement",
+  "rules": [
+    {
+      "name": "Weak people desire strength",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "strength",
+          "first": "x",
+          "value": 10,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "attribute",
+          "type": "strength",
+          "first": "x",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Everyone desires intelligence",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "anyone",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "attribute",
+          "type": "intelligence",
+          "first": "x",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Everyone Desires Strength",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "anyone",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "attribute",
+          "type": "strength",
+          "first": "x",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "High magicka link allows intelligence training.",
+      "conditions": [
+        {
+          "category": "bond",
+          "type": "magicka link",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 9
+        },
+        {
+          "category": "attribute",
+          "type": "intelligence",
+          "first": "x",
+          "operator": "<",
+          "value": 10
+        },
+        {
+          "category": "attribute",
+          "type": "intelligence",
+          "first": "y",
+          "operator": ">",
+          "value": 10
+        }
+      ],
+      "effects": [
+        {
+          "category": "attribute",
+          "type": "intelligence",
+          "first": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Everyone is smart!",
+      "conditions": [
+        {
+          "category": "bond",
+          "type": "kinship",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "effects": [
+        {
+          "category": "attribute",
+          "type": "intelligence",
+          "first": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People's average desire to be close increases towards strong individuals.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

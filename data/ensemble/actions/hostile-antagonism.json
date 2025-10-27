@@ -1,0 +1,152 @@
+{
+  "category": "hostile-antagonism",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Annoyed Resonse",
+        "Dismiss Them",
+        "Lash Out",
+        "Tear them down",
+        "Leave while insulting them",
+        "Rude hello",
+        "Offended response to a greeting",
+        "Guilt about pizza",
+        "Ok, whatever",
+        "Shut them down!",
+        "OK, sure...",
+        "Yeah, whatever. I gotta go.",
+        "I'm offended by your response!",
+        "Back off!",
+        "Tease",
+        "Razz",
+        "Hey! What was that???",
+        "That wasn't very funny",
+        "Lighten up",
+        "Roll eyes"
+      ],
+      "name": "BE RUDE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Don't know"
+      ],
+      "name": "DISMISS"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Where is the water? Don't hold out on me."
+      ],
+      "name": "DOMINATE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "antagonize refusal to give facts",
+        "Demand ask if they have",
+        "Demand thing",
+        "Irritated ask for something in return",
+        "Angrily refuse request",
+        "Begrudgingly accept thing",
+        "Insult",
+        "Respon NEG to insult action",
+        "Say Goodbye insultingly",
+        "Hate",
+        "antagonize refusal to answer on opinion of subject"
+      ],
+      "name": "ANTAGONIZE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "express ingratitude toward benefactor",
+        "look with disdain after discovering a lie",
+        "behaverudely successfully",
+        "behaverudely unsuccessfully"
+      ],
+      "name": "BEHAVE RUDELY"
+    },
+    {
+      "conditions": [],
+      "displayName": "behaverudely successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "behaverudely successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "behaverudely unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "behaverudely unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "antagonize refusal to answer on opinion of subject"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "antagonize refusal to give facts"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "I'm offended by your response!"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "jerk",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "rude",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for Dismiss Them"
+        }
+      ],
+      "name": "Dismiss Them"
+    }
+  ]
+}

@@ -1,0 +1,309 @@
+{
+  "fileName": "emotional-states",
+  "type": "volition",
+  "category": "emotional-states",
+  "rules": [
+    {
+      "name": "Hangry",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "hungry",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "fight",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Vain, indifferent people do not care about upset, sensitive people",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "indifferent",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "vain",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Unhappy, upset people may seek kind, sensitive people",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "happy",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People feel candid towards strong individuals when they are embarrassed.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "embarrassed",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to become more candid with those they are embarrassed by within a short timeframe",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "embarrassment",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek candid relationships after feeling embarrassed by others' opinions.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "embarrassment",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You are more likely to joke around when you are happy",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "happiness",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "jokearound",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are much less kind when they are hangry",
+      "title": "Short Fuse on an Empty Stomach",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "hangry",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Hangry people are very rude",
+      "title": "Mind on a Meal",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "hangry",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 5,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are more rude to those who have embarrassed themself in front of them recently",
+      "title": "Memory: What a Loser",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "embarrassment",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

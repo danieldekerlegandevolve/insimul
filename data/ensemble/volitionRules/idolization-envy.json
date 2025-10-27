@@ -1,0 +1,433 @@
+{
+  "fileName": "idolization-envy",
+  "type": "volition",
+  "category": "idolization-envy",
+  "rules": [
+    {
+      "name": "People idolize strong individuals but may not necessarily date them directly.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People envy stronger individuals and seek to date them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "envy",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolize strong individuals and are interested in dating their crushes who also hold",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolize strong individuals and develop a desire to honor them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People envy others' connections with strong individuals and seek to form similar relationships.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "envy",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to idealize those they are attracted to or wish to be closer to.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "feuding",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolizing someone increases their idealization of that person.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to idealize those they fear.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "fearful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People envy and idealize strong individuals.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "envy",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are afraid of weak individuals and idealize strong people.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People tend to idealize individuals with high altruism levels.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "altruism",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idealize strong individuals when their altruism level exceeds a threshold.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "altruism",
+          "first": "x",
+          "value": 12,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idealizing others to enhance their self-image.",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "selfish",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolizing both person X and Y leads to an increased desire for dating their cr",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolize strong individuals and seek to ingratiate themselves with them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolize and seek companionship with strong individuals.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People envy others' strong connections and attempt to manipulate their social standing.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "envy",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People idolize strong individuals and develop trust towards them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "idolize",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

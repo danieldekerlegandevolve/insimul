@@ -1,0 +1,1030 @@
+{
+  "fileName": "ingratiation-impression",
+  "type": "volition",
+  "category": "ingratiation-impression",
+  "rules": [
+    {
+      "name": "Poor people can be more impressed by a spectacle of faith than true virtue",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "clergy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "hypocritical",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Children may be positively impressed by sensitive, caring people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "innocent looking",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 66,
+          "operator": ">"
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 2,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Charismatic jokers can impress groups of friends",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "joker",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People want to ingratiate themselves with those who are publicly romantically committed",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "publicly romantically committed to",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to ingratiate themselves with their superiors.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to ingratiate themselves with those they consider rivals.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to ingratiate themselves with those they respect significantly.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to ingratiate themselves with those they respect more than others.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People aim to ingratiate themselves with individuals of strong influence when they feel guilty.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "guilty",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a fearful status seek to ingratiate themselves towards others.",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "fearful",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who are afraid of someone (Person x) may try to ingratiate themselves with",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "afraid of",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to ingratiate themselves with individuals of higher honor status.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "honor",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to ingratiate themselves with individuals of high charisma.",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 7,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's positive actions towards others with strong characteristics aim to ingratiate themselves.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to ingratiate themselves with their crush by becoming public friends of mutual",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "public friends",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "public friends",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to ingratiate themselves with individuals they perceive as strong when their feelings for",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "antagonism",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to ingratiate themselves with individuals they perceive as strong when their social network",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "antagonism",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "ingratiate",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People worry less about impressing their family",
+      "title": "They Know I'm Awesome",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "family",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to impress their coworkers a little",
+      "title": "Look At Me",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "coworker",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to impress people they are dating",
+      "title": "Honey, Look At Me",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "dating",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't want to impress people they don't have friendly feeling towards",
+      "title": "Why Should I Care",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to impress people they have very friendly feeling towards",
+      "title": "Buddy, Look At Me",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People very much want to impress people they are attracted to",
+      "title": "Peacocking",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 6,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to impress people they are a little attracted to",
+      "title": "Peafowling",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 3
+        },
+        {
+          "category": "network",
+          "type": "attraction",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 8
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People very much want to impress people they respect",
+      "title": "Prove One's Self",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 6,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't want to impress people they don't respect",
+      "title": "They Wouldn't Get It",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Shy people want to impress people",
+      "title": "Butterfly in Disguise",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "shy",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "A loyal employee wants to impress people",
+      "title": "Hard Worker",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "loyal",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Employees generally don't care about impressing people",
+      "title": "Disaffected Employee",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Jerks don't want to impress people",
+      "title": "Disaffected Person",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "jerk",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Hangry people don't have time to impress people",
+      "title": "Rumbling Stomach",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "hangry",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Employees want to impress their boss",
+      "title": "Sucking Up",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "value": true,
+          "first": "y",
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 6,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Bosses care a lot about impressing their employees",
+      "title": "World's Best Boss",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 7,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't want to impress people who have been rude to them recently",
+      "title": "Memory: No Negging",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "rude",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People really want their boss to be impressed with them if they respect them.",
+      "title": "Sincerely Sucking Up",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "value": true,
+          "first": "y",
+          "second": "x"
+        },
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 3
+        },
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 8
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People want to impress people who have flirted with them recently",
+      "title": "Memory: Check This Out",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "flirted with",
+          "value": true,
+          "first": "y",
+          "second": "x",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People don't want to impress people who have embarrassed themselves recently",
+      "title": "Memory: Not For Losers",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "embarrassment",
+          "value": true,
+          "first": "y",
+          "second": "z",
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        },
+        {
+          "category": "trait",
+          "type": "anyone",
+          "value": true,
+          "first": "z"
+        },
+        {
+          "category": "trait",
+          "type": "anyone",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "impress",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

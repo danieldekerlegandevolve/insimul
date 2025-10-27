@@ -1,0 +1,300 @@
+{
+  "fileName": "wealth-class",
+  "type": "volition",
+  "category": "wealth-class",
+  "rules": [
+    {
+      "name": "A rich man doesn't want to be liked for his money",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "suspicious of",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "ambitious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A vain young woman can be attracted to a rich man",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "vain",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Workers may take advantage of gullible rich people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "stagehand",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Poor people with low cultural knowledge may attract derision",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "cultural knowledge",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "type": "cultural knowledge",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": -3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Greedy people like their partners less when they are poor",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "greedy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Good conversationalists have no use for poor conversationalists",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "y",
+          "value": 65,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true
+        }
+      ]
+    }
+  ]
+}

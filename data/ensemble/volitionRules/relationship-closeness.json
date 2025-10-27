@@ -1,0 +1,151 @@
+{
+  "fileName": "relationship-closeness",
+  "type": "volition",
+  "category": "relationship-closeness",
+  "rules": [
+    {
+      "name": "Everyone Wants to Increase Closeness",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "closeness",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 0
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "closeness",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to get closer to smart people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "anyone",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "intelligence",
+          "first": "y",
+          "value": 20,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "closeness",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to get closer to strong people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "anyone",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "strength",
+          "first": "y",
+          "value": 20,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "closeness",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's desire to get closer within their extended network exceeding a strength threshold leads them to",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People's average desire to get closer increases when they are within 9-30 turns",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

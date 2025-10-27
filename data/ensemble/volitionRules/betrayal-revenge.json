@@ -1,0 +1,948 @@
+{
+  "fileName": "betrayal-revenge",
+  "type": "volition",
+  "category": "betrayal-revenge",
+  "rules": [
+    {
+      "name": "Evil seeks vengeance on good.",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "evil",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "good",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "bond",
+          "type": "vengeance",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A rich person discovering a lie from a false rich person is more likely to seek revenge",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 66,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "credulous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "trusts",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "value": 66,
+          "second": "x",
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 33,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": false
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": 2,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Liars may retaliate when exposed",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "deceptive",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "caught in a lie by",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "People harbor resentment towards those who betray them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People feel antagonized towards those who betrayed them both individually and collectively.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and desire to distance themselves from that person",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and mean something significant to them within the",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and have received a favor from their cr",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People feel antagonized towards those who betrayed them and are less likely to date their cr",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and mean something significant to them within the",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and did a favor for their crush",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and had a positive interaction with their cr",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "nice",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and feel the mean actions towards them occurred",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and have done a favor for their cr",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "antagonize",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid dating those who have betrayed them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seeking candid relationships with individuals they've been betrayed by.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People intending to be closer after being betrayed by someone and having a significant event occur within",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a betrayed relationship status towards someone want to date their crush if they have had",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People avoid being betrayed by others and may favor those who have not caused them to feel bet",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People develop a favor towards their crush after feeling betrayed by someone else.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and feel the mean action occurred within a",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People feel betrayed by someone and seek to distance themselves from that person.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People may develop negative feelings towards those who betray them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "idealize",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to distance themselves from those who betrayed them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People desire to distance themselves from those they've been betrayed by.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a betrayed status by someone want to get closer to their crush after an event",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People who have been betrayed by someone (z) and mean something significant to them within the",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "mean",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People attempt to influence others through betrayal or manipulation by someone they perceive as strong",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "manipulate",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People don't romantically pursue those who betray them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "romance",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People feel betrayed by someone and develop distrust towards them.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "betrayed by",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "trust",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

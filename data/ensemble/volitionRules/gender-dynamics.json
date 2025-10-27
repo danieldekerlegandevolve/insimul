@@ -1,0 +1,278 @@
+{
+  "fileName": "gender-dynamics",
+  "type": "volition",
+  "category": "gender-dynamics",
+  "rules": [
+    {
+      "name": "Animals beg to humans",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "human",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "beg",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A woman can be flattered by a sensible compliment",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 20,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A scorned man is judgmental of women in general",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 75,
+          "operator": ">"
+        },
+        {
+          "category": "status",
+          "type": "embarrassed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "One man liking a woman will make other men like that woman",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "value": 60,
+          "second": "x",
+          "operator": "<"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "value": 60,
+          "operator": ">",
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "z",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Gobsmacked women ignore proposals from other men",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "gobsmacked",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An educated woman knows her place and will enjoy the company of someone like her",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "y",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true
+        }
+      ]
+    }
+  ]
+}

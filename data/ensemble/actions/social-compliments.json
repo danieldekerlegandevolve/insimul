@@ -1,0 +1,341 @@
+{
+  "category": "social-compliments",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "greet in subtle modest way",
+        "sensible compliment",
+        "complimenting a young provincial on good manners",
+        "compliment a person you like",
+        "compliment successfully-default",
+        "compliment unsuccessfully-default"
+      ],
+      "name": "COMPLIMENT"
+    },
+    {
+      "conditions": [],
+      "displayName": "Compliment",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "respect",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "compliment successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "Compliment",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "respect",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "compliment unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "charisma",
+          "value": 70
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "sensitiveness",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "sensitiveness",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "propriety",
+          "value": 65
+        }
+      ],
+      "displayName": "sensible compliment",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "flattered",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "sensible compliment"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "provincial",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "old",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "provincial",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "young",
+          "value": true
+        }
+      ],
+      "displayName": "complimenting a young provincial on good manners",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "flattered",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "happy",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "complimenting a young provincial on good manners"
+    },
+    {
+      "conditions": [],
+      "displayName": "compliment successfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "compliment successfully-default"
+    },
+    {
+      "conditions": [],
+      "displayName": "compliment unsuccessfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "compliment unsuccessfully-default"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "charisma",
+          "value": 50
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "feeling socially connected",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "kind",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "curiosity",
+          "value": 70
+        }
+      ],
+      "displayName": "flatter with kindness and attention",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "other",
+          "type": "curiosity",
+          "value": 10
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "flattered",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "flatter with kindness and attention"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Backhanded Compliment"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Flatter"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Friendly Compliment"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Romantic Compliment"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond Positively to Compliment"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Compliment"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "flirted with",
+          "value": true
+        }
+      ],
+      "name": "Compliment appearance"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">=",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        }
+      ],
+      "displayName": "compliment a person you like",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 25
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "compliment a person you like"
+    }
+  ]
+}

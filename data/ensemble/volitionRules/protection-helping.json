@@ -1,0 +1,582 @@
+{
+  "fileName": "protection-helping",
+  "type": "volition",
+  "category": "protection-helping",
+  "rules": [
+    {
+      "name": "Seductive men help or flirt with clumsy, beautiful women",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "awkward",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "flirtatious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 2,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A sensitive generous person is more likely to help upset not virtuous other person",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A young rich personman tends to help a wounded and inebriated man",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "inebriated",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 2,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Young, nosy, cunning, first responders are likely to help young, rich people in distress",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "cunningness",
+          "first": "y",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "wearing a first responder uniform",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "nosiness",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "threatened by",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "z",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People who care for each other may protect one another",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "threatened by",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "An honest person may help a sexually harassed girl",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "cares for",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "harassed",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People may fight to protect their friends who are threatened by another",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "threatened by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A woman might help her friend's lover",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "lovers",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "value": 50,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "z",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "z",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "z",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "High status people are more likely to be helpful if you recently were respectful and positive",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "respectful",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "positive",
+          "first": "x",
+          "second": "y",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "help",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are inclined to form closer bonds with individuals they have helped recently.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "familial",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            8
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People want to honor strong individuals they've helped.",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "x",
+          "value": true,
+          "second": "y",
+          "turnsAgoBetween": [
+            9,
+            30
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People with a strong desire for connections are likely to form friendships when they have helped their cr",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "friendship",
+          "first": "x",
+          "second": "z",
+          "value": 6,
+          "operator": ">"
+        },
+        {
+          "category": "event",
+          "type": "did a favor for",
+          "first": "y",
+          "second": "z",
+          "value": true,
+          "turnsAgoBetween": [
+            31,
+            9999
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

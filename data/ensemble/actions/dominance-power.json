@@ -1,0 +1,70 @@
+{
+  "category": "dominance-power",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Respond Humbly"
+      ],
+      "name": "BE HUMBLE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "compliment successfully",
+        "compliment unsuccessfully"
+      ],
+      "name": "RESPECT"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "government official",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "kind",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        }
+      ],
+      "displayName": "police officer does not respect broke rich person's status",
+      "effects": [
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "offended by",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "police officer does not respect broke rich person's status"
+    }
+  ]
+}

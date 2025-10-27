@@ -1,0 +1,153 @@
+{
+  "category": "information-exchange",
+  "actions": [
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "indiscreet",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "trustworthy",
+          "value": true
+        }
+      ],
+      "displayName": "keep a secret for someone",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "keep a secret for someone"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "offended by",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "honest",
+          "value": true
+        }
+      ],
+      "displayName": "confess true virtuous feelings",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 15
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "offended by",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "confess true virtuous feelings"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "nosiness",
+          "value": 50
+        }
+      ],
+      "displayName": "attempt to conceal information from friend fails",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "attempt to conceal information from friend fails"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "trust",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "trust",
+          "value": 1
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "negative",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "negative",
+          "value": true
+        }
+      ],
+      "name": "Don't know"
+    }
+  ]
+}

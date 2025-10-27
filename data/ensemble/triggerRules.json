@@ -1,0 +1,206 @@
+{
+	"fileName": "triggerRules",
+	"type": "trigger",
+	"rules": [
+		{
+			"name": "Rival is always confident",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "rival",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"category": "mood",
+					"type": "confident",
+					"first": "someone",
+					"value": true
+				}
+			]
+		},
+		{
+			"name": "Love is repulsed by self indulged people",
+			"conditions": [
+				{
+					"category": "event undirected",
+					"type": "self-involved",
+					"first": "x",
+					"value": true
+				},
+				{
+					"category": "trait",
+					"type": "love",
+					"first": "y",
+					"value": true
+				},
+				{
+					"category": "event undirected",
+					"type": "self-involved",
+					"first": "z",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "closeness",
+					"first": "y",
+					"second": "z",
+					"value": 10,
+					"operator": "+"
+				}
+			]
+		},
+		{
+			"name": "People are repulsed when they are the recipients of romantic failures",
+			"conditions": [
+				{
+					"category": "event",
+					"type": "romantic failure",
+					"first": "wouldBeLover",
+					"second": "victim",
+					"value": true
+				},
+				{
+					"category": "event",
+					"type": "romantic failure",
+					"first": "someoneElse",
+					"second": "victim",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "closeness",
+					"first": "victim",
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
+				}
+			]
+		},
+		{
+			"name": "A rich person falls in love with beautiful, charming, charismatic women",
+			"conditions": [
+				{
+					"category": "attribute",
+					"type": "charisma",
+					"first": "someone",
+					"value": 75,
+					"operator": ">"
+				},
+				{
+					"category": "trait",
+					"type": "charming",
+					"first": "someone",
+					"value": true
+				},
+				{
+					"category": "trait",
+					"type": "beautiful",
+					"first": "someone",
+					"value": true
+				},
+				{
+					"category": "trait",
+					"type": "male",
+					"first": "other",
+					"value": true
+				},
+				{
+					"category": "trait",
+					"type": "female",
+					"first": "someone",
+					"value": true
+				},
+				{
+					"category": "trait",
+					"type": "rich",
+					"first": "other",
+					"value": true
+				},
+				{
+					"category": "attribute",
+					"type": "sensitiveness",
+					"first": "other",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"category": "status",
+					"type": "gobsmacked",
+					"first": "other",
+					"value": true
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "other",
+					"second": "someone",
+					"value": 100
+				}
+			]
+		},
+		{
+			"name": "Romantics are repulsed by self-indulgent people",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "romantic",
+					"first": "someone",
+					"value": true
+				},
+				{
+					"category": "status",
+					"type": "self-involved",
+					"first": "someone",
+					"value": false
+				},
+				{
+					"category": "status",
+					"type": "self-involved",
+					"first": "other",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "someone",
+					"second": "other",
+					"value": 10,
+					"operator": "-"
+				}
+			]
+		},
+		{
+			"name": "People are repulsed when they are the recipients of romantic failures",
+			"conditions": [
+				{
+					"category": "event",
+					"type": "romantic failure",
+					"first": "someone",
+					"second": "other",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "other",
+					"second": "someone",
+					"value": 10,
+					"operator": "-"
+				}
+			]
+		}
+	]
+}

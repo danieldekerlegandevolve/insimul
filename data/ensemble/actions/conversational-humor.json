@@ -1,0 +1,282 @@
+{
+  "category": "conversational-humor",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Joke"
+      ],
+      "name": "JOKE AROUND"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "tell joke 1",
+        "tell joke 2",
+        "tell joke 3"
+      ],
+      "name": "TELL JOKE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "laughTerminal1",
+        "laughTerminal2"
+      ],
+      "name": "LAUGH"
+    },
+    {
+      "conditions": [],
+      "description": "TellJoke generic accept",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "tell joke 1"
+    },
+    {
+      "conditions": [],
+      "description": "telljoke generic reject",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "tell joke 2",
+      "salience": 65
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "enemies with",
+          "value": true
+        }
+      ],
+      "description": "telljoke FANCY reject (initiator and responder are enemies)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 30
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "tell joke 3",
+      "salience": 70
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "friends",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "laughTerminal1"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "friends",
+          "value": true
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "lucky",
+              "value": true
+            }
+          ],
+          "effects": [],
+          "name": "lucky people are a little less inclined to do a laughTerminal2.",
+          "weight": 2
+        }
+      ],
+      "isAccept": true,
+      "name": "laughTerminal2"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Joke"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Tell a joke"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Tease"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Humorous recitation"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": false
+        }
+      ],
+      "effects": [],
+      "name": "Joke around with a stranger"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "name": "Laugh, and make a joke"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rude",
+          "value": true
+        }
+      ],
+      "name": "Razz"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "name": "Don't understand, but pretend to laugh because you have the hots for them"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "respect",
+          "value": 1
+        }
+      ],
+      "name": "Don't really engage with joke, but show off"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Try to make another joke"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "trait",
+              "first": "initiator",
+              "type": "friendly",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": 5
+            }
+          ],
+          "name": "Now Rule for Humorous Correction"
+        }
+      ],
+      "name": "Humorous Correction"
+    }
+  ]
+}

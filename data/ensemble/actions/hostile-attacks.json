@@ -1,0 +1,361 @@
+{
+  "category": "hostile-attacks",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "bitten",
+        "bite back"
+      ],
+      "name": "BITE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "fight against someone for friend",
+        "assault of a man against a young woman defends herself",
+        "fight against someone for a young woman",
+        "attack successfully",
+        "attacksomeone unsuccessfully"
+      ],
+      "name": "ATTACK"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "fear",
+          "value": 3
+        }
+      ],
+      "displayName": "bite back",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "fear",
+          "value": 1
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "bite back"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "dog",
+          "value": true
+        }
+      ],
+      "displayName": "bark",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "fear",
+          "value": 1
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "bark"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "cat",
+          "value": true
+        }
+      ],
+      "displayName": "hiss",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "fear",
+          "value": 1
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "hiss"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "flirtatious",
+          "value": true
+        }
+      ],
+      "displayName": "homosexual sexual assault",
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "harassed",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "responder",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "gobsmacked",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "homosexual sexual assault"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "third",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "third",
+          "second": "responder",
+          "type": "threatened by",
+          "value": true
+        }
+      ],
+      "displayName": "fight against someone for friend",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "fight against someone for friend"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "upset",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "young",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "someone",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "harassed",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "someone",
+          "type": "affinity",
+          "value": 30
+        }
+      ],
+      "displayName": "assault of a man against a young woman defends herself",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "someone",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "assault of a man against a young woman defends herself"
+    },
+    {
+      "conditions": [],
+      "displayName": "fight against someone for a young woman",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "fight against someone for a young woman"
+    },
+    {
+      "conditions": [],
+      "displayName": "attack successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "attack successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "attacksomeone unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "attacksomeone unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "self-assuredness",
+          "value": 60
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "wearing a first responder uniform",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "nosiness",
+          "value": 60
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "third",
+          "type": "threatened by",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": true
+        }
+      ],
+      "displayName": "fight to help an unknown man",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "third",
+          "type": "rivals",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "friends",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "fight to help an unknown man"
+    }
+  ]
+}

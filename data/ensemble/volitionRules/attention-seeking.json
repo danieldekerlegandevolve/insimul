@@ -1,0 +1,748 @@
+{
+  "fileName": "attention-seeking",
+  "type": "volition",
+  "category": "attention-seeking",
+  "rules": [
+    {
+      "name": "Unattractive men draw less attention from others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 30,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": -10,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": -10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Poor women of low social standing attract attention when elegantly dressed",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A shy young male may seek the attention of the employee of the woman he is interested in",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 33,
+          "operator": "<"
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "shy",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Non-virtuous men draw the attention of sex workers",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 30,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "criminal",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Beautiful, modest, poor people inspire attention and affinity in rich people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "modest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People with high social standing attract attention from workers",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 75,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "security guard",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "z",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "z",
+          "value": 50,
+          "second": "x",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Poor, crying children may receive attention from kind, curious people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "nosiness",
+          "first": "y",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "type": "kind",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Amused and happy tourists may attract the attention of locals",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "cultural knowledge",
+          "first": "x",
+          "value": 80
+        },
+        {
+          "category": "attribute",
+          "type": "cultural knowledge",
+          "first": "y",
+          "value": 30,
+          "operator": "<"
+        },
+        {
+          "category": "status",
+          "type": "happy",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "amused",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "foreigner",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Nosy, indiscreet children may try to get attention from others",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "nosiness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "indiscreet",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Appropriately behaved rich people may attract less attention from non-rich people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Shy, embarrassed, sensitive people have less desire to attract attention",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "shy",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "status",
+          "type": "embarrassed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 60,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": -1,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A young provincial may draw the attention of a pickpocket",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "pickpocket",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A rich old man may focus his attention on a poor young woman",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Unhappy people seek to increase attention from sensitive people who have a high affinity for them",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 60,
+          "operator": ">",
+          "second": "y"
+        },
+        {
+          "category": "status",
+          "type": "happy",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Boastful people want to draw attention to themselves but leave others annoyed",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "intimidating",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "y",
+          "weight": -1,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    }
+  ]
+}

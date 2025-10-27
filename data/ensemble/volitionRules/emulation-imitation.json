@@ -1,0 +1,316 @@
+{
+  "fileName": "emulation-imitation",
+  "type": "volition",
+  "category": "emulation-imitation",
+  "rules": [
+    {
+      "name": "Propriety is often imitated",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 80,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A poor young man can follow a rich man to do improper things for money",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "poor",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "y",
+          "value": 33,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Provincials imitate non-provincials",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "y",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Financial dependent people emulate their sophisticated benefactors",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Sensitive / low propriety will tend to emulate upset behavior",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "y",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Vain and elegant rich people want others to like and imitate them",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "vain",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People are likely to emulate others of very high social standing",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 70,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Children may want to imitate musicians",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "musician",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    }
+  ]
+}

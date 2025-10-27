@@ -1,0 +1,676 @@
+{
+  "category": "hostile-insults",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Respond Backhandedly",
+        "Respond Negatively to Romance"
+      ],
+      "name": "PUT DOWN"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "bark",
+        "hiss"
+      ],
+      "name": "YELL AT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "takes money from financially dependent other and puts in embarrassing situation",
+        "squander husband",
+        "greedy domestique steals all of rich man's money",
+        "pee on someone's stuff",
+        "reproach someone",
+        "embarrass successfully",
+        "embarrass unsuccessfully"
+      ],
+      "name": "EMBARRASS"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "insulted",
+        "feels competition, refuses to stay",
+        "mocking woman insults man, leads to less affinity for women in general",
+        "police officer does not respect broke rich person's status",
+        "insult someone you don't like",
+        "insult successfully",
+        "insult unsuccessfully"
+      ],
+      "name": "INSULT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "reveal a dirty secret",
+        "call by an embarrassing surname",
+        "refuse to accept insult to honor",
+        "insulthonor successfully",
+        "insulthonor unsuccessfully"
+      ],
+      "name": "INSULT HONOR"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "shout criticism at bad actor",
+        "criticize successfully",
+        "criticize unsuccessfully"
+      ],
+      "name": "CRITICIZE"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "happy",
+          "value": false
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "financially dependent on",
+          "value": true
+        }
+      ],
+      "displayName": "takes money from financially dependent other and puts in embarrassing situation",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "poor",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "takes money from financially dependent other and puts in embarrassing situation"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "child",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "intimidates",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "child",
+          "value": false
+        }
+      ],
+      "displayName": "pee on someone's stuff",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 15
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "happy",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "made a faux pas around",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "pee on someone's stuff"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "self-assuredness",
+          "value": 50
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "offended by",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "sensitiveness",
+          "value": 50
+        }
+      ],
+      "displayName": "reproach someone",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "reproach someone"
+    },
+    {
+      "conditions": [],
+      "displayName": "embarrass successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "embarrass successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "embarrass unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "embarrass unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "devout",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 50
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "strangers",
+          "value": false
+        }
+      ],
+      "displayName": "insulted",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "caught in a lie by",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "-",
+          "type": "self-assuredness",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "insulted"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "mocking",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "offended by",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "third",
+          "type": "female",
+          "value": true
+        }
+      ],
+      "displayName": "mocking woman insults man, leads to less affinity for women in general",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "third",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "mocking woman insults man, leads to less affinity for women in general"
+    },
+    {
+      "conditions": [],
+      "displayName": "insult successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "insult successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "insult unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "insult unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "shy",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": "<",
+          "type": "charisma",
+          "value": 66
+        }
+      ],
+      "displayName": "call by an embarrassing surname",
+      "effects": [
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ridicules",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "resentful of",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "call by an embarrassing surname"
+    },
+    {
+      "conditions": [
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "offended by",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "self-assuredness",
+          "value": 50
+        }
+      ],
+      "displayName": "refuse to accept insult to honor",
+      "effects": [
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "offended by",
+          "value": false
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "rivals",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "refuse to accept insult to honor"
+    },
+    {
+      "conditions": [],
+      "displayName": "insulthonor successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "insulthonor successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "insulthonor unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "insulthonor unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "blackmail-default-insults",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "blackmail-default-insults"
+    },
+    {
+      "conditions": [],
+      "displayName": "criticize successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "esteem",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "criticize successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "criticize unsuccessfully",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "criticize unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Insult"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "antagonism",
+          "value": 1
+        }
+      ],
+      "name": "Respon NEG to insult action"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "misunderstand insult trustingly action"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        }
+      ],
+      "name": "Respond positively and caring to insult action"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond to Insult Neutrally"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 1
+        },
+        {
+          "category": "intent",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "trust",
+          "value": 1
+        }
+      ],
+      "name": "apologise for insult"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "<",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        }
+      ],
+      "displayName": "insult someone you don't like",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 50
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "insult someone you don't like"
+    }
+  ]
+}

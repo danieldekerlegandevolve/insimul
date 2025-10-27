@@ -1,0 +1,637 @@
+{
+  "fileName": "reputation-esteem",
+  "type": "volition",
+  "category": "reputation-esteem",
+  "rules": [
+    {
+      "name": "Humble guys like increasing respect for others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "humble",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Proud guys don't like increasing respect towards others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "proud",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "An old urbanite esteems a young provincial's good manners",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "old",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A poorly dressed man inspires despise",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "poorly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Devout people do not esteem others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "devout",
+          "first": "y",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A young provincial may be looked upon with disdain by rich peoeple",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 66,
+          "operator": ">"
+        },
+        {
+          "category": "attribute",
+          "type": "social standing",
+          "first": "x",
+          "value": 33,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "provincial",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "x",
+          "weight": -10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Disdainful vain, rich, people do not like non-rich people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "vain",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "disdainful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Elegantly dressed men may be more esteemed",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "No greet + Respectful request for low status -> dismiss",
+      "conditions": [
+        {
+          "category": "event",
+          "type": "met",
+          "first": "x",
+          "second": "y",
+          "value": false,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "event",
+          "type": "respectful",
+          "first": "y",
+          "second": "x",
+          "value": true,
+          "turnsAgoBetween": [
+            0,
+            2
+          ]
+        },
+        {
+          "category": "attribute",
+          "type": "status-individual",
+          "first": "x",
+          "value": 51,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "dismiss",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek connections with individuals they respect more than others.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek candidates with high respect from both peers and superiors.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "z",
+          "value": 4,
+          "operator": "<"
+        },
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "y",
+          "second": "z",
+          "value": 4,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to associate with individuals of high respect and admiration.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "value": 6,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek respect from individuals with higher levels of influence.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "value": 4,
+          "second": "y",
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": -2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek respect from strong individuals and are motivated to honor those connections.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "value": 6,
+          "operator": ">",
+          "second": "z"
+        },
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "y",
+          "value": 6,
+          "operator": ">",
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek to associate with individuals of high respect within their social network.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "value": 4,
+          "operator": "<",
+          "second": "z"
+        },
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "y",
+          "value": 4,
+          "operator": "<",
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "honor",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People seek connections with individuals who command respect and admiration.",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "value": 6,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are less kind to people they don't respect",
+      "title": "Ignoring the Peasentry",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are kind to those they respect",
+      "title": "Credit Where It Is Due",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are much more rude to those that they don't respect",
+      "title": "Cruelty to the dregs",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": "<",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 4,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are less rude to people they respect a lot",
+      "title": "Respect for the respectable",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "respect",
+          "first": "x",
+          "second": "y",
+          "operator": ">",
+          "value": 7
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -3,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

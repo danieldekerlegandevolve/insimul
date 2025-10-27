@@ -1,0 +1,303 @@
+{
+  "category": "romantic-flirting",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Looking forward to getting to know you better",
+        "What should we order (with romance)",
+        "Flirty response about pizza",
+        "Flirty chit chat",
+        "Flirty chit chat right back at %y%!",
+        "Make innuendo",
+        "Oooooh, la la",
+        "Don't understand, but pretend to laugh because you have the hots for them",
+        "Compliment appearance",
+        "Make suggestive eyes at",
+        "Introduce Self Flirty",
+        "Flirt with the person that approached you"
+      ],
+      "name": "FLIRT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "status",
+              "first": "initiator",
+              "type": "happy",
+              "value": true
+            }
+          ],
+          "effects": [],
+          "name": "Happy people are more inclined to do pickuplines.",
+          "weight": 542
+        }
+      ],
+      "leadsTo": [
+        "pickupLineTerminal"
+      ],
+      "name": "PICKUP LINE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "homosexual sexual assault",
+        "man professes passion for virtuous woman, get rejected and loves her even more",
+        "looking at someone/ faire les yeux doux",
+        "discovered cheater refused a kiss",
+        "virtuous wife rejects man's attempt to seduce her",
+        "get drunk together",
+        "talk about the loved one",
+        "seduce/flirt successfully-default",
+        "seduce/flirt unsuccessfully-default"
+      ],
+      "name": "SEDUCE"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "involved with",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "pickupLineTerminal"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "innocent looking",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        }
+      ],
+      "displayName": "looking at someone/ faire les yeux doux",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "looking at someone/ faire les yeux doux"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "third",
+          "type": "married",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": ">",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 60
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "<",
+          "second": "responder",
+          "type": "affinity",
+          "value": 40
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "flirtatious",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "third",
+          "second": "responder",
+          "type": "suspicious of",
+          "value": true
+        }
+      ],
+      "displayName": "virtuous wife rejects man's attempt to seduce her",
+      "effects": [
+        {
+          "category": "network",
+          "first": "third",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "relationship",
+          "first": "third",
+          "second": "responder",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "virtuous wife rejects man's attempt to seduce her"
+    },
+    {
+      "conditions": [],
+      "displayName": "seduce/flirt successfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "seduce/flirt successfully-default"
+    },
+    {
+      "conditions": [],
+      "displayName": "seduce/flirt unsuccessfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "seduce/flirt unsuccessfully-default"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "attraction",
+          "value": 1
+        }
+      ],
+      "name": "Flirty response about pizza"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Flirty chit chat"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "attraction",
+          "value": 1
+        }
+      ],
+      "name": "Flirty chit chat right back at %y%!"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Make innuendo"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "network",
+              "first": "initiator",
+              "operator": ">",
+              "second": "responder",
+              "type": "attraction",
+              "value": 7
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "flirt",
+              "weight": 3
+            }
+          ],
+          "name": "Now Rule for Flirt with the person that approached you"
+        }
+      ],
+      "name": "Flirt with the person that approached you"
+    }
+  ]
+}

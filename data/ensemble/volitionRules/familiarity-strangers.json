@@ -1,0 +1,48 @@
+{
+  "fileName": "familiarity-strangers",
+  "type": "volition",
+  "category": "familiarity-strangers",
+  "rules": [
+    {
+      "name": "Unfamiliar beautiful women may attract attention from others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "well-known",
+          "first": "x",
+          "value": false
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    }
+  ]
+}

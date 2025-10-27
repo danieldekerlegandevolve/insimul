@@ -1,0 +1,193 @@
+{
+  "category": "conversational-greetings",
+  "actions": [
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "sophistication",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "social standing",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "social standing",
+          "value": 60
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "vain",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "modest",
+          "value": true
+        }
+      ],
+      "displayName": "greet in subtle modest way",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "greet in subtle modest way"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "formal",
+          "value": true
+        }
+      ],
+      "name": "Hello honorable villager."
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "negative",
+          "value": true
+        }
+      ],
+      "name": "Greet Correction"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "responder",
+          "second": "initiator",
+          "type": "met",
+          "value": true
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "positive",
+          "value": true
+        }
+      ],
+      "name": "Nice Greet Reply"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Greet"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Respond to greeting"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "influenceRules": [
+        {
+          "conditions": [
+            {
+              "category": "network",
+              "first": "initiator",
+              "operator": "<",
+              "second": "responder",
+              "type": "friendship",
+              "value": 4
+            },
+            {
+              "category": "trait",
+              "first": "responder",
+              "type": "jerk",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "category": "intent",
+              "first": "initiator",
+              "intentDirection": true,
+              "second": "responder",
+              "type": "kind",
+              "weight": -3
+            }
+          ],
+          "name": "Now Rule for Polite hello"
+        }
+      ],
+      "name": "Polite hello"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Rude hello"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "friendship",
+          "value": 3
+        }
+      ],
+      "name": "Friendly response to a greeting"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Offended response to a greeting"
+    }
+  ]
+}

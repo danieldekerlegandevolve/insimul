@@ -1,0 +1,47 @@
+{
+  "fileName": "age-generational",
+  "type": "volition",
+  "category": "age-generational",
+  "rules": [
+    {
+      "name": "Children may bother older, grumpy people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "child",
+          "first": "y",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "cold",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "sensitiveness",
+          "first": "y",
+          "value": 50,
+          "operator": "<"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    }
+  ]
+}

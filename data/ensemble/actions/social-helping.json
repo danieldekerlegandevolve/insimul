@@ -1,0 +1,556 @@
+{
+  "category": "social-helping",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Greet Correction",
+        "Give the info"
+      ],
+      "name": "HELP"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Give for free"
+      ],
+      "name": "FAVOR"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "steal something for a friend _a",
+        "steal something for a friend _r",
+        "pay poor person's expenses",
+        "man helps woman out of \"bienséance\" (a)",
+        "keep a secret for someone",
+        "experienced person gives good advice",
+        "discreet thanks for help from a social superior",
+        "a man gives a hand to a woman (a)",
+        "bonne physionomie man grateful to benefactor",
+        "a rich person helps a inebriated man",
+        "helpsomeone successfully-default",
+        "helpsomeone unsuccessfully-default"
+      ],
+      "name": "HELP"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "devout refuses to help poor desperate virtuous",
+        "a rich person ask a non-rich person to introduce him to a higher rich person (a)",
+        "askforfavor successfully",
+        "askforfavor unsuccessfully"
+      ],
+      "name": "ASK FOR A FAVOR"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "generous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "poor",
+          "value": true
+        }
+      ],
+      "displayName": "pay poor person's expenses",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "pay poor person's expenses"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "flirtatious",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "beautiful",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "charisma",
+          "value": 70
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        }
+      ],
+      "displayName": "man helps woman out of \"bienséance\" (a)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "man helps woman out of \"bienséance\" (a)"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "propriety",
+          "value": 80
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": "<",
+          "type": "propriety",
+          "value": 70
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": true
+        }
+      ],
+      "displayName": "experienced person gives good advice",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 15
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "grateful",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "experienced person gives good advice"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "strangers",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": true
+        }
+      ],
+      "displayName": "discreet thanks for help from a social superior",
+      "effects": [
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "grateful",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "propriety",
+          "value": 5
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "owes a favor to",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "+",
+          "type": "sensitiveness",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "discreet thanks for help from a social superior"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "sensitiveness",
+          "value": 75
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "inebriated",
+          "value": true
+        }
+      ],
+      "displayName": "a rich person helps a inebriated man",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "a rich person helps a inebriated man"
+    },
+    {
+      "conditions": [],
+      "displayName": "helpsomeone successfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "helpsomeone successfully-default"
+    },
+    {
+      "conditions": [],
+      "displayName": "helpsomeone unsuccessfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "helpsomeone unsuccessfully-default"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "devout",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "poor",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "upset",
+          "value": true
+        }
+      ],
+      "displayName": "devout refuses to help poor desperate virtuous",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "resentful of",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "-",
+          "type": "self-assuredness",
+          "value": 10
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "initiator",
+          "type": "resentful of",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "devout refuses to help poor desperate virtuous"
+    },
+    {
+      "conditions": [],
+      "displayName": "askforfavor successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "askforfavor successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "askforfavor unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "askforfavor unsuccessfully"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "friends",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "first": "responder",
+          "second": "third",
+          "type": "threatened by",
+          "value": true
+        }
+      ],
+      "displayName": "intervene between a and b in favor of a",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "intervene between a and b in favor of a"
+    },
+    {
+      "conditions": [],
+      "displayName": "help withheld because person unable to pay",
+      "effects": [],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "help withheld because person unable to pay"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "lovers",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "someone",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "someone",
+          "type": "esteem",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "someone",
+          "operator": "<",
+          "second": "responder",
+          "type": "affinity",
+          "value": 30
+        }
+      ],
+      "displayName": "follow advice and break up",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "lovers",
+          "value": false
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "upset",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "follow advice and break up"
+    }
+  ]
+}

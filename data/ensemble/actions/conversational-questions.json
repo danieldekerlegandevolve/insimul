@@ -1,0 +1,193 @@
+{
+  "category": "conversational-questions",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "tear off mask successfully",
+        "tear off mask unsuccessfully"
+      ],
+      "name": "TEAR OFF THE MASK"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "involved with",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "askoutTerminal"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "involved with",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "askoutTerminalReject"
+    },
+    {
+      "conditions": [],
+      "displayName": "tear off mask successfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "tear off mask successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "tear off mask unsuccessfully",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "tear off mask unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "neutral",
+          "value": true
+        }
+      ],
+      "name": "Would you tell me where I can find water?"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rude",
+          "value": true
+        }
+      ],
+      "name": "Where is the water? Don't hold out on me."
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Polite ask if they have"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Demand ask if they have"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Polite ask for"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Demand thing"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Politely ask for something in exchange"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Irritated ask for something in return"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Ask Opinion on Subject"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Ask reciprocal question of opinion on subject"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Indifferent refusal to answer opinion about subject"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "kind refusal to answer opinion of subject"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "ask for facts about subject action"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Indifferent refusal to answer with facts"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Say that don't know facts though knowing"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Not knowing any facts and answering with that action"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "reciprocal question about facts about subject action"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "gratitude",
+          "value": 1
+        }
+      ],
+      "name": "Thank for info about facts about subject"
+    }
+  ]
+}

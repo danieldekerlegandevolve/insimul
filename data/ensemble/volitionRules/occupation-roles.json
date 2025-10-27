@@ -1,0 +1,363 @@
+{
+  "fileName": "occupation-roles",
+  "type": "volition",
+  "category": "occupation-roles",
+  "rules": [
+    {
+      "name": "A worker does not appreciate being underpaid",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "stagehand",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Young male police officers tend to engage with criminals",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "police officer",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "criminal",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A chatty merchant can disgust sophisticated people",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "merchant",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 40,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "y",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "talkative",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": 10,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "A servant is cooperative when he is well paid by a generous benefactor",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "stagehand",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "generous",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A worker does not want to engage with upset and inappropriate employers",
+      "conditions": [
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 50,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "rich",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "status",
+          "type": "upset",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "financially dependent on",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "stagehand",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Coworkers are a little kind to one another",
+      "title": "When You're Here You're Family",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "coworker",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Employees on break want to be left alone",
+      "title": "Off The Clock",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "on_break",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": false,
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": -6,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Bosses are kind to their punctual employees",
+      "title": "Employee of the Year",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "is boss of",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "punctual",
+          "value": true,
+          "first": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "kind",
+          "weight": 10,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "People are a little less rude to their coworkers",
+      "title": "All on the Same Team",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "coworker",
+          "value": true,
+          "first": "x",
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": -1,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    },
+    {
+      "name": "Employees are more rude to non-employees when they are on break",
+      "title": "Can't Catch a Break",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "on_break",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": true,
+          "first": "x"
+        },
+        {
+          "category": "trait",
+          "type": "employee",
+          "value": false,
+          "first": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "rude",
+          "weight": 2,
+          "intentType": true,
+          "first": "x",
+          "second": "y"
+        }
+      ]
+    }
+  ]
+}

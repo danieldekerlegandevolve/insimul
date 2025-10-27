@@ -1,0 +1,403 @@
+{
+  "category": "romantic-affection",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "writeLoveNoteAccept",
+        "writeLoveNoteReject"
+      ],
+      "name": "WRITE LOVE NOTE"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "kissSuccess",
+        "kissFail"
+      ],
+      "name": "KISS"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "bond",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "kinship",
+          "value": 1
+        }
+      ],
+      "influenceRules": [],
+      "name": "hug"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "closeness",
+          "value": 40
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "closeness",
+          "value": 10
+        },
+        {
+          "category": "trait",
+          "first": "evilPerson",
+          "type": "rival",
+          "value": true
+        }
+      ],
+      "displayName": "Kiss <SUCCESS>",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "closeness",
+          "value": 100
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "closeness",
+          "value": 100
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "=",
+          "second": "evilPerson",
+          "type": "closeness",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "=",
+          "second": "evilPerson",
+          "type": "closeness",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "name": "kissSuccess"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "closeness",
+          "value": -10
+        }
+      ],
+      "displayName": "Kiss <FAIL>",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "closeness",
+          "value": 100
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "closeness",
+          "value": 100
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "kissFail"
+    },
+    {
+      "conditions": [],
+      "displayName": "Write Love Note <ACCEPT>",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "closeness",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "closeness",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "writeLoveNoteAccept"
+    },
+    {
+      "conditions": [],
+      "displayName": "Write Love Note <REJECT>",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "closeness",
+          "value": 10
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "romantic failure",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "writeLoveNoteReject"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "self-assuredness",
+          "value": 70
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "inconsistent",
+          "value": false
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 80
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "flirtatious",
+          "value": true
+        }
+      ],
+      "displayName": "man professes passion for virtuous woman, get rejected and loves her even more",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "affinity",
+          "value": 20
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "gobsmacked",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "man professes passion for virtuous woman, get rejected and loves her even more"
+    },
+    {
+      "conditions": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "lovers",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "someone",
+          "type": "lovers",
+          "value": true
+        }
+      ],
+      "displayName": "discovered cheater refused a kiss",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 15
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "affinity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "discovered cheater refused a kiss"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 70
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": ">",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 60
+        }
+      ],
+      "displayName": "embrace someone in public (a)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "embrace someone in public (a)"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "propriety",
+          "value": 50
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 70
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "<",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 50
+        }
+      ],
+      "displayName": "embrace someone in public (r)",
+      "effects": [
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "embarrassed",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 15
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "embrace someone in public (r)"
+    }
+  ]
+}

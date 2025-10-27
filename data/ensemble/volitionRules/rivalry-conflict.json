@@ -1,0 +1,792 @@
+{
+  "fileName": "rivalry-conflict",
+  "type": "volition",
+  "category": "rivalry-conflict",
+  "rules": [
+    {
+      "name": "The hero doesn't particularly want to get closer to the rival",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "hero",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "rival",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "closeness",
+          "first": "x",
+          "second": "y",
+          "weight": -10,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "You don't fight with your friends",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "playmates",
+          "first": "x",
+          "second": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "fight",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Beauty creates rivalry",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "x",
+          "value": 81,
+          "operator": "<"
+        },
+        {
+          "category": "attribute",
+          "type": "charisma",
+          "first": "y",
+          "value": 80,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "y",
+          "second": "x",
+          "weight": 2,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Attendees who offend musicians are disliked",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "joker",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "eccentric",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "security guard",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Ambitious rivals will prefer a third's judgement",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "trait",
+          "type": "ambitious",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "ambitious",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "ally",
+          "first": "y",
+          "value": false,
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "z",
+          "weight": 2,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": -3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Beautiful, well-dressed women are often rivals",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "vain",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "elegantly dressed",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "beautiful",
+          "first": "y",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Young, impudent, and vicious men are more prone to offend others",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "impudent",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "young",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "x",
+          "value": 33,
+          "operator": "<"
+        },
+        {
+          "category": "trait",
+          "type": "trustworthy",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "relationship",
+          "type": "esteem",
+          "first": "x",
+          "value": false,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "credibility",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 3,
+          "intentType": false
+        },
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 1,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Your friend's rival may also become your rival",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "y",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Your friend's enemies may bother you",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "owes a favor to",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "z",
+          "weight": 5,
+          "intentType": false
+        },
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "z",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Drunk people are more likely to offend others",
+      "conditions": [
+        {
+          "category": "status",
+          "type": "inebriated",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "security guard",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "attribute",
+          "type": "sophistication",
+          "first": "y",
+          "value": 50,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 5,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "Offended people may encourage others to also be offended",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "x",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "attribute",
+          "type": "propriety",
+          "first": "y",
+          "value": 75,
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "emulation",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Honest people who esteem someone offended by them may seek to undo that perception",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "esteems",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        },
+        {
+          "category": "trait",
+          "type": "honest",
+          "first": "x",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": 10,
+          "intentType": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "second": "y",
+          "weight": 10,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "Virtuous people lose affinity for self-assured, non-virtuous people who have offended them",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "x",
+          "value": false
+        },
+        {
+          "category": "attribute",
+          "type": "self-assuredness",
+          "first": "x",
+          "value": 60,
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "virtuous",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "offended by",
+          "first": "y",
+          "value": true,
+          "second": "x"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "y",
+          "second": "x",
+          "weight": 3,
+          "intentType": false
+        }
+      ]
+    },
+    {
+      "name": "People may become enemies when one mistreats relatives of the other",
+      "conditions": [
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "wearing a first responder uniform",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "attendee",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "wearing a first responder uniform",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "type": "married",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "z",
+          "value": true
+        },
+        {
+          "category": "event",
+          "type": "harmed",
+          "first": "y",
+          "value": true,
+          "second": "z"
+        },
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 66,
+          "second": "z",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "second": "y",
+          "weight": -5,
+          "intentType": true
+        },
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "y",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "If someone ridicules one's friend, he may become a rival",
+      "conditions": [
+        {
+          "category": "relationship",
+          "type": "friends",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        },
+        {
+          "category": "directed status",
+          "type": "ridicules",
+          "first": "x",
+          "value": true,
+          "second": "y"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "A man may by jealous of another man approaching the woman he loves",
+      "conditions": [
+        {
+          "category": "network",
+          "type": "affinity",
+          "first": "x",
+          "value": 80,
+          "second": "y",
+          "operator": ">"
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "female",
+          "first": "y",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "type": "male",
+          "first": "x",
+          "value": true
+        },
+        {
+          "category": "network",
+          "type": "curiosity",
+          "first": "x",
+          "value": 60,
+          "second": "y",
+          "operator": ">"
+        }
+      ],
+      "effects": [
+        {
+          "category": "relationship",
+          "type": "rivals",
+          "first": "x",
+          "second": "x",
+          "weight": 5,
+          "intentType": true
+        }
+      ]
+    },
+    {
+      "name": "People have a desire to connect with both rivals x and y.",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "candid",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "People are inclined to get closer when rivals have a mutual rivalry towards the same",
+      "conditions": [
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "x",
+          "second": "z",
+          "value": true
+        },
+        {
+          "category": "directed status",
+          "type": "rivals",
+          "first": "y",
+          "second": "z",
+          "value": true
+        }
+      ],
+      "effects": [
+        {
+          "category": "intent",
+          "type": "favor",
+          "first": "x",
+          "second": "y",
+          "weight": 2,
+          "intentType": true,
+          "value": true
+        }
+      ]
+    }
+  ]
+}

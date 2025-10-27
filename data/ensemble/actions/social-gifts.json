@@ -1,0 +1,422 @@
+{
+  "category": "social-gifts",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "encourages friend's friend with a pick-me-up (a)",
+        "giftgift successfully-default",
+        "givegift unsuccessfully-default"
+      ],
+      "name": "GIVE A GIFT"
+    },
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "excuse and forgive someone for perceived wrong",
+        "forgive successfully",
+        "forgive unsuccessfully"
+      ],
+      "name": "FORGIVE"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "charisma",
+          "value": 60
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "innocent looking",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "provincial",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "tired",
+          "value": true
+        }
+      ],
+      "displayName": "a man gives a hand to a woman (a)",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "curiosity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "a man gives a hand to a woman (a)"
+    },
+    {
+      "conditions": [],
+      "displayName": "giftgift successfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "giftgift successfully-default"
+    },
+    {
+      "conditions": [],
+      "displayName": "givegift unsuccessfully-default",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 5
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "givegift unsuccessfully-default"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "modest",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "self-assuredness",
+          "value": 50
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "vain",
+          "value": true
+        }
+      ],
+      "displayName": "gift given meant to impress but does not impress receiver",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 5
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "happy",
+          "value": false
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "grateful",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "gift given meant to impress but does not impress receiver"
+    },
+    {
+      "conditions": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": ">",
+          "second": "responder",
+          "type": "affinity",
+          "value": 60
+        },
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": ">",
+          "type": "propriety",
+          "value": 60
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "rich",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "rich",
+          "value": false
+        },
+        {
+          "category": "relationship",
+          "first": "third",
+          "second": "initiator",
+          "type": "ally",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "indiscreet",
+          "value": false
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "generous",
+          "value": true
+        }
+      ],
+      "displayName": "draw attention away from self by using third person ally to give a gift",
+      "effects": [
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "third",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "third",
+          "type": "curiosity",
+          "value": 10
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "draw attention away from self by using third person ally to give a gift"
+    },
+    {
+      "conditions": [
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "resentful of",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "virtuous",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "<",
+          "second": "responder",
+          "type": "affinity",
+          "value": 50
+        }
+      ],
+      "displayName": "excuse and forgive someone for perceived wrong",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "affinity",
+          "value": 10
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "resentful of",
+          "value": false
+        },
+        {
+          "category": "status",
+          "first": "initiator",
+          "type": "happy",
+          "value": true
+        },
+        {
+          "category": "status",
+          "first": "responder",
+          "type": "grateful",
+          "value": true
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "excuse and forgive someone for perceived wrong"
+    },
+    {
+      "conditions": [],
+      "displayName": "forgive successfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": false
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "forgive successfully"
+    },
+    {
+      "conditions": [],
+      "displayName": "forgive unsuccessfully",
+      "effects": [
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "rivals",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": false,
+      "name": "forgive unsuccessfully"
+    },
+    {
+      "conditions": [],
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "+",
+          "second": "responder",
+          "type": "trust",
+          "value": 1
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "trust",
+          "value": 1
+        },
+        {
+          "category": "event",
+          "first": "initiator",
+          "second": "responder",
+          "type": "positive",
+          "value": true
+        }
+      ],
+      "name": "Give the info"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Reluctantly give info"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Give for free"
+    }
+  ]
+}

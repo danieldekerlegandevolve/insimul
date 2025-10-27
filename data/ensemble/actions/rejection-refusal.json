@@ -1,0 +1,168 @@
+{
+  "category": "rejection-refusal",
+  "actions": [
+    {
+      "conditions": [],
+      "influenceRules": [],
+      "leadsTo": [
+        "Scowl"
+      ],
+      "name": "DENY"
+    },
+    {
+      "conditions": [
+        {
+          "category": "attribute",
+          "first": "initiator",
+          "operator": "<",
+          "type": "charisma",
+          "value": 81
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "beautiful",
+          "value": true
+        },
+        {
+          "category": "attribute",
+          "first": "responder",
+          "operator": ">",
+          "type": "charisma",
+          "value": 80
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "beautiful",
+          "value": true
+        }
+      ],
+      "displayName": "feels competition, refuses to stay",
+      "effects": [
+        {
+          "category": "network",
+          "first": "initiator",
+          "operator": "-",
+          "second": "responder",
+          "type": "affinity",
+          "value": 30
+        },
+        {
+          "category": "directed status",
+          "first": "initiator",
+          "second": "responder",
+          "type": "jealous of",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "feels competition, refuses to stay"
+    },
+    {
+      "conditions": [
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "female",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "responder",
+          "type": "male",
+          "value": true
+        },
+        {
+          "category": "trait",
+          "first": "third",
+          "type": "flirtatious",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "third",
+          "operator": ">",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 80
+        },
+        {
+          "category": "relationship",
+          "first": "initiator",
+          "second": "responder",
+          "type": "lovers",
+          "value": true
+        }
+      ],
+      "displayName": "reject concurrent lover",
+      "effects": [
+        {
+          "category": "network",
+          "first": "third",
+          "operator": "-",
+          "second": "initiator",
+          "type": "curiosity",
+          "value": 10
+        },
+        {
+          "category": "relationship",
+          "first": "responder",
+          "second": "initiator",
+          "type": "esteem",
+          "value": true
+        },
+        {
+          "category": "network",
+          "first": "responder",
+          "operator": "+",
+          "second": "initiator",
+          "type": "credibility",
+          "value": 5
+        },
+        {
+          "category": "trait",
+          "first": "initiator",
+          "type": "virtuous",
+          "value": true
+        }
+      ],
+      "influenceRules": [],
+      "isAccept": true,
+      "name": "reject concurrent lover"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Don't have"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Politely refuse"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Angrily refuse request"
+    },
+    {
+      "conditions": [],
+      "effects": [],
+      "name": "Polite refuse to acquire"
+    }
+  ]
+}
