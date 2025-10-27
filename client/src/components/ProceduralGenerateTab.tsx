@@ -53,7 +53,6 @@ export function ProceduralGenerateTab({ worldId }: ProceduralGenerateTabProps) {
     
     // Genealogy
     foundedYear: 1850,
-    currentYear: 1950,
     numFoundingFamilies: 10,
     generations: 4,
     marriageRate: 0.7,
@@ -535,14 +534,6 @@ export function ProceduralGenerateTab({ worldId }: ProceduralGenerateTabProps) {
                           type="number"
                           value={config.foundedYear}
                           onChange={(e) => setConfig({ ...config, foundedYear: parseInt(e.target.value) })}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Current Year</Label>
-                        <Input
-                          type="number"
-                          value={config.currentYear}
-                          onChange={(e) => setConfig({ ...config, currentYear: parseInt(e.target.value) })}
                         />
                       </div>
                     </div>

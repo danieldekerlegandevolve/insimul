@@ -19,7 +19,6 @@ interface LegacyWorld {
   name: string;
   description?: string | null;
   foundedYear?: number | null;
-  currentYear?: number | null;
   population?: number | null;
   governmentType?: string | null;
   economicSystem?: string | null;

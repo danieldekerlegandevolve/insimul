@@ -33,7 +33,6 @@ export function WorldDetailsDialog({
   // Form state
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
   
   // Geographical data
   const [countries, setCountries] = useState<any[]>([]);
@@ -45,7 +44,6 @@ export function WorldDetailsDialog({
     if (world) {
       setName(world.name);
       setDescription(world.description || '');
-      setCurrentYear(world.currentYear);
       
       // Fetch countries and settlements
       fetchGeographicalData(world.id);
@@ -86,8 +84,7 @@ export function WorldDetailsDialog({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
-          description: description || null,
-          currentYear
+          description: description || null
         })
       });
 
@@ -146,7 +143,6 @@ export function WorldDetailsDialog({
       // Reset to original values
       setName(world.name);
       setDescription(world.description || '');
-      setCurrentYear(world.currentYear);
     }
     setIsEditing(false);
   };
@@ -232,20 +228,6 @@ export function WorldDetailsDialog({
                     />
                   ) : (
                     <p className="text-sm font-medium">{world.name}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Current Year</Label>
-                  {isEditing ? (
-                    <Input
-                      type="number"
-                      value={currentYear || ''}
-                      onChange={(e) => setCurrentYear(e.target.value ? parseInt(e.target.value) : null)}
-                      placeholder="Current year"
-                    />
-                  ) : (
-                    <p className="text-sm">{world.currentYear || 'Not specified'}</p>
                   )}
                 </div>
 

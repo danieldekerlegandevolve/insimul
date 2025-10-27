@@ -15,7 +15,7 @@ export const rules = pgTable("rules", {
   likelihood: real("likelihood").default(1.0),
   conditions: jsonb("conditions").$type<any[]>().default([]),
   effects: jsonb("effects").$type<any[]>().default([]),
-  tags: jsonb("tags").$type<string[]>().default([]),
+  tags: jsonb("tags").$type<string[]>(). default([]),
   dependencies: jsonb("dependencies").$type<string[]>().default([]),
   isActive: boolean("is_active").default(true),
   isCompiled: boolean("is_compiled").default(false),
@@ -142,11 +142,6 @@ export const countries = pgTable("countries", {
   culturalValues: jsonb("cultural_values").$type<Record<string, any>>().default({}),
   laws: jsonb("laws").$type<any[]>().default([]),
   
-  // Time tracking for the country (can vary from world time)
-  currentYear: integer("current_year"),
-  currentMonth: integer("current_month").default(1),
-  currentDay: integer("current_day").default(1),
-  
   // Relationships with other countries
   alliances: jsonb("alliances").$type<string[]>().default([]), // IDs of allied countries
   enemies: jsonb("enemies").$type<string[]>().default([]), // IDs of enemy countries
@@ -204,13 +199,6 @@ export const settlements = pgTable("settlements", {
   founderIds: jsonb("founder_ids").$type<string[]>().default([]),
   currentGeneration: integer("current_generation").default(0),
   maxGenerations: integer("max_generations").default(10),
-  
-  // Time tracking for this settlement (can vary independently)
-  currentYear: integer("current_year"),
-  currentMonth: integer("current_month").default(1),
-  currentDay: integer("current_day").default(1),
-  timeOfDay: text("time_of_day").default("day"), // day, night
-  ordinalDate: bigint("ordinal_date", { mode: "number" }).default(0),
   
   // Governance
   mayorId: varchar("mayor_id"), // Character ID of mayor/leader

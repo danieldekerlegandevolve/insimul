@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Globe, Trash2, ArrowRight, Plus, Sparkles } from "lucide-react";
+import { Globe, Trash2, ArrowRight, Plus, Sparkles, Database } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { WorldCreateDialog } from "./WorldCreateDialog";
 import { GenerationProgressDialog } from "./GenerationProgressDialog";
+import { AdminPanel } from "./AdminPanel";
 import type { InsertWorld } from "@shared/schema";
 
 interface WorldSelectionScreenProps {
@@ -21,6 +22,7 @@ export function WorldSelectionScreen({ onWorldSelected }: WorldSelectionScreenPr
   const [isCreatingWorld, setIsCreatingWorld] = useState(false);
   const [showProgressDialog, setShowProgressDialog] = useState(false);
   const [generationTaskId, setGenerationTaskId] = useState<string | null>(null);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -156,11 +158,26 @@ export function WorldSelectionScreen({ onWorldSelected }: WorldSelectionScreenPr
     return 0;
   };
 
+  // If admin panel is open, show it instead
+  if (showAdminPanel) {
+    return <AdminPanel onBack={() => setShowAdminPanel(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10 flex items-center justify-center p-6">
       <div className="w-full max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 relative">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAdminPanel(true)}
+            className="absolute top-0 right-0"
+          >
+            <Database className="w-4 h-4 mr-2" />
+            Admin Panel
+          </Button>
+          
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-2xl mb-6 shadow-lg">
             <Globe className="w-10 h-10 text-white" />
           </div>
@@ -201,12 +218,6 @@ export function WorldSelectionScreen({ onWorldSelected }: WorldSelectionScreenPr
                   </CardHeader>
                   <CardContent>
                     <div className="flex gap-4 text-sm">
-                      {world.currentYear && (
-                        <div>
-                          <span className="text-muted-foreground">Year:</span>{' '}
-                          <span className="font-medium">{world.currentYear}</span>
-                        </div>
-                      )}
                       {totalPop > 0 && (
                         <div>
                           <span className="text-muted-foreground">Pop:</span>{' '}

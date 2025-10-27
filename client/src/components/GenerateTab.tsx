@@ -28,7 +28,6 @@ export function GenerateTab({ worldId }: GenerateTabProps) {
     settlementType: 'town' as 'village' | 'town' | 'city',
     terrain: 'plains' as 'plains' | 'hills' | 'mountains' | 'coast' | 'river' | 'forest' | 'desert',
     foundedYear: 1850,
-    currentYear: 1950,
     numFoundingFamilies: 10,
     generations: 4,
     marriageRate: 0.7,
@@ -210,17 +209,9 @@ export function GenerateTab({ worldId }: GenerateTabProps) {
                     <div className="flex gap-2">
                       <Input
                         type="number"
-                        placeholder="Founded"
+                        placeholder="Founded Year"
                         value={config.foundedYear}
                         onChange={(e) => setConfig({ ...config, foundedYear: parseInt(e.target.value) })}
-                        className="w-1/2"
-                      />
-                      <Input
-                        type="number"
-                        placeholder="Current"
-                        value={config.currentYear}
-                        onChange={(e) => setConfig({ ...config, currentYear: parseInt(e.target.value) })}
-                        className="w-1/2"
                       />
                     </div>
                   </div>
