@@ -2,10 +2,11 @@ import { useEffect, useRef, useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { ArrowLeft, Map, MessageSquare, Users, Building, Home } from 'lucide-react';
+import { ArrowLeft, Map, MessageSquare, Users, Building, Home, Target } from 'lucide-react';
 import { World3D } from './3d/World3D';
 import { FastTravelMap } from './3d/FastTravelMap';
-import { CharacterChatDialog } from './CharacterChatDialog';
+import { CharacterConversationModal } from './3d/CharacterConversationModal';
+import { QuestManagerModal } from './3d/QuestManagerModal';
 import { LocationInfo } from './3d/LocationInfo';
 
 interface Insimul3DGameProps {
@@ -120,6 +121,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
   const [showFastTravel, setShowFastTravel] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [showChat, setShowChat] = useState(false);
+  const [showQuests, setShowQuests] = useState(false);
   const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0, z: 0 });
   const [currentLocation, setCurrentLocation] = useState<{
     settlement?: Settlement;
@@ -150,12 +152,15 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Keyboard handler for "M" key to open map
+  // Keyboard handler for "M" key to open map and "Q" key to open quests
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === 'm') {
         e.preventDefault();
         setShowFastTravel(prev => !prev);
+      } else if (e.key.toLowerCase() === 'q') {
+        e.preventDefault();
+        setShowQuests(prev => !prev);
       }
     };
 
@@ -327,23 +332,21 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
   return (
     <div ref={containerRef} className="relative h-screen w-screen bg-black overflow-hidden">
       {/* 3D Canvas */}
-      <div className="absolute inset-0">
-        <Canvas
-          shadows
-          camera={{ position: [0, 5, 10], fov: 75 }}
-          style={{ width: '100%', height: '100%' }}
-        >
-          <Suspense fallback={null}>
-            <World3D
-              worldData={worldData}
-              playerPosition={playerPosition}
-              onPlayerMove={setPlayerPosition}
-              onCharacterInteraction={handleCharacterInteraction}
-              currentLocation={currentLocation}
-            />
-          </Suspense>
-        </Canvas>
-      </div>
+      <Canvas
+        shadows
+        camera={{ position: [0, 5, 10], fov: 75 }}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+      >
+        <Suspense fallback={null}>
+          <World3D
+            worldData={worldData}
+            playerPosition={playerPosition}
+            onPlayerMove={setPlayerPosition}
+            onCharacterInteraction={handleCharacterInteraction}
+            currentLocation={currentLocation}
+          />
+        </Suspense>
+      </Canvas>
 
       {/* Top Bar UI */}
       <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent pointer-events-none z-10">
@@ -372,6 +375,15 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
           >
             <Map className="w-4 h-4 mr-2" />
             Fast Travel (M)
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowQuests(true)}
+            className="bg-black/50 hover:bg-black/70 border-white/20 text-white"
+          >
+            <Target className="w-4 h-4 mr-2" />
+            Quests (Q)
           </Button>
           <Button
             variant="outline"
@@ -455,6 +467,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
         <p>• Mouse - Look Around</p>
         <p>• Click Character - Talk</p>
         <p>• M - Open Map</p>
+        <p>• Q - Open Quests</p>
       </div>
 
       {/* Fast Travel Map */}
@@ -467,20 +480,23 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
         />
       )}
 
-      {/* Character Chat Dialog */}
-      {selectedCharacter && (
-        <CharacterChatDialog
-          character={selectedCharacter}
-          truths={worldData.truths.filter(t =>
-            !t.characterId || t.characterId === selectedCharacter.id
-          )}
-          open={showChat}
-          onOpenChange={(open) => {
-            setShowChat(open);
-            if (!open) setSelectedCharacter(null);
-          }}
-        />
-      )}
+      {/* Quest Manager Modal */}
+      <QuestManagerModal
+        worldData={worldData}
+        open={showQuests}
+        onClose={() => setShowQuests(false)}
+      />
+
+      {/* Character Conversation Modal */}
+      <CharacterConversationModal
+        character={selectedCharacter!}
+        worldData={worldData}
+        open={showChat && selectedCharacter !== null}
+        onClose={() => {
+          setShowChat(false);
+          setSelectedCharacter(null);
+        }}
+      />
     </div>
   );
 }
