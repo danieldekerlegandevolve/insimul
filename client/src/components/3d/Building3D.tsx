@@ -13,12 +13,15 @@ export function Building3D({ building, lot, position, type }: Building3DProps) {
 
   // Determine building appearance based on type
   const getBuildingStyle = () => {
+    // Scale factor to make buildings larger
+    const scale = 2.5;
+
     if (!building) {
       return {
         color: '#808080',
-        height: 3,
-        width: 4,
-        depth: 4,
+        height: 3 * scale,
+        width: 4 * scale,
+        depth: 4 * scale,
         name: 'Empty Lot'
       };
     }
@@ -28,25 +31,25 @@ export function Building3D({ building, lot, position, type }: Building3DProps) {
 
       switch (businessType) {
         case 'Bank':
-          return { color: '#d4af37', height: 6, width: 6, depth: 6, name: building.name };
+          return { color: '#d4af37', height: 6 * scale, width: 6 * scale, depth: 6 * scale, name: building.name };
         case 'Hospital':
-          return { color: '#ffffff', height: 8, width: 8, depth: 8, name: building.name };
+          return { color: '#ffffff', height: 8 * scale, width: 8 * scale, depth: 8 * scale, name: building.name };
         case 'School':
-          return { color: '#fbbf24', height: 5, width: 7, depth: 6, name: building.name };
+          return { color: '#fbbf24', height: 5 * scale, width: 7 * scale, depth: 6 * scale, name: building.name };
         case 'TownHall':
-          return { color: '#9333ea', height: 7, width: 7, depth: 7, name: building.name };
+          return { color: '#9333ea', height: 7 * scale, width: 7 * scale, depth: 7 * scale, name: building.name };
         case 'Shop':
         case 'GroceryStore':
-          return { color: '#10b981', height: 4, width: 5, depth: 4, name: building.name };
+          return { color: '#10b981', height: 4 * scale, width: 5 * scale, depth: 4 * scale, name: building.name };
         case 'Restaurant':
         case 'Bar':
-          return { color: '#f59e0b', height: 4, width: 5, depth: 5, name: building.name };
+          return { color: '#f59e0b', height: 4 * scale, width: 5 * scale, depth: 5 * scale, name: building.name };
         case 'PoliceStation':
-          return { color: '#3b82f6', height: 5, width: 6, depth: 6, name: building.name };
+          return { color: '#3b82f6', height: 5 * scale, width: 6 * scale, depth: 6 * scale, name: building.name };
         case 'FireStation':
-          return { color: '#ef4444', height: 5, width: 6, depth: 6, name: building.name };
+          return { color: '#ef4444', height: 5 * scale, width: 6 * scale, depth: 6 * scale, name: building.name };
         default:
-          return { color: '#8b7355', height: 4, width: 4, depth: 4, name: building.name };
+          return { color: '#8b7355', height: 4 * scale, width: 4 * scale, depth: 4 * scale, name: building.name };
       }
     }
 
@@ -54,11 +57,11 @@ export function Building3D({ building, lot, position, type }: Building3DProps) {
     const residenceType = building.residenceType || 'house';
     switch (residenceType) {
       case 'mansion':
-        return { color: '#fcd34d', height: 6, width: 7, depth: 7, name: building.address };
+        return { color: '#fcd34d', height: 6 * scale, width: 7 * scale, depth: 7 * scale, name: building.address };
       case 'apartment':
-        return { color: '#94a3b8', height: 8, width: 5, depth: 5, name: building.address };
+        return { color: '#94a3b8', height: 8 * scale, width: 5 * scale, depth: 5 * scale, name: building.address };
       default:
-        return { color: '#dc2626', height: 4, width: 4, depth: 4, name: building.address };
+        return { color: '#dc2626', height: 4 * scale, width: 4 * scale, depth: 4 * scale, name: building.address };
     }
   };
 
