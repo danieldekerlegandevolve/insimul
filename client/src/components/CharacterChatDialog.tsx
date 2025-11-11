@@ -59,18 +59,19 @@ export function CharacterChatDialog({ character, truths, open, onOpenChange }: C
     if (open && character) {
       // Extract language fluency to determine greeting language
       const presentTruths = truths.filter(t => t.timestep === 0);
-      
-      const frenchTruth = presentTruths.find(t => 
+
+      const frenchTruth = presentTruths.find(t =>
         (t.entryType === 'language' && t.title?.includes('French')) ||
         (t.content?.includes('French') && t.content?.includes('fluency'))
       );
-      const englishTruth = presentTruths.find(t => 
+      const englishTruth = presentTruths.find(t =>
         (t.entryType === 'language' && t.title?.includes('English')) ||
         (t.content?.includes('English') && t.content?.includes('fluency'))
       );
-      
-      let frenchFluency = 85;
-      let englishFluency = 50;
+
+      // Default to English if no language data is found
+      let frenchFluency = 0;
+      let englishFluency = 100;
       
       if (frenchTruth?.sourceData?.value) {
         frenchFluency = frenchTruth.sourceData.value;
@@ -133,8 +134,9 @@ export function CharacterChatDialog({ character, truths, open, onOpenChange }: C
       (t.content?.includes('English') && t.content?.includes('fluency'))
     );
 
-    let frenchFluency = 85;
-    let englishFluency = 50;
+    // Default to English if no language data is found
+    let frenchFluency = 0;
+    let englishFluency = 100;
 
     if (frenchTruth?.sourceData?.value) {
       frenchFluency = frenchTruth.sourceData.value;

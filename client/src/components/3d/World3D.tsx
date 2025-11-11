@@ -9,7 +9,8 @@ import {
   Box,
   Sphere,
   Cylinder,
-  Plane
+  Plane,
+  RoundedBox
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { Terrain } from './Terrain';
@@ -166,21 +167,77 @@ export function World3D({
       ))}
 
       {/* Player character */}
-      <group ref={playerRef} position={[playerPosition.x, 1, playerPosition.z]}>
-        {/* Player body */}
-        <Cylinder args={[0.5, 0.5, 1.5, 8]} position={[0, 0.75, 0]} castShadow>
-          <meshStandardMaterial color="#3b82f6" />
+      <group ref={playerRef} position={[playerPosition.x, 0, playerPosition.z]}>
+        {/* Torso */}
+        <RoundedBox
+          args={[0.5, 0.7, 0.3]}
+          position={[0, 0.85, 0]}
+          radius={0.05}
+          smoothness={4}
+          castShadow
+        >
+          <meshStandardMaterial color="#10b981" emissive="#10b981" emissiveIntensity={0.2} />
+        </RoundedBox>
+
+        {/* Neck */}
+        <Cylinder args={[0.12, 0.12, 0.15, 8]} position={[0, 1.275, 0]} castShadow>
+          <meshStandardMaterial color="#ffd7a8" />
         </Cylinder>
 
-        {/* Player head */}
-        <Sphere args={[0.4, 16, 16]} position={[0, 1.9, 0]} castShadow>
-          <meshStandardMaterial color="#ffd7a8" />
+        {/* Head */}
+        <Sphere args={[0.25, 16, 16]} position={[0, 1.5, 0]} castShadow>
+          <meshStandardMaterial color="#ffd7a8" emissive="#ffd7a8" emissiveIntensity={0.1} />
         </Sphere>
+
+        {/* Hair */}
+        <Sphere args={[0.27, 16, 16]} position={[0, 1.58, 0]} castShadow>
+          <meshStandardMaterial color="#4a2511" />
+        </Sphere>
+
+        {/* Left arm */}
+        <group position={[-0.35, 0.9, 0]}>
+          <Cylinder args={[0.08, 0.08, 0.6, 8]} position={[0, -0.3, 0]} castShadow>
+            <meshStandardMaterial color="#10b981" />
+          </Cylinder>
+          <Sphere args={[0.1, 8, 8]} position={[0, -0.65, 0]} castShadow>
+            <meshStandardMaterial color="#ffd7a8" />
+          </Sphere>
+        </group>
+
+        {/* Right arm */}
+        <group position={[0.35, 0.9, 0]}>
+          <Cylinder args={[0.08, 0.08, 0.6, 8]} position={[0, -0.3, 0]} castShadow>
+            <meshStandardMaterial color="#10b981" />
+          </Cylinder>
+          <Sphere args={[0.1, 8, 8]} position={[0, -0.65, 0]} castShadow>
+            <meshStandardMaterial color="#ffd7a8" />
+          </Sphere>
+        </group>
+
+        {/* Left leg */}
+        <group position={[-0.15, 0.5, 0]}>
+          <Cylinder args={[0.1, 0.1, 0.5, 8]} position={[0, -0.25, 0]} castShadow>
+            <meshStandardMaterial color="#1e3a8a" />
+          </Cylinder>
+          <Box args={[0.15, 0.1, 0.25]} position={[0, -0.55, 0.05]} castShadow>
+            <meshStandardMaterial color="#000000" />
+          </Box>
+        </group>
+
+        {/* Right leg */}
+        <group position={[0.15, 0.5, 0]}>
+          <Cylinder args={[0.1, 0.1, 0.5, 8]} position={[0, -0.25, 0]} castShadow>
+            <meshStandardMaterial color="#1e3a8a" />
+          </Cylinder>
+          <Box args={[0.15, 0.1, 0.25]} position={[0, -0.55, 0.05]} castShadow>
+            <meshStandardMaterial color="#000000" />
+          </Box>
+        </group>
 
         {/* Player name label */}
         <Text
-          position={[0, 2.8, 0]}
-          fontSize={0.3}
+          position={[0, 2.3, 0]}
+          fontSize={0.25}
           color="white"
           anchorX="center"
           anchorY="middle"
@@ -193,7 +250,7 @@ export function World3D({
 
       {/* Camera controls (orbit controls for looking around) */}
       <OrbitControls
-        target={[playerPosition.x, 1, playerPosition.z]}
+        target={[playerPosition.x, 0.6, playerPosition.z]}
         enablePan={true}
         enableZoom={true}
         minDistance={10}

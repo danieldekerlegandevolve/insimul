@@ -20,7 +20,7 @@ export function LocationInfo({ currentLocation, worldData, playerPosition }: Loc
   }) || [];
 
   return (
-    <Card className="absolute left-4 top-24 w-80 bg-black/80 border-white/20 text-white backdrop-blur-sm">
+    <Card className="absolute left-4 top-24 w-80 bg-black/80 border-white/20 text-white backdrop-blur-sm z-10 pointer-events-auto">
       <CardContent className="pt-6">
         <div className="space-y-3">
           <div>

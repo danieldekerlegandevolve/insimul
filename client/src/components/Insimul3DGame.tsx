@@ -325,26 +325,28 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
   }
 
   return (
-    <div ref={containerRef} className="h-screen w-screen bg-black overflow-hidden">
+    <div ref={containerRef} className="relative h-screen w-screen bg-black overflow-hidden">
       {/* 3D Canvas */}
-      <Canvas
-        shadows
-        camera={{ position: [0, 5, 10], fov: 75 }}
-        className="w-full h-full"
-      >
-        <Suspense fallback={null}>
-          <World3D
-            worldData={worldData}
-            playerPosition={playerPosition}
-            onPlayerMove={setPlayerPosition}
-            onCharacterInteraction={handleCharacterInteraction}
-            currentLocation={currentLocation}
-          />
-        </Suspense>
-      </Canvas>
+      <div className="absolute inset-0">
+        <Canvas
+          shadows
+          camera={{ position: [0, 5, 10], fov: 75 }}
+          style={{ width: '100%', height: '100%' }}
+        >
+          <Suspense fallback={null}>
+            <World3D
+              worldData={worldData}
+              playerPosition={playerPosition}
+              onPlayerMove={setPlayerPosition}
+              onCharacterInteraction={handleCharacterInteraction}
+              currentLocation={currentLocation}
+            />
+          </Suspense>
+        </Canvas>
+      </div>
 
       {/* Top Bar UI */}
-      <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent pointer-events-none">
+      <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent pointer-events-none z-10">
         <div className="flex items-center gap-2 pointer-events-auto">
           <Button variant="ghost" size="icon" onClick={onBack} className="bg-black/50 hover:bg-black/70">
             <ArrowLeft className="w-5 h-5" />
@@ -366,7 +368,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
             variant="outline"
             size="sm"
             onClick={() => setShowFastTravel(true)}
-            className="bg-black/50 hover:bg-black/70 border-white/20"
+            className="bg-black/50 hover:bg-black/70 border-white/20 text-white"
           >
             <Map className="w-4 h-4 mr-2" />
             Fast Travel (M)
@@ -375,7 +377,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
             variant="outline"
             size="sm"
             onClick={() => setShowStats(!showStats)}
-            className="bg-black/50 hover:bg-black/70 border-white/20"
+            className="bg-black/50 hover:bg-black/70 border-white/20 text-white"
           >
             <Users className="w-4 h-4 mr-2" />
             Stats
@@ -384,9 +386,9 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
             variant="outline"
             size="sm"
             onClick={toggleFullscreen}
-            className="bg-black/50 hover:bg-black/70 border-white/20"
+            className="bg-black/50 hover:bg-black/70 border-white/20 text-white"
           >
-            {isFullscreen ? '🗗 Exit Fullscreen' : '🗖 Fullscreen'}
+            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
           </Button>
         </div>
       </div>
@@ -400,7 +402,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
 
       {/* Stats Panel */}
       {showStats && (
-        <Card className="absolute right-4 top-24 w-80 bg-black/90 border-white/20 text-white">
+        <Card className="absolute right-4 top-24 w-80 bg-black/90 border-white/20 text-white z-10">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="w-5 h-5" />
@@ -447,7 +449,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
       )}
 
       {/* Controls Help */}
-      <div className="absolute bottom-4 left-4 bg-black/70 px-4 py-3 rounded-lg backdrop-blur-sm text-white text-sm pointer-events-none">
+      <div className="absolute bottom-4 left-4 bg-black/70 px-4 py-3 rounded-lg backdrop-blur-sm text-white text-sm pointer-events-none z-10">
         <p className="font-semibold mb-1">Controls:</p>
         <p>• WASD / Arrow Keys - Move</p>
         <p>• Mouse - Look Around</p>
