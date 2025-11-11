@@ -41,11 +41,6 @@ export function World3D({
     const handleKeyDown = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
       keysPressed.current.add(key);
-
-      // Open map with M key
-      if (key === 'm') {
-        // This would trigger the fast travel map
-      }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -65,61 +60,43 @@ export function World3D({
   useFrame((state, delta) => {
     if (!playerRef.current) return;
 
-    const moveSpeed = 10 * delta;
+    const moveSpeed = 20 * delta; // Increased speed
     let moveX = 0;
     let moveZ = 0;
 
-    // Calculate movement direction
+    // World-space movement (not camera-relative)
     if (keysPressed.current.has('w') || keysPressed.current.has('arrowup')) {
-      moveZ -= moveSpeed;
+      moveZ -= moveSpeed; // Move north
     }
     if (keysPressed.current.has('s') || keysPressed.current.has('arrowdown')) {
-      moveZ += moveSpeed;
+      moveZ += moveSpeed; // Move south
     }
     if (keysPressed.current.has('a') || keysPressed.current.has('arrowleft')) {
-      moveX -= moveSpeed;
+      moveX -= moveSpeed; // Move west
     }
     if (keysPressed.current.has('d') || keysPressed.current.has('arrowright')) {
-      moveX += moveSpeed;
+      moveX += moveSpeed; // Move east
     }
 
-    // Apply movement
+    // Apply movement directly in world space
     if (moveX !== 0 || moveZ !== 0) {
-      // Calculate camera-relative movement
-      const cameraDirection = new THREE.Vector3();
-      camera.getWorldDirection(cameraDirection);
-      cameraDirection.y = 0;
-      cameraDirection.normalize();
+      playerRef.current.position.x += moveX;
+      playerRef.current.position.z += moveZ;
 
-      const cameraRight = new THREE.Vector3();
-      cameraRight.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0));
-
-      const movement = new THREE.Vector3();
-      movement.addScaledVector(cameraDirection, -moveZ);
-      movement.addScaledVector(cameraRight, moveX);
-
-      playerRef.current.position.add(movement);
-
-      // Update player position
+      // Update player position callback
       const newPos = {
         x: playerRef.current.position.x,
         y: playerRef.current.position.y,
         z: playerRef.current.position.z
       };
       onPlayerMove(newPos);
-
-      // Update camera to follow player (third-person view)
-      const idealOffset = new THREE.Vector3(0, 5, 10);
-      const idealPosition = playerRef.current.position.clone().add(idealOffset);
-      camera.position.lerp(idealPosition, 0.1);
-      camera.lookAt(playerRef.current.position);
     }
   });
 
   // Generate world layout based on settlements
   const generateWorldLayout = () => {
     const settlements = worldData.settlements || [];
-    const spacing = 100; // Distance between settlements
+    const spacing = 300; // Increased distance between settlements for more space
 
     return settlements.map((settlement: any, index: number) => {
       // Arrange settlements in a grid pattern
@@ -216,13 +193,15 @@ export function World3D({
 
       {/* Camera controls (orbit controls for looking around) */}
       <OrbitControls
-        target={playerRef.current?.position || [0, 0, 0]}
-        enablePan={false}
+        target={[playerPosition.x, 1, playerPosition.z]}
+        enablePan={true}
         enableZoom={true}
-        minDistance={5}
-        maxDistance={50}
+        minDistance={10}
+        maxDistance={100}
         minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI / 2.5}
+        maxPolarAngle={Math.PI / 2.2}
+        enableDamping={true}
+        dampingFactor={0.05}
       />
     </>
   );

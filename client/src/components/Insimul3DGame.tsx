@@ -127,6 +127,80 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
     country?: Country;
   }>({});
   const [showStats, setShowStats] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Toggle fullscreen
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    function handleFullscreenChange() {
+      setIsFullscreen(!!document.fullscreenElement);
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  // Keyboard handler for "M" key to open map
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'm') {
+        e.preventDefault();
+        setShowFastTravel(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Update current location based on player proximity to settlements
+  useEffect(() => {
+    if (worldData.settlements.length === 0) return;
+
+    // Find closest settlement
+    let closestSettlement = null;
+    let closestDistance = Infinity;
+    const spacing = 300;
+    const gridSize = Math.ceil(Math.sqrt(worldData.settlements.length));
+
+    worldData.settlements.forEach((settlement: Settlement, index: number) => {
+      const row = Math.floor(index / gridSize);
+      const col = index % gridSize;
+      const settlementX = (col - gridSize / 2) * spacing;
+      const settlementZ = (row - gridSize / 2) * spacing;
+
+      const distance = Math.sqrt(
+        Math.pow(playerPosition.x - settlementX, 2) +
+        Math.pow(playerPosition.z - settlementZ, 2)
+      );
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestSettlement = settlement;
+      }
+    });
+
+    if (closestSettlement) {
+      const state = worldData.states.find((s: State) => s.id === closestSettlement.stateId);
+      const country = worldData.countries.find((c: Country) => c.id === closestSettlement.countryId);
+
+      setCurrentLocation({
+        settlement: closestSettlement,
+        state,
+        country
+      });
+    }
+  }, [playerPosition, worldData.settlements, worldData.states, worldData.countries]);
 
   // Load world data
   useEffect(() => {
@@ -251,7 +325,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
   }
 
   return (
-    <div className="h-screen w-screen bg-black overflow-hidden">
+    <div ref={containerRef} className="h-screen w-screen bg-black overflow-hidden">
       {/* 3D Canvas */}
       <Canvas
         shadows
@@ -295,7 +369,7 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
             className="bg-black/50 hover:bg-black/70 border-white/20"
           >
             <Map className="w-4 h-4 mr-2" />
-            Fast Travel
+            Fast Travel (M)
           </Button>
           <Button
             variant="outline"
@@ -305,6 +379,14 @@ export function Insimul3DGame({ worldId, worldName, onBack }: Insimul3DGameProps
           >
             <Users className="w-4 h-4 mr-2" />
             Stats
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleFullscreen}
+            className="bg-black/50 hover:bg-black/70 border-white/20"
+          >
+            {isFullscreen ? '🗗 Exit Fullscreen' : '🗖 Fullscreen'}
           </Button>
         </div>
       </div>

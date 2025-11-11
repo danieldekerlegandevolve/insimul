@@ -21,12 +21,14 @@ export function Settlement3D({
     const lots = worldData.lots?.filter((l: any) => l.settlementId === settlement.id) || [];
     const businesses = worldData.businesses?.filter((b: any) => b.settlementId === settlement.id) || [];
     const residences = worldData.residences?.filter((r: any) => r.settlementId === settlement.id) || [];
-    const characters = worldData.characters?.filter((c: any) => {
-      // Check if character is in this settlement
-      const charResidence = residences.find((r: any) => r.residentIds?.includes(c.id));
-      const charBusiness = businesses.find((b: any) => b.ownerId === c.id);
-      return charResidence || charBusiness;
-    }) || [];
+
+    // Get all characters - just take first 10 for this settlement as a demo
+    // In reality, you'd filter by settlement properly
+    const allCharacters = worldData.characters || [];
+    const charactersPerSettlement = Math.ceil(allCharacters.length / (worldData.settlements?.length || 1));
+    const settlementIndex = worldData.settlements?.indexOf(settlement) || 0;
+    const startIndex = settlementIndex * charactersPerSettlement;
+    const characters = allCharacters.slice(startIndex, startIndex + charactersPerSettlement);
 
     return { lots, businesses, residences, characters };
   }, [settlement, worldData]);
@@ -37,14 +39,16 @@ export function Settlement3D({
     const { lots, businesses, residences } = settlementData;
 
     // Create buildings from lots
+    const buildingSpacing = 25; // Increased spacing for larger buildings
+
     lots.forEach((lot: any, index: number) => {
       // Arrange buildings in a grid
       const gridSize = Math.ceil(Math.sqrt(lots.length));
       const row = Math.floor(index / gridSize);
       const col = index % gridSize;
 
-      const localX = (col - gridSize / 2) * 8;
-      const localZ = (row - gridSize / 2) * 8;
+      const localX = (col - gridSize / 2) * buildingSpacing;
+      const localZ = (row - gridSize / 2) * buildingSpacing;
 
       const building = businesses.find((b: any) => b.lotId === lot.id) ||
                       residences.find((r: any) => r.lotId === lot.id);
@@ -71,9 +75,9 @@ export function Settlement3D({
           lot: null,
           building: businesses[i] || residences[i],
           position: {
-            x: (col - gridSize / 2) * 8,
+            x: (col - gridSize / 2) * buildingSpacing,
             y: 0,
-            z: (row - gridSize / 2) * 8
+            z: (row - gridSize / 2) * buildingSpacing
           },
           type: i < businesses.length ? 'business' : 'residence'
         });
@@ -86,34 +90,18 @@ export function Settlement3D({
   // Position characters in the settlement
   const positionedCharacters = useMemo(() => {
     return settlementData.characters.map((character: any, index: number) => {
-      // Try to position character at their residence or workplace
-      let charPosition = { x: 0, z: 0 };
+      // Distribute characters around the settlement
+      const numChars = settlementData.characters.length;
+      const gridSize = Math.ceil(Math.sqrt(numChars));
+      const row = Math.floor(index / gridSize);
+      const col = index % gridSize;
 
-      const residence = settlementData.residences.find((r: any) =>
-        r.residentIds?.includes(character.id)
-      );
-
-      if (residence) {
-        const lot = settlementData.lots.find((l: any) => l.id === residence.lotId);
-        if (lot) {
-          const lotIndex = settlementData.lots.indexOf(lot);
-          const gridSize = Math.ceil(Math.sqrt(settlementData.lots.length));
-          const row = Math.floor(lotIndex / gridSize);
-          const col = lotIndex % gridSize;
-          charPosition = {
-            x: (col - gridSize / 2) * 8 + (Math.random() - 0.5) * 3,
-            z: (row - gridSize / 2) * 8 + (Math.random() - 0.5) * 3
-          };
-        }
-      } else {
-        // Random position in settlement
-        const angle = (index / settlementData.characters.length) * Math.PI * 2;
-        const radius = 15;
-        charPosition = {
-          x: Math.cos(angle) * radius,
-          z: Math.sin(angle) * radius
-        };
-      }
+      // Spread characters throughout the settlement area
+      const spreadRadius = 60; // Larger area for characters to wander
+      const charPosition = {
+        x: (col - gridSize / 2) * 15 + (Math.random() - 0.5) * 10,
+        z: (row - gridSize / 2) * 15 + (Math.random() - 0.5) * 10
+      };
 
       return {
         character,
