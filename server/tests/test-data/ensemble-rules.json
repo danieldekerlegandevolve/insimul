@@ -1,0 +1,58 @@
+{
+  "socialRules": [
+    {
+      "name": "Friendly Greeting",
+      "type": "social",
+      "priority": 5,
+      "conditions": [
+        {
+          "type": "mood",
+          "operator": "equals",
+          "value": "happy"
+        },
+        {
+          "type": "relationship",
+          "operator": "greater_than",
+          "value": 0.5
+        }
+      ],
+      "effects": [
+        {
+          "type": "dialogue",
+          "value": "Hello, friend!"
+        },
+        {
+          "type": "relationship_change",
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "name": "Angry Confrontation",
+      "type": "social",
+      "priority": 7,
+      "conditions": [
+        {
+          "type": "mood",
+          "operator": "equals",
+          "value": "angry"
+        },
+        {
+          "type": "relationship",
+          "operator": "less_than",
+          "value": -0.3
+        }
+      ],
+      "effects": [
+        {
+          "type": "dialogue",
+          "value": "I have a problem with you!"
+        },
+        {
+          "type": "relationship_change",
+          "value": -0.2
+        }
+      ]
+    }
+  ]
+}

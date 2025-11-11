@@ -3,9 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Globe, Users, Map, Info, Trash2 } from 'lucide-react';
+import { Globe, Users, Map, Info, Trash2, Settings } from 'lucide-react';
 import { GenealogyViewer } from './visualization/GenealogyViewer';
 import { GeographyMap } from './visualization/GeographyMap';
+import { BaseResourcesConfig } from './BaseResourcesConfig';
 import { useToast } from '@/hooks/use-toast';
 
 interface WorldManagementTabProps {
@@ -15,7 +16,7 @@ interface WorldManagementTabProps {
 }
 
 export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: WorldManagementTabProps) {
-  const [activeView, setActiveView] = useState<'overview' | 'genealogy' | 'map'>('overview');
+  const [activeView, setActiveView] = useState<'overview' | 'genealogy' | 'map' | 'base-resources'>('overview');
   const [settlements, setSettlements] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
   const [totalPopulation, setTotalPopulation] = useState(0);
@@ -109,6 +110,10 @@ export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: World
               <TabsTrigger value="map" disabled={settlements.length === 0 && countries.length === 0}>
                 <Map className="w-4 h-4 mr-2" />
                 Map
+              </TabsTrigger>
+              <TabsTrigger value="base-resources">
+                <Settings className="w-4 h-4 mr-2" />
+                Base Resources
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -226,6 +231,12 @@ export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: World
 
         {activeView === 'map' && (settlements.length > 0 || countries.length > 0) && (
           <GeographyMap worldId={worldId} settlements={settlements} countries={countries} />
+        )}
+
+        {activeView === 'base-resources' && (
+          <div className="max-w-4xl mx-auto">
+            <BaseResourcesConfig worldId={worldId} />
+          </div>
         )}
       </div>
 

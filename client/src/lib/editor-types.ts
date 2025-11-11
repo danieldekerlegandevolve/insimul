@@ -5,7 +5,7 @@ export interface FileTreeNode {
   name: string;
   type: 'file' | 'folder';
   path: string;
-  systemType?: SystemType;
+  sourceFormat?: SystemType;
   isOpen?: boolean;
   children?: FileTreeNode[];
 }
@@ -16,7 +16,7 @@ export interface EditorTab {
   type: 'file' | 'character' | 'genealogy' | 'simulation';
   content?: string;
   isDirty?: boolean;
-  systemType?: SystemType;
+  sourceFormat?: SystemType;
 }
 
 export interface RuleValidation {

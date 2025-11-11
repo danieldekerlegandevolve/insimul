@@ -1,0 +1,479 @@
+{
+  "version": "1.0",
+  "mode": "permissive",
+  "description": "Core built-in predicates for Insimul. Users can add custom predicates freely.",
+  "predicates": {
+    "Character": {
+      "category": "entity-type",
+      "arity": 1,
+      "description": "Identifies an entity as a character",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity",
+          "description": "The character entity"
+        }
+      ],
+      "examples": [
+        "Character(?hero)",
+        "Character(?villain)",
+        "Character(?npc)"
+      ],
+      "builtIn": true
+    },
+    "Person": {
+      "category": "entity-type",
+      "arity": 1,
+      "description": "Identifies an entity as a person (alias for Character)",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "Person(?john)",
+        "Person(?mary)"
+      ],
+      "builtIn": true
+    },
+    "Noble": {
+      "category": "entity-type",
+      "arity": 1,
+      "description": "Identifies a character as nobility",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "Noble(?duke)",
+        "Noble(?countess)"
+      ],
+      "builtIn": true
+    },
+    "age": {
+      "category": "property",
+      "arity": 2,
+      "description": "Age of a character in years",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        },
+        {
+          "name": "years",
+          "type": "number"
+        }
+      ],
+      "examples": [
+        "age(?person, 35)",
+        "age(?elder, Age), Age > 60",
+        "age(?child, ?years)"
+      ],
+      "builtIn": true
+    },
+    "gender": {
+      "category": "property",
+      "arity": 2,
+      "description": "Gender of a character",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        },
+        {
+          "name": "gender",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "gender(?person, \"male\")",
+        "gender(?person, \"female\")",
+        "gender(?person, \"non-binary\")"
+      ],
+      "builtIn": true
+    },
+    "occupation": {
+      "category": "property",
+      "arity": 2,
+      "description": "Current occupation or profession of a character",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        },
+        {
+          "name": "occupation",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "occupation(?person, \"knight\")",
+        "occupation(?merchant, \"trader\")",
+        "occupation(?person, ?job)"
+      ],
+      "builtIn": true
+    },
+    "has_status": {
+      "category": "property",
+      "arity": 2,
+      "description": "Social status of a character",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "has_status(?person, \"nobility\")",
+        "has_status(?person, \"commoner\")",
+        "has_status(?person, \"royalty\")"
+      ],
+      "builtIn": true
+    },
+    "wealth": {
+      "category": "property",
+      "arity": 2,
+      "description": "Wealth amount of a character",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        },
+        {
+          "name": "amount",
+          "type": "number"
+        }
+      ],
+      "examples": [
+        "wealth(?merchant, 10000)",
+        "wealth(?noble, W), W >= 5000"
+      ],
+      "builtIn": true
+    },
+    "alive": {
+      "category": "state",
+      "arity": 1,
+      "description": "Character is currently alive",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "alive(?person)",
+        "not dead(?person)"
+      ],
+      "builtIn": true
+    },
+    "dead": {
+      "category": "state",
+      "arity": 1,
+      "description": "Character is deceased",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "dead(?lord)",
+        "not alive(?person)"
+      ],
+      "builtIn": true
+    },
+    "dies": {
+      "category": "event",
+      "arity": 1,
+      "description": "Character dies (event trigger)",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "dies(?lord)"
+      ],
+      "builtIn": true
+    },
+    "parent_of": {
+      "category": "relationship",
+      "arity": 2,
+      "description": "Direct parent-child relationship",
+      "args": [
+        {
+          "name": "parent",
+          "type": "entity"
+        },
+        {
+          "name": "child",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "parent_of(?mother, ?daughter)",
+        "parent_of(?father, ?son)"
+      ],
+      "builtIn": true
+    },
+    "ancestor_of": {
+      "category": "relationship",
+      "arity": 2,
+      "description": "Ancestral relationship (transitive)",
+      "args": [
+        {
+          "name": "ancestor",
+          "type": "entity"
+        },
+        {
+          "name": "descendant",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "ancestor_of(?grandfather, ?grandchild)"
+      ],
+      "builtIn": true
+    },
+    "sibling_of": {
+      "category": "relationship",
+      "arity": 2,
+      "description": "Sibling relationship",
+      "args": [
+        {
+          "name": "entity1",
+          "type": "entity"
+        },
+        {
+          "name": "entity2",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "sibling_of(?brother, ?sister)"
+      ],
+      "builtIn": true
+    },
+    "married": {
+      "category": "relationship",
+      "arity": 2,
+      "description": "Marriage relationship",
+      "args": [
+        {
+          "name": "spouse1",
+          "type": "entity"
+        },
+        {
+          "name": "spouse2",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "married(?husband, ?wife)",
+        "married(?person, _)"
+      ],
+      "builtIn": true
+    },
+    "engaged": {
+      "category": "relationship",
+      "arity": 2,
+      "description": "Engagement relationship",
+      "args": [
+        {
+          "name": "entity1",
+          "type": "entity"
+        },
+        {
+          "name": "entity2",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "engaged(?person1, ?person2)"
+      ],
+      "builtIn": true
+    },
+    "friendship": {
+      "category": "relationship",
+      "arity": 3,
+      "description": "Friendship relationship with strength",
+      "args": [
+        {
+          "name": "entity1",
+          "type": "entity"
+        },
+        {
+          "name": "entity2",
+          "type": "entity"
+        },
+        {
+          "name": "strength",
+          "type": "number",
+          "description": "0-100 friendship level"
+        }
+      ],
+      "examples": [
+        "friendship(?person1, ?person2, 80)",
+        "friendship(?hero, ?ally, Level), Level > 70"
+      ],
+      "builtIn": true
+    },
+    "rivalry": {
+      "category": "relationship",
+      "arity": 3,
+      "description": "Rivalry relationship with intensity",
+      "args": [
+        {
+          "name": "entity1",
+          "type": "entity"
+        },
+        {
+          "name": "entity2",
+          "type": "entity"
+        },
+        {
+          "name": "intensity",
+          "type": "number"
+        }
+      ],
+      "examples": [
+        "rivalry(?noble1, ?noble2, 90)"
+      ],
+      "builtIn": true
+    },
+    "in_love": {
+      "category": "relationship",
+      "arity": 2,
+      "description": "Romantic love (one-directional)",
+      "args": [
+        {
+          "name": "lover",
+          "type": "entity"
+        },
+        {
+          "name": "beloved",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "in_love(?romeo, ?juliet)"
+      ],
+      "builtIn": true
+    },
+    "eldest_child": {
+      "category": "genealogy",
+      "arity": 1,
+      "description": "First-born child in family",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "eldest_child(?heir)"
+      ],
+      "builtIn": true
+    },
+    "fertile": {
+      "category": "state",
+      "arity": 1,
+      "description": "Character is of childbearing age/capability",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "fertile(?mother)",
+        "fertile(?father)"
+      ],
+      "builtIn": true
+    },
+    "at_location": {
+      "category": "property",
+      "arity": 2,
+      "description": "Character's current location",
+      "args": [
+        {
+          "name": "entity",
+          "type": "entity"
+        },
+        {
+          "name": "location",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "at_location(?person, ?castle)",
+        "at_location(?merchant, ?marketplace)"
+      ],
+      "builtIn": true
+    },
+    "owns": {
+      "category": "relationship",
+      "arity": 2,
+      "description": "Ownership of property or item",
+      "args": [
+        {
+          "name": "owner",
+          "type": "entity"
+        },
+        {
+          "name": "property",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "owns(?lord, ?castle)",
+        "owns(?merchant, ?goods)"
+      ],
+      "builtIn": true
+    },
+    "meets": {
+      "category": "event",
+      "arity": 2,
+      "description": "Two characters meet/encounter each other",
+      "args": [
+        {
+          "name": "entity1",
+          "type": "entity"
+        },
+        {
+          "name": "entity2",
+          "type": "entity"
+        }
+      ],
+      "examples": [
+        "meets(?hero, ?villain)"
+      ],
+      "builtIn": true
+    },
+    "random_chance": {
+      "category": "utility",
+      "arity": 1,
+      "description": "Random probability check",
+      "args": [
+        {
+          "name": "probability",
+          "type": "number",
+          "description": "0.0 to 1.0 probability"
+        }
+      ],
+      "examples": [
+        "random_chance(0.5)",
+        "random_chance(0.3)"
+      ],
+      "builtIn": true
+    }
+  }
+}

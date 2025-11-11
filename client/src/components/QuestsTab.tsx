@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle2, Clock, XCircle, Trophy, Target } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, Trophy, Target, Plus } from 'lucide-react';
+import { QuestCreateDialog } from './QuestCreateDialog';
 
 interface Quest {
   id: string;
@@ -39,6 +40,8 @@ interface QuestsTabProps {
 
 export function QuestsTab({ worldId }: QuestsTabProps) {
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const queryClient = useQueryClient();
 
   // Fetch quests
   const { data: quests = [] } = useQuery<Quest[]>({
@@ -94,10 +97,37 @@ export function QuestsTab({ worldId }: QuestsTabProps) {
   const otherQuests = quests.filter(q => q.status !== 'active' && q.status !== 'completed');
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Quest List */}
-      <div className="lg:col-span-2 space-y-4">
-        {/* Active Quests */}
+    <div className="space-y-4">
+      {/* Header with Create Button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Target className="w-6 h-6" />
+            Quests ({quests.length})
+          </h2>
+          <p className="text-muted-foreground mt-1">
+            Create and manage narrative quests for your world
+          </p>
+        </div>
+        <QuestCreateDialog
+          open={showCreateDialog}
+          onOpenChange={setShowCreateDialog}
+          worldId={worldId}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['/api/worlds', worldId, 'quests'] });
+          }}
+        >
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Create Quest
+          </Button>
+        </QuestCreateDialog>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Quest List */}
+        <div className="lg:col-span-2 space-y-4">
+          {/* Active Quests */}
         {activeQuests.length > 0 && (
           <Card>
             <CardHeader>
@@ -439,6 +469,7 @@ export function QuestsTab({ worldId }: QuestsTabProps) {
             </CardContent>
           </Card>
         )}
+      </div>
       </div>
     </div>
   );

@@ -6,16 +6,22 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus, Sparkles, Zap, Target, Clock } from 'lucide-react';
 
 interface ActionCreateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (action: any) => void;
+  onSubmit: (action: any, isBase: boolean) => void;
+  onGenerateWithAI?: (prompt: string, bulkCreate: boolean, isBase: boolean) => void;
+  isGenerating?: boolean;
   children?: React.ReactNode;
 }
 
-export function ActionCreateDialog({ open, onOpenChange, onSubmit, children }: ActionCreateDialogProps) {
+export function ActionCreateDialog({ open, onOpenChange, onSubmit, onGenerateWithAI, isGenerating = false, children }: ActionCreateDialogProps) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -32,6 +38,13 @@ export function ActionCreateDialog({ open, onOpenChange, onSubmit, children }: A
     verbPresent: '',
     tags: '',
   });
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [bulkCreate, setBulkCreate] = useState(false);
+  const [isBaseResource, setIsBaseResource] = useState(false);
+  const [category, setCategory] = useState('social');
+  const [numActions, setNumActions] = useState(5);
+  const [duration, setDuration] = useState(1);
+  const [difficulty, setDifficulty] = useState(0.5);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +59,11 @@ export function ActionCreateDialog({ open, onOpenChange, onSubmit, children }: A
       narrativeTemplates: [],
     };
 
-    onSubmit(actionData);
+    onSubmit(actionData, isBaseResource);
     onOpenChange(false);
 
     // Reset form
+    setIsBaseResource(false);
     setFormData({
       name: '',
       description: '',
@@ -77,12 +91,43 @@ export function ActionCreateDialog({ open, onOpenChange, onSubmit, children }: A
       )}
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create New Action</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <Zap className="w-5 h-5" />
+            Create New Action
+          </DialogTitle>
           <DialogDescription>
-            Define a new action that characters can perform in simulations.
+            Choose how you want to create your action. Optionally mark it as a base resource for global availability.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <Tabs defaultValue="manual" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="manual">
+              <Plus className="w-4 h-4 mr-2" />
+              Manual
+            </TabsTrigger>
+            <TabsTrigger value="ai">
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Generator
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="manual" className="space-y-4 mt-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Base Resource Checkbox */}
+              <div className="flex items-center space-x-2 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <input
+                  id="is-base-resource-manual"
+                  type="checkbox"
+                  checked={isBaseResource}
+                  onChange={(e) => setIsBaseResource(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <Label htmlFor="is-base-resource-manual" className="cursor-pointer text-sm">
+                  <strong>Create as Base Resource</strong> (global, available to all worlds)
+                </Label>
+              </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Action Name *</Label>
@@ -263,13 +308,189 @@ export function ActionCreateDialog({ open, onOpenChange, onSubmit, children }: A
             <Label htmlFor="requiresTarget">Requires Target</Label>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Create {isBaseResource ? 'Base ' : ''}Action</Button>
+              </DialogFooter>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="ai" className="space-y-4 mt-4">
+            {/* Base Resource Checkbox */}
+            <div className="flex items-center space-x-2 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+              <input
+                id="is-base-resource-ai"
+                type="checkbox"
+                checked={isBaseResource}
+                onChange={(e) => setIsBaseResource(e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <Label htmlFor="is-base-resource-ai" className="cursor-pointer text-sm">
+                <strong>Create as Base Resource</strong> (global, available to all worlds)
+              </Label>
+            </div>
+
+            {/* Action Description */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  Action Description
+                </CardTitle>
+                <CardDescription>
+                  Describe the type of actions you want characters to be able to perform
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Prompt</Label>
+                  <Textarea
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder="e.g., Create actions for characters to trade goods, negotiate prices, and complete business transactions..."
+                    className="min-h-[100px]"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="social">Social</SelectItem>
+                      <SelectItem value="work">Work</SelectItem>
+                      <SelectItem value="leisure">Leisure</SelectItem>
+                      <SelectItem value="combat">Combat</SelectItem>
+                      <SelectItem value="trade">Trade</SelectItem>
+                      <SelectItem value="travel">Travel</SelectItem>
+                      <SelectItem value="magic">Magic</SelectItem>
+                      <SelectItem value="crafting">Crafting</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Action Parameters */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="w-5 h-5 text-primary" />
+                  Action Parameters
+                </CardTitle>
+                <CardDescription>
+                  Set default parameters for generated actions
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label>Bulk Generation</Label>
+                  <Switch
+                    checked={bulkCreate}
+                    onCheckedChange={setBulkCreate}
+                  />
+                </div>
+
+                {bulkCreate && (
+                  <div className="space-y-2">
+                    <Label>Number of Actions: {numActions}</Label>
+                    <Slider
+                      value={[numActions]}
+                      onValueChange={([v]) => setNumActions(v)}
+                      min={1}
+                      max={20}
+                      step={1}
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    Duration (time units): {duration}
+                  </Label>
+                  <Slider
+                    value={[duration]}
+                    onValueChange={([v]) => setDuration(v)}
+                    min={0.5}
+                    max={10}
+                    step={0.5}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Difficulty (0-1): {difficulty.toFixed(2)}</Label>
+                  <Slider
+                    value={[difficulty * 100]}
+                    onValueChange={([v]) => setDifficulty(v / 100)}
+                    min={0}
+                    max={100}
+                    step={5}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Example Prompts */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Example Prompts</CardTitle>
+                <CardDescription>Click to use these example prompts</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {[
+                    'Create social actions for characters to make friends, gossip, and form alliances',
+                    'Generate work actions for different professions like blacksmith, merchant, farmer',
+                    'Create leisure actions for entertainment, sports, and hobbies',
+                    'Generate combat actions for different fighting styles and weapons',
+                    'Create magic actions for casting spells and performing rituals'
+                  ].map((example, i) => (
+                    <Button
+                      key={i}
+                      variant="outline"
+                      className="w-full text-left justify-start h-auto py-2 px-3"
+                      onClick={() => setAiPrompt(example)}
+                    >
+                      <Zap className="w-4 h-4 mr-2 flex-shrink-0" />
+                      <span className="text-sm">{example}</span>
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Generate Button */}
+            <Button 
+              onClick={() => {
+                if (onGenerateWithAI && aiPrompt.trim()) {
+                  onGenerateWithAI(aiPrompt, bulkCreate, isBaseResource);
+                  setAiPrompt('');
+                  setIsBaseResource(false);
+                }
+              }}
+              disabled={isGenerating || !aiPrompt.trim()}
+              className="w-full"
+              size="lg"
+            >
+              {isGenerating ? (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                  Generating {bulkCreate ? `${numActions} ${isBaseResource ? 'Base ' : ''}Actions` : `${isBaseResource ? 'Base ' : ''}Action`}...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Generate {bulkCreate ? `${numActions} ${isBaseResource ? 'Base ' : ''}Actions` : `${isBaseResource ? 'Base ' : ''}Action`}
+                </>
+              )}
             </Button>
-            <Button type="submit">Create Action</Button>
-          </DialogFooter>
-        </form>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

@@ -37,7 +37,6 @@ export function SimulationCreateDialog({ worldId, onCreateSimulation, isLoading 
       worldId,
       name: "",
       description: "",
-      systemTypes: ["insimul"],
       config: {},
       startTime: 0,
       endTime: 100,
@@ -57,12 +56,6 @@ export function SimulationCreateDialog({ worldId, onCreateSimulation, isLoading 
     form.reset();
   };
 
-  const systemTypeOptions = [
-    { value: "insimul", label: "Insimul (All Systems)" },
-    { value: "ensemble", label: "Ensemble Only" },
-    { value: "kismet", label: "Kismet Only" },
-    { value: "tott", label: "Talk of the Town Only" },
-  ];
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -108,25 +101,6 @@ export function SimulationCreateDialog({ worldId, onCreateSimulation, isLoading 
               placeholder="Describe what this simulation will explore..."
               rows={3}
             />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="systemTypes">System Type</Label>
-            <Select
-              value={form.watch("systemTypes")?.[0] || "insimul"}
-              onValueChange={(value) => form.setValue("systemTypes", [value])}
-            >
-              <SelectTrigger data-testid="select-system-type">
-                <SelectValue placeholder="Select system type" />
-              </SelectTrigger>
-              <SelectContent>
-                {systemTypeOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

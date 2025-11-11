@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Database, Globe, MapPin, Users, BookOpen, Sword, Target, Scroll, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { BaseResourcesManager } from "@/components/BaseResourcesManager";
 
 interface AdminPanelProps {
   onBack: () => void;
@@ -23,6 +24,8 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
   const [actions, setActions] = useState<any[]>([]);
   const [quests, setQuests] = useState<any[]>([]);
   const [truths, setTruths] = useState<any[]>([]);
+  const [baseRules, setBaseRules] = useState<any[]>([]);
+  const [baseActions, setBaseActions] = useState<any[]>([]);
   const [selectedEntity, setSelectedEntity] = useState<{ type: string; data: any } | null>(null);
 
   useEffect(() => {
@@ -32,6 +35,25 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
   const fetchAllData = async () => {
     setLoading(true);
     try {
+      // Fetch base resources (global rules and actions)
+      const baseRulesRes = await fetch('/api/rules/base');
+      if (baseRulesRes.ok) {
+        const baseRulesData = await baseRulesRes.json();
+        setBaseRules(baseRulesData);
+      } else {
+        console.warn('Failed to fetch base rules:', baseRulesRes.status);
+        setBaseRules([]);
+      }
+
+      const baseActionsRes = await fetch('/api/actions/base');
+      if (baseActionsRes.ok) {
+        const baseActionsData = await baseActionsRes.json();
+        setBaseActions(baseActionsData);
+      } else {
+        console.warn('Failed to fetch base actions:', baseActionsRes.status);
+        setBaseActions([]);
+      }
+
       // Fetch all worlds first
       const worldsRes = await fetch('/api/worlds');
       const worldsData = await worldsRes.json();
@@ -233,7 +255,7 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
           </Button>
         </div>
 
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-6 gap-4 mb-6">
           <Card>
             <CardHeader className="pb-3">
               <CardDescription>Worlds</CardDescription>
@@ -258,17 +280,30 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
               <CardTitle className="text-3xl">{characters.length}</CardTitle>
             </CardHeader>
           </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>Base Rules</CardDescription>
+              <CardTitle className="text-3xl">{baseRules.length}</CardTitle>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>Base Actions</CardDescription>
+              <CardTitle className="text-3xl">{baseActions.length}</CardTitle>
+            </CardHeader>
+          </Card>
         </div>
 
         <div className="grid grid-cols-3 gap-6">
           <div className="col-span-2">
             <Tabs defaultValue="worlds" className="w-full">
-              <TabsList className="grid grid-cols-5 w-full">
+              <TabsList className="grid grid-cols-6 w-full">
                 <TabsTrigger value="worlds">Worlds</TabsTrigger>
                 <TabsTrigger value="geography">Geography</TabsTrigger>
                 <TabsTrigger value="characters">Characters</TabsTrigger>
                 <TabsTrigger value="rules">Rules & Actions</TabsTrigger>
                 <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="base">Base Resources</TabsTrigger>
               </TabsList>
 
               <TabsContent value="worlds" className="mt-4">
@@ -327,6 +362,39 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
                   </TabsContent>
                 </Tabs>
               </TabsContent>
+
+              <TabsContent value="base" className="mt-4">
+                <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 mb-4">
+                  <p className="text-sm text-muted-foreground">
+                    <strong>Manage Base Resources:</strong> Create base resources through the main app's 
+                    <strong> Import Data</strong> modal or <strong>Create New Rule/Action</strong> dialogs.
+                    Delete individual or multiple base resources below.
+                  </p>
+                </div>
+
+                <Tabs defaultValue="base-rules">
+                  <TabsList>
+                    <TabsTrigger value="base-rules">Base Rules ({baseRules.length})</TabsTrigger>
+                    <TabsTrigger value="base-actions">Base Actions ({baseActions.length})</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="base-rules" className="mt-4">
+                    <BaseResourcesManager
+                      resources={baseRules}
+                      resourceType="rule"
+                      icon={<BookOpen className="w-5 h-5 text-purple-500" />}
+                      onRefresh={fetchAllData}
+                    />
+                  </TabsContent>
+                  <TabsContent value="base-actions" className="mt-4">
+                    <BaseResourcesManager
+                      resources={baseActions}
+                      resourceType="action"
+                      icon={<Sword className="w-5 h-5 text-pink-500" />}
+                      onRefresh={fetchAllData}
+                    />
+                  </TabsContent>
+                </Tabs>
+              </TabsContent>
             </Tabs>
           </div>
 
@@ -343,6 +411,7 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
           </div>
         </div>
       </div>
+
     </div>
   );
 }

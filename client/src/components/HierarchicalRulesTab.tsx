@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Scroll, Plus, ArrowLeft, ChevronRight, Code, FileText, Edit, Save, X, RefreshCw } from 'lucide-react';
+import { Scroll, Plus, ArrowLeft, ChevronRight, Code, FileText, Edit, Save, X, RefreshCw, Globe } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,6 +25,8 @@ export function HierarchicalRulesTab({ worldId }: HierarchicalRulesTabProps) {
   
   // Data states
   const [rules, setRules] = useState<any[]>([]);
+  const [baseRules, setBaseRules] = useState<any[]>([]);
+  const [enabledBaseRuleIds, setEnabledBaseRuleIds] = useState<string[]>([]);
   
   // Dialog state
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -42,10 +45,30 @@ export function HierarchicalRulesTab({ worldId }: HierarchicalRulesTabProps) {
 
   const fetchRules = async () => {
     try {
-      const res = await fetch(`/api/rules?worldId=${worldId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setRules(data);
+      // Fetch world-specific rules
+      const rulesRes = await fetch(`/api/rules?worldId=${worldId}`);
+      if (rulesRes.ok) {
+        const rulesData = await rulesRes.json();
+        setRules(rulesData);
+      }
+
+      // Fetch base rules
+      const baseRulesRes = await fetch('/api/rules/base');
+      let baseRulesData: any[] = [];
+      if (baseRulesRes.ok) {
+        baseRulesData = await baseRulesRes.json();
+        setBaseRules(baseRulesData);
+      }
+
+      // Fetch world's base resource config
+      const configRes = await fetch(`/api/worlds/${worldId}/base-resources/config`);
+      if (configRes.ok) {
+        const config = await configRes.json();
+        // If no explicit config, all base rules are enabled by default
+        const enabled = config.disabledBaseRules && config.disabledBaseRules.length > 0
+          ? baseRulesData.filter((r: any) => !config.disabledBaseRules.includes(r.id)).map((r: any) => r.id)
+          : baseRulesData.map((r: any) => r.id);
+        setEnabledBaseRuleIds(enabled);
       }
     } catch (error) {
       console.error('Failed to fetch rules:', error);
@@ -175,66 +198,141 @@ export function HierarchicalRulesTab({ worldId }: HierarchicalRulesTabProps) {
           </div>
           
           <ScrollArea className="h-[600px]">
-            <div className="grid gap-4">
-              {rules.map((rule) => (
-                <Card 
-                  key={rule.id} 
-                  className="cursor-pointer hover:border-primary hover:shadow-lg transition-all duration-200 hover:scale-[1.01]" 
-                  onClick={() => viewRuleDetail(rule)}
-                >
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                          <Scroll className="w-5 h-5 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <CardTitle className="text-xl">{rule.name}</CardTitle>
-                            {getRuleSyntaxBadge(rule.syntax)}
-                            {!rule.isActive && (
-                              <Badge variant="outline" className="bg-gray-500/10 text-gray-500">
-                                Inactive
-                              </Badge>
-                            )}
+            <Tabs defaultValue="world" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-4">
+                <TabsTrigger value="world">
+                  <Scroll className="w-4 h-4 mr-2" />
+                  World Rules ({rules.length})
+                </TabsTrigger>
+                <TabsTrigger value="base">
+                  <Globe className="w-4 h-4 mr-2" />
+                  Base Rules ({baseRules.filter(r => enabledBaseRuleIds.includes(r.id)).length})
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="world" className="mt-0">
+                <div className="grid gap-4">
+                  {rules.map((rule) => (
+                    <Card 
+                      key={rule.id} 
+                      className="cursor-pointer hover:border-primary hover:shadow-lg transition-all duration-200 hover:scale-[1.01]" 
+                      onClick={() => viewRuleDetail(rule)}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                              <Scroll className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <CardTitle className="text-xl">{rule.name}</CardTitle>
+                                {getRuleSyntaxBadge(rule.syntax)}
+                                {!rule.isActive && (
+                                  <Badge variant="outline" className="bg-gray-500/10 text-gray-500">
+                                    Inactive
+                                  </Badge>
+                                )}
+                              </div>
+                              <CardDescription>{rule.description || 'No description'}</CardDescription>
+                            </div>
                           </div>
-                          <CardDescription>{rule.description || 'No description'}</CardDescription>
+                          <ChevronRight className="w-6 h-6 text-muted-foreground" />
                         </div>
-                      </div>
-                      <ChevronRight className="w-6 h-6 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex gap-4 text-sm text-muted-foreground">
+                          {rule.priority !== undefined && (
+                            <span>Priority: {rule.priority}</span>
+                          )}
+                          {rule.triggers && rule.triggers.length > 0 && (
+                            <span>{rule.triggers.length} trigger(s)</span>
+                          )}
+                          {rule.tags && rule.tags.length > 0 && (
+                            <span>{rule.tags.length} tag(s)</span>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  
+                  {rules.length === 0 && (
+                    <Card className="border-dashed">
+                      <CardContent className="pt-12 pb-12">
+                        <div className="text-center space-y-3">
+                          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <Scroll className="w-6 h-6 text-primary" />
+                          </div>
+                          <h3 className="font-semibold">No World-Specific Rules</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Click "Add Rule" to create your first world-specific rule
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="base" className="mt-0">
+                <div className="grid gap-4">
+                  {baseRules.filter(r => enabledBaseRuleIds.includes(r.id)).length > 0 ? (
+                    <div className="space-y-2">
+                      {baseRules.filter(r => enabledBaseRuleIds.includes(r.id)).map((rule) => (
+                        <Card 
+                          key={rule.id} 
+                          className="cursor-pointer hover:border-primary hover:shadow-lg transition-all duration-200 hover:scale-[1.01] border-l-4 border-l-purple-500" 
+                          onClick={() => viewRuleDetail(rule)}
+                        >
+                          <CardHeader>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3 flex-1">
+                                <div className="p-2 bg-purple-500/10 rounded-lg">
+                                  <Scroll className="w-5 h-5 text-purple-500" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <CardTitle className="text-xl">{rule.name}</CardTitle>
+                                    <Badge variant="outline" className="bg-purple-500/10 text-purple-500">
+                                      🌐 Base
+                                    </Badge>
+                                    {getRuleSyntaxBadge(rule.syntax)}
+                                  </div>
+                                  <CardDescription>{rule.description || 'Global rule available across all worlds'}</CardDescription>
+                                </div>
+                              </div>
+                              <ChevronRight className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                          </CardHeader>
+                          {rule.category && (
+                            <CardContent>
+                              <div className="flex gap-4 text-sm text-muted-foreground">
+                                <span>Category: {rule.category}</span>
+                                {rule.ruleType && <span>Type: {rule.ruleType}</span>}
+                              </div>
+                            </CardContent>
+                          )}
+                        </Card>
+                      ))}
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex gap-4 text-sm text-muted-foreground">
-                      {rule.priority !== undefined && (
-                        <span>Priority: {rule.priority}</span>
-                      )}
-                      {rule.triggers && rule.triggers.length > 0 && (
-                        <span>{rule.triggers.length} trigger(s)</span>
-                      )}
-                      {rule.tags && rule.tags.length > 0 && (
-                        <span>{rule.tags.length} tag(s)</span>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              
-              {rules.length === 0 && (
-                <Card className="border-dashed">
-                  <CardContent className="pt-12 pb-12">
-                    <div className="text-center space-y-3">
-                      <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Scroll className="w-6 h-6 text-primary" />
-                      </div>
-                      <p className="text-muted-foreground">
-                        No rules yet. Click "Add Rule" to create your first rule!
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+                  ) : (
+                    <Card className="border-dashed">
+                      <CardContent className="pt-12 pb-12">
+                        <div className="text-center space-y-3">
+                          <div className="mx-auto w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-between">
+                            <Globe className="w-6 h-6 text-purple-500" />
+                          </div>
+                          <h3 className="font-semibold">No Base Rules Enabled</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Enable base rules in the Base Resources Configuration
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
           </ScrollArea>
         </div>
       )}

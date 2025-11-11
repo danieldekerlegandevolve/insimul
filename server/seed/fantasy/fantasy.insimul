@@ -1,0 +1,202 @@
+{
+  "world": {
+    "name": "Realm of Aethermoor",
+    "description": "A high fantasy realm where multiple races coexist, magic flows freely, and ancient prophecies guide destiny",
+    "sourceFormats": ["insimul", "kismet"],
+    "config": {
+      "era": "fantasy",
+      "magic": "high",
+      "races": ["human", "elf", "dwarf", "orc"]
+    }
+  },
+  "countries": [
+    {
+      "id": "human_kingdom",
+      "name": "Kingdom of Aethoria",
+      "governmentType": "monarchy",
+      "economicSystem": "feudal"
+    },
+    {
+      "id": "elf_realm",
+      "name": "Elven Realm of Silverwood",
+      "governmentType": "theocracy",
+      "economicSystem": "agricultural"
+    },
+    {
+      "id": "dwarf_kingdom",
+      "name": "Dwarven Holds of Ironpeak",
+      "governmentType": "monarchy",
+      "economicSystem": "trade-based"
+    }
+  ],
+  "settlements": [
+    {
+      "id": "human_capital",
+      "countryRef": "human_kingdom",
+      "name": "Aethoria City",
+      "settlementType": "city",
+      "population": 50000,
+      "terrain": "plains"
+    },
+    {
+      "id": "elvish_forest",
+      "countryRef": "elf_realm",
+      "name": "Silverwood Grove",
+      "settlementType": "town",
+      "population": 10000,
+      "terrain": "forest"
+    },
+    {
+      "id": "dwarven_hold",
+      "countryRef": "dwarf_kingdom",
+      "name": "Ironpeak Hold",
+      "settlementType": "town",
+      "population": 20000,
+      "terrain": "mountains"
+    },
+    {
+      "id": "mixed_town",
+      "countryRef": "human_kingdom",
+      "name": "Crossroads Haven",
+      "settlementType": "town",
+      "population": 5000,
+      "terrain": "plains"
+    }
+  ],
+  "characters": [
+    {
+      "id": "human_king",
+      "firstName": "Aldric",
+      "lastName": "Stormborne",
+      "gender": "male",
+      "birthYear": 970,
+      "occupation": "king",
+      "locationRef": "human_capital",
+      "race": "human"
+    },
+    {
+      "id": "human_queen",
+      "firstName": "Eleanor",
+      "lastName": "Stormborne",
+      "gender": "female",
+      "birthYear": 975,
+      "occupation": "queen",
+      "locationRef": "human_capital",
+      "spouseRef": "human_king",
+      "race": "human"
+    },
+    {
+      "id": "human_prince",
+      "firstName": "Aragorn",
+      "lastName": "Stormborne",
+      "gender": "male",
+      "birthYear": 995,
+      "occupation": "prince",
+      "locationRef": "human_capital",
+      "parentRefs": ["human_king", "human_queen"],
+      "race": "human"
+    },
+    {
+      "id": "elf_queen",
+      "firstName": "Galadriel",
+      "lastName": "Moonwhisper",
+      "gender": "female",
+      "birthYear": 500,
+      "occupation": "queen",
+      "locationRef": "elvish_forest",
+      "race": "elf"
+    },
+    {
+      "id": "elf_princess",
+      "firstName": "Arwen",
+      "lastName": "Moonwhisper",
+      "gender": "female",
+      "birthYear": 850,
+      "occupation": "princess",
+      "locationRef": "elvish_forest",
+      "parentRefs": ["elf_queen"],
+      "race": "elf"
+    },
+    {
+      "id": "elf_ranger",
+      "firstName": "Legolas",
+      "lastName": "Greenleaf",
+      "gender": "male",
+      "birthYear": 700,
+      "occupation": "ranger",
+      "locationRef": "elvish_forest",
+      "race": "elf"
+    },
+    {
+      "id": "dwarf_king",
+      "firstName": "Thorin",
+      "lastName": "Ironbeard",
+      "gender": "male",
+      "birthYear": 950,
+      "occupation": "king",
+      "locationRef": "dwarven_hold",
+      "race": "dwarf"
+    },
+    {
+      "id": "dwarf_warrior",
+      "firstName": "Gimli",
+      "lastName": "Ironbeard",
+      "gender": "male",
+      "birthYear": 980,
+      "occupation": "warrior",
+      "locationRef": "dwarven_hold",
+      "parentRefs": ["dwarf_king"],
+      "race": "dwarf"
+    },
+    {
+      "id": "wizard_gandalf",
+      "firstName": "Gandalf",
+      "lastName": "Adventurer",
+      "gender": "male",
+      "birthYear": 980,
+      "occupation": "wizard",
+      "locationRef": "mixed_town",
+      "race": "human"
+    },
+    {
+      "id": "warrior_boromir",
+      "firstName": "Boromir",
+      "lastName": "Adventurer",
+      "gender": "male",
+      "birthYear": 980,
+      "occupation": "warrior",
+      "locationRef": "mixed_town",
+      "race": "human"
+    },
+    {
+      "id": "cleric_galadriel",
+      "firstName": "Galadriel",
+      "lastName": "Adventurer",
+      "gender": "female",
+      "birthYear": 980,
+      "occupation": "cleric",
+      "locationRef": "mixed_town",
+      "race": "elf"
+    },
+    {
+      "id": "barbarian_grommash",
+      "firstName": "Grommash",
+      "lastName": "Adventurer",
+      "gender": "male",
+      "birthYear": 980,
+      "occupation": "barbarian",
+      "locationRef": "mixed_town",
+      "race": "orc"
+    }
+  ],
+  "relationships": [
+    {
+      "characterRef": "wizard_gandalf",
+      "friendRefs": ["warrior_boromir", "cleric_galadriel", "barbarian_grommash"]
+    },
+    {
+      "characterRef": "human_prince",
+      "friendRefs": ["elf_princess"]
+    }
+  ]
+}

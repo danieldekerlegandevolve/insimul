@@ -1,0 +1,32 @@
+// Test Insimul Rules
+rule GreetingRule {
+  name: "Friendly Greeting"
+  type: social
+  priority: 5
+  
+  when {
+    character.mood == "happy"
+    target.relationship > 0.5
+  }
+  
+  then {
+    say("Hello, friend!")
+    relationship.increase(0.1)
+  }
+}
+
+rule ConflictRule {
+  name: "Angry Confrontation"
+  type: social
+  priority: 7
+  
+  when {
+    character.mood == "angry"
+    target.relationship < -0.3
+  }
+  
+  then {
+    say("I have a problem with you!")
+    relationship.decrease(0.2)
+  }
+}

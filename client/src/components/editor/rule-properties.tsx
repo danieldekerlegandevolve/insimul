@@ -38,7 +38,7 @@ export default function RuleProperties({ activeTab }: RulePropertiesProps) {
           
           <div>
             <Label className="text-xs font-medium text-slate-600">System Type</Label>
-            <Select defaultValue={activeTab.systemType || 'ensemble'}>
+            <Select defaultValue={activeTab.sourceFormat || 'ensemble'}>
               <SelectTrigger className="w-full text-sm mt-1">
                 <SelectValue placeholder="Select system type" />
               </SelectTrigger>

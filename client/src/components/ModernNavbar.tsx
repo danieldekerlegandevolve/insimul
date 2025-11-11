@@ -25,7 +25,9 @@ import {
   Upload,
   Download,
   X,
-  Home
+  Home,
+  FileText,
+  Gamepad2
 } from 'lucide-react';
 
 interface ModernNavbarProps {
@@ -38,18 +40,12 @@ interface ModernNavbarProps {
 export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWorld }: ModernNavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const createItems = [
+  const contentItems = [
     { id: 'rules', label: 'Rules', icon: Scroll },
     { id: 'society', label: 'Society', icon: Users },
     { id: 'actions', label: 'Actions', icon: Zap },
     { id: 'quests', label: 'Quests', icon: Target },
-  ];
-
-  const generateItems = [
-    { id: 'generate-society', label: 'Generate Societies', icon: Users },
-    { id: 'generate-rules', label: 'Generate Rules', icon: Scroll },
-    { id: 'generate-actions', label: 'Generate Actions', icon: Zap },
-    { id: 'generate-quests', label: 'Generate Quests', icon: Target },
+    { id: 'grammars', label: 'Grammars', icon: FileText },
   ];
 
   const truthItems = [
@@ -59,6 +55,7 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
 
   const simulationItems = [
     { id: 'simulations', label: 'Run Simulations', icon: Play },
+    { id: 'rpg-game', label: 'Explore World (RPG)', icon: Gamepad2 },
   ];
 
   const dataItems = [
@@ -153,8 +150,7 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
             World Home
           </Button>
 
-          <NavDropdown label="Create" items={createItems} />
-          <NavDropdown label="Generate" items={generateItems} icon={Sparkles} />
+          <NavDropdown label="Content" items={contentItems} icon={FileText} />
           <NavDropdown label="Truth" items={truthItems} icon={BookOpen} />
           <NavDropdown label="Simulations" items={simulationItems} icon={Play} />
           <NavDropdown label="Data" items={dataItems} icon={Upload} />
@@ -222,21 +218,11 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
                   </div>
                 )}
 
-                {/* Create Section */}
+                {/* Content Section */}
                 <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">CREATE</h3>
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">CONTENT</h3>
                   <div className="space-y-1">
-                    {createItems.map(item => (
-                      <MobileNavItem key={item.id} item={item} />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Generate Section */}
-                <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">GENERATE</h3>
-                  <div className="space-y-1">
-                    {generateItems.map(item => (
+                    {contentItems.map(item => (
                       <MobileNavItem key={item.id} item={item} />
                     ))}
                   </div>

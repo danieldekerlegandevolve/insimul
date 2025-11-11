@@ -24,7 +24,7 @@ export default function CodeEditor({ editorState }: CodeEditorProps) {
       name: 'Untitled',
       type: 'file',
       content: '',
-      systemType: 'ensemble'
+      sourceFormat: 'ensemble'
     });
   };
 
@@ -43,9 +43,9 @@ export default function CodeEditor({ editorState }: CodeEditorProps) {
           >
             <i className={`mr-2 text-xs ${
               tab.type === 'file' 
-                ? tab.systemType === 'ensemble' ? 'fas fa-code text-blue-500'
-                : tab.systemType === 'kismet' ? 'fas fa-code text-green-500'
-                : tab.systemType === 'tott' ? 'fas fa-code text-purple-500'
+                ? tab.sourceFormat === 'ensemble' ? 'fas fa-code text-blue-500'
+                : tab.sourceFormat === 'kismet' ? 'fas fa-code text-green-500'
+                : tab.sourceFormat === 'tott' ? 'fas fa-code text-purple-500'
                 : 'fas fa-code text-slate-400'
                 : tab.type === 'character' ? 'fas fa-user'
                 : tab.type === 'genealogy' ? 'fas fa-family'
@@ -150,7 +150,7 @@ export default function CodeEditor({ editorState }: CodeEditorProps) {
         {activeTabData && (
           <div className="absolute bottom-0 left-0 right-0 bg-blue-600 text-white px-4 py-1 text-xs flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <span>{activeTabData.systemType?.charAt(0).toUpperCase() + activeTabData.systemType?.slice(1)} Syntax</span>
+              <span>{activeTabData.sourceFormat?.charAt(0).toUpperCase() + activeTabData.sourceFormat?.slice(1)} Syntax</span>
               <span>Line 1, Column 1</span>
               <span className="flex items-center">
                 <i className="fas fa-check-circle text-green-300 mr-1"></i>

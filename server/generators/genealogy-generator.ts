@@ -3,8 +3,8 @@
  * Creates multi-generational family trees with realistic relationships
  */
 
-import { storage } from '../storage';
-import { nameGenerator } from '../services/name-generator.js';
+import { storage } from '../db/storage';
+import { nameGenerator } from './name-generator.js';
 import type { InsertCharacter } from '../../shared/schema';
 
 interface GenerationConfig {

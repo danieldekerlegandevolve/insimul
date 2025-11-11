@@ -16,7 +16,7 @@ interface RuleConvertDialogProps {
     id: string;
     name: string;
     content: string;
-    systemType: SystemType;
+    sourceFormat: SystemType;
   };
   onConvert: (ruleId: string, newContent: string, newSystemType: SystemType) => void;
 }
@@ -44,10 +44,10 @@ export function RuleConvertDialog({ open, onOpenChange, rule, onConvert }: RuleC
       const exporter = new RuleExporter();
 
       // Parse the current rule
-      const parsedRules = compiler.compile(rule.content, rule.systemType);
+      const parsedRules = compiler.compile(rule.content, rule.sourceFormat);
       
       if (parsedRules.length === 0) {
-        setError(`Could not parse rule as ${rule.systemType} format. Please check the syntax.`);
+        setError(`Could not parse rule as ${rule.sourceFormat} format. Please check the syntax.`);
         setIsConverting(false);
         return;
       }
@@ -91,7 +91,7 @@ export function RuleConvertDialog({ open, onOpenChange, rule, onConvert }: RuleC
             Convert Rule Format
           </DialogTitle>
           <DialogDescription>
-            Convert "{rule.name}" from {rule.systemType} to another format
+            Convert "{rule.name}" from {rule.sourceFormat} to another format
           </DialogDescription>
         </DialogHeader>
 
@@ -105,7 +105,7 @@ export function RuleConvertDialog({ open, onOpenChange, rule, onConvert }: RuleC
               </SelectTrigger>
               <SelectContent>
                 {formatOptions
-                  .filter(option => option.value !== rule.systemType) // Don't show current format
+                  .filter(option => option.value !== rule.sourceFormat) // Don't show current format
                   .map(option => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
@@ -118,7 +118,7 @@ export function RuleConvertDialog({ open, onOpenChange, rule, onConvert }: RuleC
           {/* Preview Button */}
           <Button
             onClick={handlePreview}
-            disabled={isConverting || targetFormat === rule.systemType}
+            disabled={isConverting || targetFormat === rule.sourceFormat}
             className="w-full"
             variant="outline"
           >
@@ -135,7 +135,7 @@ export function RuleConvertDialog({ open, onOpenChange, rule, onConvert }: RuleC
 
           {/* Original Content */}
           <div className="space-y-2">
-            <Label>Original ({rule.systemType})</Label>
+            <Label>Original ({rule.sourceFormat})</Label>
             <pre className="p-4 bg-slate-100 dark:bg-slate-900 rounded-lg overflow-auto max-h-[200px] text-sm">
               {rule.content}
             </pre>

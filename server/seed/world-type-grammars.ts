@@ -1,0 +1,3553 @@
+/**
+ * Auto-generated World Type Grammars
+ * Last updated: 2025-10-31T05:30:48.378Z
+ *
+ * These are static Tracery grammars for each of the 20 standard world types.
+ * They are used for fast, offline name generation without API calls.
+ */
+
+export const worldTypeGrammars = [
+  {
+    "name": "medieval-fantasy_character_names",
+    "description": "Character names for Medieval Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Gideon",
+        "Kael",
+        "Roric",
+        "Theron",
+        "Baelor",
+        "Falk"
+      ],
+      "femaleFirstName": [
+        "Lyra",
+        "Elara",
+        "Isolde",
+        "Seraphina",
+        "Briony",
+        "Maeve"
+      ],
+      "lastName": [
+        "#lastNamePrefix##lastNameSuffix#",
+        "of the #lastNameLocation#",
+        "Blackwood",
+        "Stonehand",
+        "Ironwrath",
+        "Hawthorne"
+      ],
+      "lastNamePrefix": [
+        "Dragon",
+        "Storm",
+        "Iron",
+        "Shadow",
+        "Silver",
+        "Sun"
+      ],
+      "lastNameSuffix": [
+        "bane",
+        "heart",
+        "forge",
+        "rider",
+        "guard",
+        "fire"
+      ],
+      "lastNameLocation": [
+        "Whispering Woods",
+        "Crimson Peaks",
+        "Ebon Spire",
+        "Silent Vale",
+        "Dragon's Tooth"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "medieval-fantasy"
+    ],
+    "worldType": "medieval-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "medieval-fantasy_settlement_names",
+    "description": "Settlement names for Medieval Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#name_structure#"
+      ],
+      "name_structure": [
+        "#prefix##suffix_joined#",
+        "#prefix# #suffix_separate#",
+        "#descriptor# #suffix_separate#"
+      ],
+      "prefix": [
+        "#descriptor#",
+        "#subject#",
+        "#subject#'s"
+      ],
+      "descriptor": [
+        "Black",
+        "Grim",
+        "Silver",
+        "Ember",
+        "Stone",
+        "Whisper"
+      ],
+      "subject": [
+        "Dragon",
+        "Knight",
+        "Wyrm",
+        "Crown",
+        "Shadow",
+        "King"
+      ],
+      "suffix_joined": [
+        "wood",
+        "burg",
+        "dale",
+        "watch",
+        "gard",
+        "fall"
+      ],
+      "suffix_separate": [
+        "Keep",
+        "Spire",
+        "Ford",
+        "Rest",
+        "Hollow",
+        "Folly"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "medieval-fantasy"
+    ],
+    "worldType": "medieval-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "medieval-fantasy_business_names",
+    "description": "Business and establishment names for Medieval Fantasy settings",
+    "grammar": {
+      "origin": [
+        "The #descriptor# #subject#",
+        "The #descriptor# #object# #establishment#",
+        "The #subject# and the #object#",
+        "The #subject#'s #establishment#",
+        "The #object# of the #subject#",
+        "#subject#'s Respite Inn",
+        "The #descriptor# #object# Tavern"
+      ],
+      "descriptor": [
+        "Gilded",
+        "Sleeping",
+        "Wandering",
+        "Enchanted",
+        "Iron",
+        "Crimson",
+        "Whispering"
+      ],
+      "subject": [
+        "Knight",
+        "Dragon",
+        "Griffin",
+        "Mage",
+        "Wyvern",
+        "King",
+        "Sorcerer"
+      ],
+      "object": [
+        "Anvil",
+        "Flagon",
+        "Cauldron",
+        "Hearth",
+        "Shield",
+        "Scroll",
+        "Spire"
+      ],
+      "establishment": [
+        "Tavern",
+        "Inn",
+        "Shoppe",
+        "Guild",
+        "Emporium",
+        "Apothecary",
+        "Armoury"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "medieval-fantasy"
+    ],
+    "worldType": "medieval-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "high-fantasy_character_names",
+    "description": "Character names for High Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Kaelen",
+        "Theron",
+        "Roric",
+        "Baelor",
+        "Garrick",
+        "Alistair"
+      ],
+      "femaleFirstName": [
+        "Lyra",
+        "Elara",
+        "Seraphina",
+        "Isolde",
+        "Briseis",
+        "Genevieve"
+      ],
+      "lastName": [
+        "#prefix##suffix#",
+        "#natureName#",
+        "of the #domain#"
+      ],
+      "prefix": [
+        "Black",
+        "Iron",
+        "Storm",
+        "Shadow",
+        "Silver",
+        "Sun"
+      ],
+      "suffix": [
+        "wood",
+        "blade",
+        "hand",
+        "rider",
+        "heart",
+        "stone"
+      ],
+      "natureName": [
+        "Oakenshield",
+        "Whisperwind",
+        "Starfall",
+        "Riverbend",
+        "Moonshadow"
+      ],
+      "domain": [
+        "Azure Spire",
+        "Forgotten Vale",
+        "Crimson Peaks",
+        "Whispering Isles",
+        "Sunken City"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "high-fantasy"
+    ],
+    "worldType": "high-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "high-fantasy_settlement_names",
+    "description": "Settlement names for High Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#prefix##nounSuffix#",
+        "#adjective# #noun#",
+        "#noun#'s #endWord#"
+      ],
+      "prefix": [
+        "Silver",
+        "Storm",
+        "Sun",
+        "Star",
+        "Shadow",
+        "Iron"
+      ],
+      "nounSuffix": [
+        "wood",
+        "garde",
+        "fell",
+        "hold",
+        "dale",
+        "spire"
+      ],
+      "adjective": [
+        "Whispering",
+        "Crimson",
+        "Broken",
+        "Last",
+        "Golden",
+        "Forgotten"
+      ],
+      "noun": [
+        "Gate",
+        "Haven",
+        "Spire",
+        "Watch",
+        "Dragon",
+        "Wyrm"
+      ],
+      "endWord": [
+        "Fall",
+        "Hope",
+        "Rest",
+        "Folly",
+        "Landing",
+        "Glory"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "high-fantasy"
+    ],
+    "worldType": "high-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "high-fantasy_business_names",
+    "description": "Business and establishment names for High Fantasy settings",
+    "grammar": {
+      "origin": [
+        "The #adjective# #noun#",
+        "#owner#'s #establishment#",
+        "The #noun# and the #noun#",
+        "The #adjective# #establishment#",
+        "#owner#'s #adjective# Wares"
+      ],
+      "establishment": [
+        "Tavern",
+        "Inn",
+        "Forge",
+        "Apothecary",
+        "Guild Hall",
+        "Emporium"
+      ],
+      "adjective": [
+        "Gilded",
+        "Whispering",
+        "Sunken",
+        "Arcane",
+        "Forgotten",
+        "Ironclad"
+      ],
+      "noun": [
+        "Dragon",
+        "Gryphon",
+        "Kraken",
+        "Anvil",
+        "Cauldron",
+        "Moonstone"
+      ],
+      "owner": [
+        "Grizelda",
+        "The Iron Dwarf",
+        "Shadow-Hand",
+        "The Wandering Elf",
+        "Old Man Fizzle"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "high-fantasy"
+    ],
+    "worldType": "high-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "low-fantasy_character_names",
+    "description": "Character names for Low Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Bram",
+        "Torvin",
+        "Corbin",
+        "Stellan",
+        "Orin",
+        "Roric"
+      ],
+      "femaleFirstName": [
+        "Moira",
+        "Elara",
+        "Signe",
+        "Brenna",
+        "Isolde",
+        "Anya"
+      ],
+      "lastName": [
+        "#tradeName#",
+        "#placeName#",
+        "#folkName#"
+      ],
+      "tradeName": [
+        "Fletcher",
+        "Cinderwright",
+        "Stonehand",
+        "Ironhew",
+        "Mossbinder",
+        "Tallowell"
+      ],
+      "placeName": [
+        "Blackwood",
+        "Marshfeld",
+        "Stonybrook",
+        "Hollowdale",
+        "Greyfen",
+        "Ashworth"
+      ],
+      "folkName": [
+        "Crowe",
+        "Hawthorn",
+        "Oakhart",
+        "Foxglove",
+        "Briarson",
+        "Wolf"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "low-fantasy"
+    ],
+    "worldType": "low-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "low-fantasy_settlement_names",
+    "description": "Settlement names for Low Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#prefix##suffix#",
+        "#prefix# #landmark#",
+        "#founder#'s #landmark#"
+      ],
+      "prefix": [
+        "Glimmer",
+        "Hollow",
+        "Witch",
+        "Grey",
+        "Bracken",
+        "Stone",
+        "Iron",
+        "Fen",
+        "Ridge",
+        "Wood",
+        "Shroud"
+      ],
+      "suffix": [
+        "ton",
+        "burg",
+        "ford",
+        "stead",
+        "wick",
+        "dale",
+        "field",
+        "hollow"
+      ],
+      "founder": [
+        "Gideon",
+        "Silas",
+        "Merek",
+        "Elara",
+        "Anya",
+        "Borin"
+      ],
+      "landmark": [
+        "Folly",
+        "Rest",
+        "Gate",
+        "Landing",
+        "Crossing",
+        "Keep",
+        "Mill",
+        "End"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "low-fantasy"
+    ],
+    "worldType": "low-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "low-fantasy_business_names",
+    "description": "Business and establishment names for Low Fantasy settings",
+    "grammar": {
+      "origin": [
+        "The #descriptor# #noun#",
+        "The #noun# and the #noun#",
+        "#proprietor#'s Fine #establishmentType#",
+        "The #descriptor# #noun# #establishmentType#",
+        "#noun#'s Folly"
+      ],
+      "descriptor": [
+        "Gilded",
+        "Leaky",
+        "Whispering",
+        "Iron",
+        "Hearthside",
+        "Moonlit",
+        "Sunken",
+        "Glimmering",
+        "Oaken"
+      ],
+      "noun": [
+        "Kettle",
+        "Cauldron",
+        "Gryphon",
+        "Anvil",
+        "Spindle",
+        "Serpent",
+        "Mug",
+        "Fox",
+        "Crow",
+        "Lantern"
+      ],
+      "establishmentType": [
+        "Tavern",
+        "Inn",
+        "Smithy",
+        "Apothecary",
+        "Guild House",
+        "Chandlery",
+        "Provisions"
+      ],
+      "proprietor": [
+        "Blackwood",
+        "Stonehand",
+        "Fletcher",
+        "Copperkettle",
+        "Greymane",
+        "Willowisp"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "low-fantasy"
+    ],
+    "worldType": "low-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "dark-fantasy_character_names",
+    "description": "Character names for Dark Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#male_name# #last_name#",
+        "#female_name# #last_name#"
+      ],
+      "male_name": [
+        "Alaric",
+        "Gideon",
+        "Mordecai",
+        "Silas",
+        "Theron",
+        "Corbin"
+      ],
+      "female_name": [
+        "Seraphina",
+        "Lenore",
+        "Isolde",
+        "Morwenna",
+        "Elara",
+        "Belladonna"
+      ],
+      "last_name": [
+        "#name_prefix##name_suffix#",
+        "#noble_house#"
+      ],
+      "name_prefix": [
+        "Black",
+        "Ash",
+        "Grim",
+        "Night",
+        "Thorn",
+        "Shadow"
+      ],
+      "name_suffix": [
+        "wood",
+        "worth",
+        "more",
+        "fell",
+        "croft",
+        "bane"
+      ],
+      "noble_house": [
+        "Morgenstern",
+        "Von Carstein",
+        "Helsing",
+        "Dreadmoor",
+        "Falkenrath",
+        "Belmont"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "dark-fantasy"
+    ],
+    "worldType": "dark-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "dark-fantasy_settlement_names",
+    "description": "Settlement names for Dark Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#prefix##noun#",
+        "#noun##suffix#",
+        "#descriptor# #noun#",
+        "#noun# of the #omen#",
+        "#prefix#'s #noun#"
+      ],
+      "prefix": [
+        "Corpse",
+        "Grave",
+        "Black",
+        "Mourn",
+        "Wraith",
+        "Hag"
+      ],
+      "noun": [
+        "Hollow",
+        "Moor",
+        "Spire",
+        "Barrow",
+        "Crest",
+        "Fen"
+      ],
+      "suffix": [
+        "-watch",
+        "-mire",
+        "-gate",
+        "'s Folly",
+        "-crypt",
+        "-end"
+      ],
+      "descriptor": [
+        "Weeping",
+        "Shattered",
+        "Sunken",
+        "Godless",
+        "Last",
+        "Broken"
+      ],
+      "omen": [
+        "Witch",
+        "Gallows",
+        "Ghoul",
+        "Heretic",
+        "Crow",
+        "Sorrow"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "dark-fantasy"
+    ],
+    "worldType": "dark-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "dark-fantasy_business_names",
+    "description": "Business and establishment names for Dark Fantasy settings",
+    "grammar": {
+      "origin": [
+        "The #adjective# #object#",
+        "#proprietor#'s #establishment#",
+        "The #object# and the #creature#",
+        "The #adjective# #creature# #establishment#",
+        "#creature# & #object#",
+        "The #proprietor#'s Respite"
+      ],
+      "adjective": [
+        "Weeping",
+        "Gilded",
+        "Shrouded",
+        "Harrowed",
+        "Blackened",
+        "Ashen"
+      ],
+      "creature": [
+        "Raven",
+        "Serpent",
+        "Ghoul",
+        "Rat",
+        "Wyrm",
+        "Moth"
+      ],
+      "object": [
+        "Lantern",
+        "Gallows",
+        "Chalice",
+        "Thorn",
+        "Veil",
+        "Skull"
+      ],
+      "proprietor": [
+        "The Saint",
+        "The Widow",
+        "The Executioner",
+        "The Pilgrim",
+        "The Beggar",
+        "The Martyr"
+      ],
+      "establishment": [
+        "Tavern",
+        "Apothecary",
+        "Inn",
+        "Scriptorium",
+        "Guildhouse",
+        "Chantry"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "dark-fantasy"
+    ],
+    "worldType": "dark-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "urban-fantasy_character_names",
+    "description": "Character names for Urban Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#maleFullName#",
+        "#femaleFullName#"
+      ],
+      "maleFullName": [
+        "#maleFirstName# #lastName#"
+      ],
+      "femaleFullName": [
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Caleb",
+        "Rowan",
+        "Silas",
+        "Jax",
+        "Orion",
+        "Finnian"
+      ],
+      "femaleFirstName": [
+        "Luna",
+        "Faye",
+        "Hazel",
+        "Seraphina",
+        "Astrid",
+        "Morgan"
+      ],
+      "lastName": [
+        "Thorne",
+        "Blackwood",
+        "Ashcroft",
+        "Rivers",
+        "Crowe",
+        "Winters"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "urban-fantasy"
+    ],
+    "worldType": "urban-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "urban-fantasy_settlement_names",
+    "description": "Settlement names for Urban Fantasy settings",
+    "grammar": {
+      "origin": [
+        "#mundanePrefix##magicalSuffix#",
+        "#mundanePrefix# #structure#",
+        "#magicalAdjective# #placeName#",
+        "#structure# of the #magicalAdjective# #magicalSuffix.capitalize#",
+        "The #magicalSuffix.capitalize# #structure#"
+      ],
+      "mundanePrefix": [
+        "Iron",
+        "Cinder",
+        "Asphalt",
+        "Chrome",
+        "Veridian",
+        "Gaslight"
+      ],
+      "magicalSuffix": [
+        "veil",
+        "shade",
+        "rune",
+        "whisper",
+        "glimmer",
+        "fade"
+      ],
+      "magicalAdjective": [
+        "Shrouded",
+        "Hidden",
+        "Faded",
+        "Silent",
+        "Echoing",
+        "Veiled"
+      ],
+      "placeName": [
+        "Crossing",
+        "Gardens",
+        "Hollow",
+        "Heights",
+        "Bridge"
+      ],
+      "structure": [
+        "Ward",
+        "Gate",
+        "Spire",
+        "Quay",
+        "Market",
+        "District"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "urban-fantasy"
+    ],
+    "worldType": "urban-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "urban-fantasy_business_names",
+    "description": "Business and establishment names for Urban Fantasy settings",
+    "grammar": {
+      "origin": [
+        "The #magicAdj# #magicNoun#",
+        "#mundaneNoun# & #magicNoun#",
+        "#cityElement# #establishment#",
+        "The #magicNoun#'s #mundaneNoun#",
+        "#magicAdj# #establishment#"
+      ],
+      "magicAdj": [
+        "Gilded",
+        "Whispering",
+        "Ironwood",
+        "Moonlit",
+        "Shadow",
+        "Arcane"
+      ],
+      "magicNoun": [
+        "Cauldron",
+        "Key",
+        "Nexus",
+        "Crow",
+        "Grimoire",
+        "Wisp"
+      ],
+      "mundaneNoun": [
+        "Coffee",
+        "Books",
+        "Laundry",
+        "Pawn",
+        "Records",
+        "Bakery"
+      ],
+      "establishment": [
+        "Tavern",
+        "Guild",
+        "Shop",
+        "Inn",
+        "Cafe",
+        "Apothecary"
+      ],
+      "cityElement": [
+        "Cobblestone",
+        "Gaslamp",
+        "Alleyway",
+        "Rooftop",
+        "Bridge"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "urban-fantasy"
+    ],
+    "worldType": "urban-fantasy",
+    "isActive": true
+  },
+  {
+    "name": "sci-fi-space_character_names",
+    "description": "Character names for Space Opera settings",
+    "grammar": {
+      "origin": [
+        "#fullName#"
+      ],
+      "fullName": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Zane",
+        "Kaelen",
+        "Roric",
+        "Tyber",
+        "Drax",
+        "Orion"
+      ],
+      "femaleFirstName": [
+        "Lyra",
+        "Nyx",
+        "Seraphina",
+        "Elara",
+        "Vexia",
+        "Cora"
+      ],
+      "lastName": [
+        "#lastNamePrefix##lastNameSuffix#",
+        "#lastNamePrefix#'#lastNameSuffix#"
+      ],
+      "lastNamePrefix": [
+        "Val",
+        "Kor",
+        "Xyl",
+        "Zen",
+        "Sol",
+        "Ark"
+      ],
+      "lastNameSuffix": [
+        "os",
+        "is",
+        "an",
+        "en",
+        "ar",
+        "us"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "sci-fi-space"
+    ],
+    "worldType": "sci-fi-space",
+    "isActive": true
+  },
+  {
+    "name": "sci-fi-space_settlement_names",
+    "description": "Settlement names for Space Opera settings",
+    "grammar": {
+      "origin": [
+        "#adjective# #noun#",
+        "#noun#'s #title#",
+        "#prefix##noun#",
+        "#prefix#'s #title#",
+        "#noun# #suffix#"
+      ],
+      "prefix": [
+        "Astra",
+        "Cygnus",
+        "Kaelen",
+        "Orion",
+        "Vesper",
+        "Xylos"
+      ],
+      "noun": [
+        "Spire",
+        "Gate",
+        "Core",
+        "Nebula",
+        "Anchor",
+        "Helix"
+      ],
+      "adjective": [
+        "Azure",
+        "Crimson",
+        "Last",
+        "New",
+        "Fallen",
+        "First"
+      ],
+      "title": [
+        "Reach",
+        "Haven",
+        "Folly",
+        "Hope",
+        "Landing",
+        "Terminus"
+      ],
+      "suffix": [
+        "Prime",
+        "Secundus",
+        "Major",
+        "Minor",
+        "VII"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "sci-fi-space"
+    ],
+    "worldType": "sci-fi-space",
+    "isActive": true
+  },
+  {
+    "name": "sci-fi-space_business_names",
+    "description": "Business and establishment names for Space Opera settings",
+    "grammar": {
+      "origin": [
+        "#namePattern#"
+      ],
+      "namePattern": [
+        "The #descriptor# #spaceNoun#",
+        "#ownerConcept#'s #establishmentType#",
+        "The #spaceNoun# and #spaceNoun#",
+        "#spaceNoun# #descriptor# #establishmentType#",
+        "#ownerConcept#'s #descriptor# Haulage",
+        "The #establishmentType# at #spaceNoun# Station"
+      ],
+      "establishmentType": [
+        "Cantina",
+        "Tavern",
+        "Emporium",
+        "Guild Hall",
+        "Stardock",
+        "Spire"
+      ],
+      "spaceNoun": [
+        "Nebula",
+        "Comet",
+        "Quasar",
+        "Void",
+        "Starship",
+        "Drifter"
+      ],
+      "descriptor": [
+        "Quantum",
+        "Zero-G",
+        "Fallen",
+        "Orbital",
+        "Cosmic",
+        "Last"
+      ],
+      "ownerConcept": [
+        "The Pilot",
+        "The Smuggler",
+        "The Nomad",
+        "The Corsair",
+        "The K'tharr"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "sci-fi-space"
+    ],
+    "worldType": "sci-fi-space",
+    "isActive": true
+  },
+  {
+    "name": "cyberpunk_character_names",
+    "description": "Character names for Cyberpunk settings",
+    "grammar": {
+      "origin": [
+        "#firstNameMale# #lastName#",
+        "#firstNameFemale# #lastName#"
+      ],
+      "firstNameMale": [
+        "Jax",
+        "Kael",
+        "Cy",
+        "Ryo",
+        "Zero",
+        "Nash"
+      ],
+      "firstNameFemale": [
+        "Vex",
+        "Asha",
+        "Nix",
+        "Juno",
+        "Kira",
+        "Echo"
+      ],
+      "lastName": [
+        "Volkov",
+        "Shaw",
+        "Chen",
+        "Ryker",
+        "#corpPrefix#-#techSuffix#",
+        "#corpPrefix#"
+      ],
+      "corpPrefix": [
+        "Omni",
+        "Dyna",
+        "Cy",
+        "Tek",
+        "Aero",
+        "Gen"
+      ],
+      "techSuffix": [
+        "Core",
+        "Sys",
+        "X",
+        "Wave",
+        "Dyne",
+        "Net"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "cyberpunk"
+    ],
+    "worldType": "cyberpunk",
+    "isActive": true
+  },
+  {
+    "name": "cyberpunk_settlement_names",
+    "description": "Settlement names for Cyberpunk settings",
+    "grammar": {
+      "origin": [
+        "#prefix##base#",
+        "#adjective# #location#",
+        "#base#-#location#",
+        "#base# #designation#",
+        "The #adjective# Sprawl",
+        "Port #base#"
+      ],
+      "prefix": [
+        "Neo-",
+        "Cy-",
+        "Omni-",
+        "Zeta-",
+        "Arc-",
+        "Kuro-"
+      ],
+      "base": [
+        "Kyoto",
+        "Chiba",
+        "Helios",
+        "Chrome",
+        "Veridia",
+        "Cinder"
+      ],
+      "location": [
+        "Sprawl",
+        "Grid",
+        "Spire",
+        "Point",
+        "District",
+        "Plex"
+      ],
+      "adjective": [
+        "Ash",
+        "Rust",
+        "Neon",
+        "Static",
+        "Black",
+        "Acid"
+      ],
+      "designation": [
+        "Sector-7G",
+        "District-9",
+        "Point-Zero",
+        "Zone-Gamma",
+        "Grid-404",
+        "Level-13"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "cyberpunk"
+    ],
+    "worldType": "cyberpunk",
+    "isActive": true
+  },
+  {
+    "name": "cyberpunk_business_names",
+    "description": "Business and establishment names for Cyberpunk settings",
+    "grammar": {
+      "origin": [
+        "#prefix# #noun#",
+        "The #adjective# #object#",
+        "#prefix# #noun# #establishment#",
+        "#noun# & #noun# #establishment#",
+        "#object#'s Respite",
+        "The #adjective# #establishment#",
+        "#prefix##noun# Systems"
+      ],
+      "prefix": [
+        "Chrome",
+        "Neuro",
+        "Data",
+        "Giga",
+        "Synth",
+        "Zero-Day"
+      ],
+      "noun": [
+        "Nexus",
+        "Glitch",
+        "Spire",
+        "Cortex",
+        "Drifter",
+        "Matrix"
+      ],
+      "establishment": [
+        "Solutions",
+        "Tavern",
+        "Syndicate",
+        "Emporium",
+        "Labs",
+        "Cantina"
+      ],
+      "adjective": [
+        "Flickering",
+        "Rusty",
+        "Wasted",
+        "Broken",
+        "Digital"
+      ],
+      "object": [
+        "Jack",
+        "Circuit",
+        "Rat",
+        "Drone",
+        "Alley"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "cyberpunk"
+    ],
+    "worldType": "cyberpunk",
+    "isActive": true
+  },
+  {
+    "name": "post-apocalyptic_character_names",
+    "description": "Character names for Post-Apocalyptic settings",
+    "grammar": {
+      "origin": [
+        "#maleName#",
+        "#femaleName#"
+      ],
+      "maleName": [
+        "#maleFirstName# #lastName#"
+      ],
+      "femaleName": [
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Jax",
+        "Corbin",
+        "Silas",
+        "Rook",
+        "Kael",
+        "Gage"
+      ],
+      "femaleFirstName": [
+        "Wren",
+        "Sable",
+        "Echo",
+        "Nova",
+        "Vex",
+        "Terra"
+      ],
+      "lastName": [
+        "#functionalLastName#",
+        "#locationLastName#"
+      ],
+      "functionalLastName": [
+        "Scrap",
+        "Flint",
+        "Bolt",
+        "Breaker",
+        "Tinker",
+        "Rust"
+      ],
+      "locationLastName": [
+        "Blackwood",
+        "Ridge",
+        "Dustwind",
+        "Stonefall",
+        "Barren",
+        "Hollow"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "post-apocalyptic"
+    ],
+    "worldType": "post-apocalyptic",
+    "isActive": true
+  },
+  {
+    "name": "post-apocalyptic_settlement_names",
+    "description": "Settlement names for Post-Apocalyptic settings",
+    "grammar": {
+      "origin": [
+        "#descriptor# #location#",
+        "#founder#'s #location#",
+        "The #descriptor# #remnant#",
+        "#remnant##suffix#",
+        "#founder#'s #suffix#",
+        "#descriptor# #remnant# #location#"
+      ],
+      "descriptor": [
+        "Ash",
+        "Rust",
+        "Scrap",
+        "Broken",
+        "Dust",
+        "Last"
+      ],
+      "location": [
+        "Haven",
+        "Junction",
+        "Fort",
+        "Grave",
+        "Spire",
+        "Hole"
+      ],
+      "remnant": [
+        "Silo",
+        "Gantry",
+        "Engine",
+        "Radio",
+        "Tire",
+        "Bone"
+      ],
+      "founder": [
+        "Saint",
+        "Crow",
+        "Junkman",
+        "Hope",
+        "Echo"
+      ],
+      "suffix": [
+        "Point",
+        "End",
+        "Fall",
+        "Reach",
+        "Wreck",
+        "Yard"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "post-apocalyptic"
+    ],
+    "worldType": "post-apocalyptic",
+    "isActive": true
+  },
+  {
+    "name": "post-apocalyptic_business_names",
+    "description": "Business and establishment names for Post-Apocalyptic settings",
+    "grammar": {
+      "origin": [
+        "The #descriptor# #wastelandNoun#",
+        "#owner# #establishment#",
+        "The #wastelandNoun# & #wastelandNoun#",
+        "The #descriptor# #wastelandNoun# #establishment#",
+        "The #concept#'s End",
+        "The #wastelandNoun#'s #concept#",
+        "#concept# #establishment#"
+      ],
+      "descriptor": [
+        "Rusted",
+        "Glowing",
+        "Blasted",
+        "Broken",
+        "Scabbed",
+        "Sunken"
+      ],
+      "wastelandNoun": [
+        "Crow",
+        "Rat",
+        "Gear",
+        "Skull",
+        "Bomb",
+        "Spire"
+      ],
+      "establishment": [
+        "Tavern",
+        "Outpost",
+        "Emporium",
+        "Clinic",
+        "Guild",
+        "Canteen"
+      ],
+      "owner": [
+        "One-Eye's",
+        "Ma's",
+        "The Doctor's",
+        "The Scrapper's",
+        "The Nomad's"
+      ],
+      "concept": [
+        "Mercy",
+        "Ruin",
+        "Hope",
+        "Dust",
+        "Salvage",
+        "Grit"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "post-apocalyptic"
+    ],
+    "worldType": "post-apocalyptic",
+    "isActive": true
+  },
+  {
+    "name": "steampunk_character_names",
+    "description": "Character names for Steampunk settings",
+    "grammar": {
+      "origin": [
+        "#firstName# #lastName#"
+      ],
+      "firstName": [
+        "#maleFirstName#",
+        "#femaleFirstName#"
+      ],
+      "maleFirstName": [
+        "Alistair",
+        "Barnaby",
+        "Cornelius",
+        "Ebenezer",
+        "Jasper",
+        "Phineas",
+        "Silas"
+      ],
+      "femaleFirstName": [
+        "Ada",
+        "Beatrice",
+        "Clara",
+        "Genevieve",
+        "Isadora",
+        "Lavinia",
+        "Penelope"
+      ],
+      "lastName": [
+        "#namePrefix##nameSuffix#"
+      ],
+      "namePrefix": [
+        "Iron",
+        "Cog",
+        "Steam",
+        "Brass",
+        "Gear",
+        "Locke",
+        "Quill"
+      ],
+      "nameSuffix": [
+        "wright",
+        "smith",
+        "worth",
+        "bottom",
+        "field",
+        "stone",
+        "heart"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "steampunk"
+    ],
+    "worldType": "steampunk",
+    "isActive": true
+  },
+  {
+    "name": "steampunk_settlement_names",
+    "description": "Settlement names for Steampunk settings",
+    "grammar": {
+      "origin": [
+        "#techAdjective# #placeSuffix#",
+        "#baseName#'s #industryNoun#",
+        "#baseName# #placeSuffix#",
+        "#techAdjective# #industryNoun#",
+        "Port #baseName#",
+        "Fort #techAdjective#"
+      ],
+      "baseName": [
+        "Cogsworth",
+        "Blackwood",
+        "Sterling",
+        "Hargrove",
+        "Gresham",
+        "Brindle"
+      ],
+      "techAdjective": [
+        "Gilded",
+        "Iron",
+        "Brass",
+        "Clockwork",
+        "Steam-Powered",
+        "Soot-Stained"
+      ],
+      "placeSuffix": [
+        "Borough",
+        "Crossing",
+        "Hollow",
+        "Spire",
+        "Vale",
+        "Junction"
+      ],
+      "industryNoun": [
+        "Foundry",
+        "Works",
+        "Station",
+        "Depot",
+        "Mill",
+        "Gauge"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "steampunk"
+    ],
+    "worldType": "steampunk",
+    "isActive": true
+  },
+  {
+    "name": "steampunk_business_names",
+    "description": "Business and establishment names for Steampunk settings",
+    "grammar": {
+      "origin": [
+        "The #adjective# #noun#",
+        "#proprietor#'s #establishment#",
+        "The #noun# & the #techNoun#",
+        "#techNoun# & Sons Co.",
+        "The Gilded #techNoun# #establishment#"
+      ],
+      "proprietor": [
+        "Professor Phileas",
+        "Madam Evangeline",
+        "Captain Blackwood",
+        "Tinker & Potts",
+        "Doctor Moreau",
+        "Silas Cogsworth"
+      ],
+      "adjective": [
+        "Clockwork",
+        "Brass",
+        "Steam-Powered",
+        "Aetheric",
+        "Indubitable",
+        "Peculiar"
+      ],
+      "noun": [
+        "Automaton",
+        "Gryphon",
+        "Nautilus",
+        "Leviathan",
+        "Albatross",
+        "Spark-Wright"
+      ],
+      "establishment": [
+        "Tavern & Inn",
+        "Emporium of Curiosities",
+        "Guild of Artificers",
+        "Mechanical Workshop",
+        "Apothecary",
+        "Haberdashery"
+      ],
+      "techNoun": [
+        "Piston",
+        "Boiler",
+        "Dynamo",
+        "Gyroscope",
+        "Chronometer",
+        "Cog"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "steampunk"
+    ],
+    "worldType": "steampunk",
+    "isActive": true
+  },
+  {
+    "name": "dieselpunk_character_names",
+    "description": "Character names for Dieselpunk settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Arthur",
+        "Clyde",
+        "Stanley",
+        "Victor",
+        "Roy",
+        "Jedediah"
+      ],
+      "femaleFirstName": [
+        "Eleanor",
+        "Beatrice",
+        "Hazel",
+        "Gloria",
+        "Marlene",
+        "Ida"
+      ],
+      "lastName": [
+        "#commonSurname#",
+        "#industrialSurname#",
+        "#occupationalTitle#"
+      ],
+      "commonSurname": [
+        "Kowalski",
+        "Schmidt",
+        "Callahan",
+        "Vance",
+        "Devereaux",
+        "Sinclair"
+      ],
+      "industrialSurname": [
+        "Ironwright",
+        "Steelhammer",
+        "Cogsworth",
+        "Blackwell",
+        "Rustcroft",
+        "Gearsmith"
+      ],
+      "occupationalTitle": [
+        "Spanner",
+        "Rivet",
+        "Dynamo",
+        "Griswold",
+        "Fulton",
+        "Volkov"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "dieselpunk"
+    ],
+    "worldType": "dieselpunk",
+    "isActive": true
+  },
+  {
+    "name": "dieselpunk_settlement_names",
+    "description": "Settlement names for Dieselpunk settings",
+    "grammar": {
+      "origin": [
+        "#structure#"
+      ],
+      "structure": [
+        "#industrial##suffix#",
+        "#descriptor##suffix#",
+        "#industrial#'s #core#",
+        "#descriptor# #core#",
+        "#industrial#-#core#"
+      ],
+      "industrial": [
+        "Iron",
+        "Steel",
+        "Piston",
+        "Cog",
+        "Rivet",
+        "Soot",
+        "Dynamo"
+      ],
+      "descriptor": [
+        "Black",
+        "Gilded",
+        "Crimson",
+        "Victory",
+        "Progress",
+        "Union"
+      ],
+      "core": [
+        "Forge",
+        "Yard",
+        "Junction",
+        "Spire",
+        "Works",
+        "Port",
+        "Landing"
+      ],
+      "suffix": [
+        "burg",
+        "ville",
+        "ton",
+        "Creek",
+        "Point",
+        "Hollow"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "dieselpunk"
+    ],
+    "worldType": "dieselpunk",
+    "isActive": true
+  },
+  {
+    "name": "dieselpunk_business_names",
+    "description": "Business and establishment names for Dieselpunk settings",
+    "grammar": {
+      "origin": [
+        "The #descriptor# #noun#",
+        "#proprietor# #establishment#",
+        "The #noun# & #noun#",
+        "#descriptor# #establishment#",
+        "The #descriptor# #noun# #establishment#"
+      ],
+      "descriptor": [
+        "Ironclad",
+        "Brass",
+        "Greased",
+        "Soot-Stained",
+        "Clockwork",
+        "Voltaic"
+      ],
+      "noun": [
+        "Piston",
+        "Cog",
+        "Anvil",
+        "Wrench",
+        "Dynamo",
+        "Gasket"
+      ],
+      "proprietor": [
+        "Sprocket & Sons'",
+        "The Captain's",
+        "Doc Rivet's",
+        "Griswold's",
+        "Maverick's"
+      ],
+      "establishment": [
+        "Tavern",
+        "Foundry",
+        "Workshop",
+        "Guild",
+        "Public House",
+        "Syndicate"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "dieselpunk"
+    ],
+    "worldType": "dieselpunk",
+    "isActive": true
+  },
+  {
+    "name": "historical-ancient_character_names",
+    "description": "Character names for Ancient Civilizations settings",
+    "grammar": {
+      "origin": [
+        "#characterName#"
+      ],
+      "characterName": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Marcus",
+        "Gaius",
+        "Leonidas",
+        "Pericles",
+        "Ramesses",
+        "Ptolemy"
+      ],
+      "femaleFirstName": [
+        "Livia",
+        "Cornelia",
+        "Aspasia",
+        "Gorgo",
+        "Cleopatra",
+        "Nefertari"
+      ],
+      "lastName": [
+        "#romanCognomen#",
+        "#greekEpithet#",
+        "Sinuhe",
+        "Imhotep"
+      ],
+      "romanCognomen": [
+        "Maximus",
+        "Agrippa",
+        "Brutus",
+        "Valerius",
+        "Aurelius",
+        "Scaeva"
+      ],
+      "greekEpithet": [
+        "of Corinth",
+        "the Spartan",
+        "of Thebes",
+        "Alcaeus",
+        "of Macedon"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "historical-ancient"
+    ],
+    "worldType": "historical-ancient",
+    "isActive": true
+  },
+  {
+    "name": "historical-ancient_settlement_names",
+    "description": "Settlement names for Ancient Civilizations settings",
+    "grammar": {
+      "origin": [
+        "#prefix##suffix#",
+        "#honorific#'s #feature#",
+        "#element##suffix#",
+        "#honorific##suffix#",
+        "The #feature# of #honorific#"
+      ],
+      "prefix": [
+        "Alexandr-",
+        "Heli-",
+        "Antioch-",
+        "Caesar-",
+        "Memph-",
+        "Karn-"
+      ],
+      "suffix": [
+        "opolis",
+        "ia",
+        "um",
+        "ium",
+        "is",
+        "on"
+      ],
+      "feature": [
+        "Acropolis",
+        "Forum",
+        "Oasis",
+        "Citadel",
+        "Pylon",
+        "Portus"
+      ],
+      "element": [
+        "Sol",
+        "Petra",
+        "Aqua",
+        "Aethel",
+        "Nilo",
+        "Lux"
+      ],
+      "honorific": [
+        "Apollo",
+        "Isis",
+        "Mars",
+        "Ptolemy",
+        "Augustus",
+        "Juno"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "historical-ancient"
+    ],
+    "worldType": "historical-ancient",
+    "isActive": true
+  },
+  {
+    "name": "historical-ancient_business_names",
+    "description": "Business and establishment names for Ancient Civilizations settings",
+    "grammar": {
+      "origin": [
+        "The #descriptor# #establishment#",
+        "#owner#'s #trade#",
+        "The #establishment# of #location#",
+        "The #descriptor# #trade#",
+        "#owner#'s #establishment#",
+        "#location# #trade#"
+      ],
+      "establishment": [
+        "Taverna",
+        "Inn",
+        "Forum Shop",
+        "Villa",
+        "Guild House",
+        "Apothecary",
+        "Scriptorium",
+        "Thermae"
+      ],
+      "descriptor": [
+        "Golden Fleece",
+        "Laughing Centurion",
+        "Sunken Obelisk",
+        "Gilded Hydra",
+        "Crimson Toga",
+        "Pharaoh's Barge",
+        "Marble Faun",
+        "Olympian Lyre"
+      ],
+      "owner": [
+        "Flavia",
+        "Lyra",
+        "Nefertari",
+        "The Senator",
+        "The Oracle",
+        "Marcus",
+        "Damon"
+      ],
+      "trade": [
+        "Wines & Amphorae",
+        "Scrolls & Inks",
+        "Spices & Silks",
+        "Oils & Perfumes",
+        "Fine Pottery",
+        "Exotic Wares",
+        "Gladius & Scutum"
+      ],
+      "location": [
+        "the Acropolis",
+        "the Nile Delta",
+        "the Seven Hills",
+        "Alexandria",
+        "the Colosseum",
+        "the Great Library",
+        "the Parthenon"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "historical-ancient"
+    ],
+    "worldType": "historical-ancient",
+    "isActive": true
+  },
+  {
+    "name": "historical-medieval_character_names",
+    "description": "Character names for Historical Medieval settings",
+    "grammar": {
+      "origin": [
+        "#maleName#",
+        "#femaleName#"
+      ],
+      "maleName": [
+        "#maleFirstName# #lastName#"
+      ],
+      "femaleName": [
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Godfrey",
+        "Alaric",
+        "Bjorn",
+        "Kenjiro",
+        "Conrad",
+        "Ivan"
+      ],
+      "femaleFirstName": [
+        "Isolde",
+        "Genevieve",
+        "Eleonora",
+        "Chiyoko",
+        "Freydis",
+        "Sun-Hee"
+      ],
+      "lastName": [
+        "#occupationalName#",
+        "#locationalName#",
+        "#descriptiveName#"
+      ],
+      "occupationalName": [
+        "Smith",
+        "Fletcher",
+        "Cooper",
+        "Mason",
+        "Tanaka",
+        "Cartwright"
+      ],
+      "locationalName": [
+        "de Montfort",
+        "von Habsburg",
+        "Atwater",
+        "Hayashi",
+        "of the Wood",
+        "Hill"
+      ],
+      "descriptiveName": [
+        "the Black",
+        "Longshanks",
+        "Redbeard",
+        "Strong",
+        "Swift",
+        "the Fair"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "historical-medieval"
+    ],
+    "worldType": "historical-medieval",
+    "isActive": true
+  },
+  {
+    "name": "historical-medieval_settlement_names",
+    "description": "Settlement names for Historical Medieval settings",
+    "grammar": {
+      "origin": [
+        "#descriptor##location#",
+        "#subject##location#",
+        "#descriptor# #place#",
+        "#subject#'s #place#"
+      ],
+      "descriptor": [
+        "Black",
+        "High",
+        "West",
+        "Stony",
+        "Old",
+        "Long"
+      ],
+      "subject": [
+        "Oak",
+        "Stag",
+        "Crow",
+        "Wulf",
+        "Kings",
+        "Iron",
+        "Ems"
+      ],
+      "location": [
+        "ton",
+        "ham",
+        "bury",
+        "ford",
+        "wick",
+        "stead",
+        "wood",
+        "dale",
+        "mere",
+        "fell"
+      ],
+      "place": [
+        "Ford",
+        "Bridge",
+        "Cross",
+        "Well",
+        "Hill",
+        "Landing",
+        "Folly",
+        "Gate"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "historical-medieval"
+    ],
+    "worldType": "historical-medieval",
+    "isActive": true
+  },
+  {
+    "name": "historical-medieval_business_names",
+    "description": "Business and establishment names for Historical Medieval settings",
+    "grammar": {
+      "origin": [
+        "#name_pattern#"
+      ],
+      "name_pattern": [
+        "The #adjective# #noun#",
+        "The #animal# and #noun#",
+        "#proprietor#'s #establishment#",
+        "The #adjective# #animal#",
+        "The #location# #establishment#",
+        "#proprietor# & Sons Guild"
+      ],
+      "adjective": [
+        "Gilded",
+        "Oaken",
+        "Jolly",
+        "Sleeping",
+        "Weeping",
+        "Stone"
+      ],
+      "noun": [
+        "Anvil",
+        "Flagon",
+        "Harp",
+        "Plough",
+        "Lantern",
+        "Spindle"
+      ],
+      "animal": [
+        "Boar",
+        "Stag",
+        "Falcon",
+        "Swan",
+        "Fox",
+        "Hound"
+      ],
+      "proprietor": [
+        "Fletcher",
+        "Cooper",
+        "Mason",
+        "Wainwright",
+        "Chandler"
+      ],
+      "establishment": [
+        "Tavern",
+        "Inn",
+        "Shop",
+        "Smithy",
+        "Alehouse",
+        "Chandlery"
+      ],
+      "location": [
+        "Northgate",
+        "East Market",
+        "Bridge End",
+        "King's Road",
+        "Old Bailey"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "historical-medieval"
+    ],
+    "worldType": "historical-medieval",
+    "isActive": true
+  },
+  {
+    "name": "historical-renaissance_character_names",
+    "description": "Character names for Renaissance settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Leonardo",
+        "Filippo",
+        "Giovanni",
+        "Alessandro",
+        "Niccolò",
+        "Lorenzo"
+      ],
+      "femaleFirstName": [
+        "Isabella",
+        "Lucrezia",
+        "Caterina",
+        "Bianca",
+        "Sofonisba",
+        "Giulia"
+      ],
+      "lastName": [
+        "#patricianFamily#",
+        "#artisanName#"
+      ],
+      "patricianFamily": [
+        "de' Medici",
+        "Borgia",
+        "Sforza",
+        "d'Este",
+        "da Vinci",
+        "Orsini"
+      ],
+      "artisanName": [
+        "Sartori",
+        "Fabbri",
+        "Scultori",
+        "Barberi",
+        "Molinari",
+        "Ferrari"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "historical-renaissance"
+    ],
+    "worldType": "historical-renaissance",
+    "isActive": true
+  },
+  {
+    "name": "historical-renaissance_settlement_names",
+    "description": "Settlement names for Renaissance settings",
+    "grammar": {
+      "origin": [
+        "#prefix##noun#",
+        "#noun# #adjective#",
+        "#feature# #patron#",
+        "#prefix#-#noun#",
+        "#noun# al #feature#",
+        "#feature# #adjective#"
+      ],
+      "prefix": [
+        "Porto",
+        "Castel",
+        "Valle",
+        "San",
+        "Monte",
+        "Rocca"
+      ],
+      "noun": [
+        "Vespera",
+        "Serafino",
+        "Luce",
+        "Scudo",
+        "Speranza",
+        "Meridia"
+      ],
+      "adjective": [
+        "Nobile",
+        "Segreto",
+        "Dorato",
+        "Sereno",
+        "Antico",
+        "Fiorente"
+      ],
+      "feature": [
+        "Ponte",
+        "Torre",
+        "Fonte",
+        "Piazza",
+        "Giardino",
+        "Borgo"
+      ],
+      "patron": [
+        "de' Medici",
+        "degli Sforza",
+        "del Vescovo",
+        "dell'Artista",
+        "del Mercante",
+        "del Doge"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "historical-renaissance"
+    ],
+    "worldType": "historical-renaissance",
+    "isActive": true
+  },
+  {
+    "name": "historical-renaissance_business_names",
+    "description": "Business and establishment names for Renaissance settings",
+    "grammar": {
+      "origin": [
+        "#format#"
+      ],
+      "format": [
+        "#descriptor# #object#",
+        "The #object# & #object#",
+        "The #craft#'s #establishment#",
+        "#descriptor# #establishment#",
+        "The #object#'s Rest",
+        "The #craft#'s Folly"
+      ],
+      "descriptor": [
+        "The Gilded",
+        "The Scholar's",
+        "The Crimson",
+        "The Silent",
+        "The Bronze",
+        "The Serpent's"
+      ],
+      "object": [
+        "Quill",
+        "Compass",
+        "Codex",
+        "Astrolabe",
+        "Dagger",
+        "Goblet",
+        "Lute"
+      ],
+      "craft": [
+        "Alchemist",
+        "Cartographer",
+        "Scribe",
+        "Artisan",
+        "Philosopher",
+        "Spymaster"
+      ],
+      "establishment": [
+        "Tavern",
+        "Guild",
+        "Atelier",
+        "Shoppe",
+        "Inn",
+        "Society",
+        "Press"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "historical-renaissance"
+    ],
+    "worldType": "historical-renaissance",
+    "isActive": true
+  },
+  {
+    "name": "historical-victorian_character_names",
+    "description": "Character names for Victorian Era settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#",
+        "#maleFirstName# #middleInitial# #lastName#",
+        "#femaleFirstName# #middleInitial# #lastName#"
+      ],
+      "maleFirstName": [
+        "Arthur",
+        "Walter",
+        "Frederick",
+        "Alistair",
+        "Thaddeus",
+        "Elias"
+      ],
+      "femaleFirstName": [
+        "Beatrice",
+        "Eleanor",
+        "Florence",
+        "Cordelia",
+        "Millicent",
+        "Ada"
+      ],
+      "lastName": [
+        "#commonLastName#",
+        "#poshLastName#"
+      ],
+      "commonLastName": [
+        "Smith",
+        "Wright",
+        "Cooper",
+        "Taylor",
+        "Mason",
+        "Fletcher"
+      ],
+      "poshLastName": [
+        "Blackwood",
+        "Ashworth",
+        "Pembrook",
+        "Whitfield",
+        "Davenport",
+        "Harrington"
+      ],
+      "middleInitial": [
+        "J.",
+        "W.",
+        "H.",
+        "E.",
+        "C.",
+        "S."
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "historical-victorian"
+    ],
+    "worldType": "historical-victorian",
+    "isActive": true
+  },
+  {
+    "name": "historical-victorian_settlement_names",
+    "description": "Settlement names for Victorian Era settings",
+    "grammar": {
+      "origin": [
+        "#Prefix##Suffix#",
+        "#Descriptor# #Place#",
+        "#Descriptor#'s #Place#",
+        "Port #Descriptor#",
+        "#Prefix#-#Place#"
+      ],
+      "Prefix": [
+        "Iron",
+        "Coal",
+        "Steam",
+        "Black",
+        "Mill",
+        "Grey"
+      ],
+      "Suffix": [
+        "ton",
+        "burg",
+        "wick",
+        "dale",
+        "croft",
+        "shire"
+      ],
+      "Place": [
+        "Harbour",
+        "Landing",
+        "Bridge",
+        "Forge",
+        "Crossing",
+        "Folly"
+      ],
+      "Descriptor": [
+        "Victoria",
+        "Albert",
+        "King",
+        "Prosperity",
+        "Gilded",
+        "Weaver's"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "historical-victorian"
+    ],
+    "worldType": "historical-victorian",
+    "isActive": true
+  },
+  {
+    "name": "historical-victorian_business_names",
+    "description": "Business and establishment names for Victorian Era settings",
+    "grammar": {
+      "origin": [
+        "The #adjective# #noun#",
+        "#ownerName##partner#'s #establishment#",
+        "The #noun# & #noun#",
+        "#ownerName# and #ownerName# #establishment#",
+        "The #adjective# #establishment#",
+        "The Imperial #companyGood# #companyType#"
+      ],
+      "adjective": [
+        "Gilded",
+        "Royal",
+        "Iron",
+        "Clockwork",
+        "Humble",
+        "Crimson",
+        "Brass",
+        "Steamed"
+      ],
+      "noun": [
+        "Lion",
+        "Crown",
+        "Cog",
+        "Spindle",
+        "Quill",
+        "Lantern",
+        "Anvil",
+        "Anchor",
+        "Compass",
+        "Kettle"
+      ],
+      "ownerName": [
+        "Blackwood",
+        "Grimshaw",
+        "Nightingale",
+        "Pembrook",
+        "Thackeray",
+        "Copperbottom",
+        "Finch"
+      ],
+      "partner": [
+        " & Sons",
+        " & Co.",
+        " & Daughter",
+        " Brothers",
+        " & Associates",
+        ""
+      ],
+      "establishment": [
+        "Tavern",
+        "Public House",
+        "Inn",
+        "Emporium",
+        "Haberdashery",
+        "Apothecary",
+        "Ironmongers",
+        "Drapery",
+        "Guild",
+        "Millinery"
+      ],
+      "companyGood": [
+        "Tea",
+        "Spice",
+        "Cotton",
+        "Silk",
+        "Clockwork",
+        "Steam"
+      ],
+      "companyType": [
+        "Company",
+        "Consortium",
+        "Guild",
+        "Syndicate",
+        "Trading Co."
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "historical-victorian"
+    ],
+    "worldType": "historical-victorian",
+    "isActive": true
+  },
+  {
+    "name": "wild-west_character_names",
+    "description": "Character names for Wild West settings",
+    "grammar": {
+      "origin": [
+        "#fullName#"
+      ],
+      "fullName": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#",
+        "#maleFirstName# '#nickname#' #lastName#"
+      ],
+      "maleFirstName": [
+        "Jedediah",
+        "Silas",
+        "Wyatt",
+        "Cole",
+        "Jesse",
+        "Beau"
+      ],
+      "femaleFirstName": [
+        "Clementine",
+        "Abigail",
+        "Sadie",
+        "Pearl",
+        "Loretta",
+        "Belle"
+      ],
+      "lastName": [
+        "Blackwood",
+        "Calloway",
+        "Ryder",
+        "Holliday",
+        "Starr",
+        "Ironside"
+      ],
+      "nickname": [
+        "Dead-Eye",
+        "Quickdraw",
+        "Calamity",
+        "Dusty",
+        "The Kid"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "wild-west"
+    ],
+    "worldType": "wild-west",
+    "isActive": true
+  },
+  {
+    "name": "wild-west_settlement_names",
+    "description": "Settlement names for Wild West settings",
+    "grammar": {
+      "origin": [
+        "#descriptor# #settlementType#",
+        "#name#'s #settlementType#",
+        "#descriptor# #geography#",
+        "Fort #name#",
+        "#geography# Junction"
+      ],
+      "descriptor": [
+        "Dusty",
+        "Rattlesnake",
+        "Coyote",
+        "Broken Spur",
+        "Red Rock",
+        "Silver"
+      ],
+      "settlementType": [
+        "Gulch",
+        "Creek",
+        "Flats",
+        "Crossing",
+        "Post",
+        "Landing"
+      ],
+      "name": [
+        "Cooper",
+        "Jedediah",
+        "Blackwood",
+        "Perdition",
+        "Redemption",
+        "Hope"
+      ],
+      "geography": [
+        "Ridge",
+        "Canyon",
+        "Mesa",
+        "Hollow",
+        "Butte",
+        "River"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "wild-west"
+    ],
+    "worldType": "wild-west",
+    "isActive": true
+  },
+  {
+    "name": "wild-west_business_names",
+    "description": "Business and establishment names for Wild West settings",
+    "grammar": {
+      "origin": [
+        "The #adjective# #noun#",
+        "#owner#'s #establishment#",
+        "The #location# #establishment#",
+        "#noun# & #noun#",
+        "The #adjective# #establishment#"
+      ],
+      "owner": [
+        "Jedediah",
+        "Black Bart",
+        "Calamity Jane",
+        "Doc",
+        "One-Eyed Jack",
+        "Miss Kitty"
+      ],
+      "adjective": [
+        "Dusty",
+        "Golden",
+        "Crooked",
+        "Broken",
+        "Last Chance",
+        "Sundown",
+        "Whiskey"
+      ],
+      "noun": [
+        "Spur",
+        "Cactus",
+        "Tumbleweed",
+        "Rattlesnake",
+        "Pistol",
+        "Prospector",
+        "Gallows"
+      ],
+      "establishment": [
+        "Saloon",
+        "Tavern",
+        "General Store",
+        "Gunsmith",
+        "Assay Office",
+        "Barber & Undertaker",
+        "Inn & Stables"
+      ],
+      "location": [
+        "Coyote Creek",
+        "Deadwood",
+        "Grit Rock",
+        "Hangman's Gulch",
+        "Silver River",
+        "Red Mesa"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "wild-west"
+    ],
+    "worldType": "wild-west",
+    "isActive": true
+  },
+  {
+    "name": "modern-realistic_character_names",
+    "description": "Character names for Modern Realistic settings",
+    "grammar": {
+      "origin": [
+        "#fullName#"
+      ],
+      "fullName": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "David",
+        "Michael",
+        "James",
+        "Mateo",
+        "Kenji",
+        "Jamal"
+      ],
+      "femaleFirstName": [
+        "Sarah",
+        "Maria",
+        "Priya",
+        "Chloe",
+        "Aisha",
+        "Mei"
+      ],
+      "lastName": [
+        "#lastName_Common#",
+        "#lastName_Common#",
+        "#lastName_Global#"
+      ],
+      "lastName_Common": [
+        "Smith",
+        "Johnson",
+        "Williams",
+        "Brown",
+        "Jones",
+        "Garcia"
+      ],
+      "lastName_Global": [
+        "Rodriguez",
+        "Kim",
+        "Patel",
+        "Nguyen",
+        "Singh",
+        "Walker"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "modern-realistic"
+    ],
+    "worldType": "modern-realistic",
+    "isActive": true
+  },
+  {
+    "name": "modern-realistic_settlement_names",
+    "description": "Settlement names for Modern Realistic settings",
+    "grammar": {
+      "origin": [
+        "#descriptor# #suffix#",
+        "#founderName#'s #industry#",
+        "#descriptor# #naturalFeature#",
+        "#naturalFeature# #suffix#",
+        "#founderName# #naturalFeature#"
+      ],
+      "descriptor": [
+        "Sterling",
+        "Veridian",
+        "Prospect",
+        "Oakhaven",
+        "New",
+        "Unity"
+      ],
+      "suffix": [
+        "Pointe",
+        "Heights",
+        "View",
+        "Estates",
+        "Park",
+        "Landing"
+      ],
+      "naturalFeature": [
+        "Ridge",
+        "Creek",
+        "Valley",
+        "Springs",
+        "Hills",
+        "Canyon"
+      ],
+      "founderName": [
+        "Harris",
+        "Miller",
+        "Fulton",
+        "Shaw",
+        "Kendrick",
+        "Gray"
+      ],
+      "industry": [
+        "Junction",
+        "Station",
+        "Crossing",
+        "Port",
+        "Mill",
+        "Quarry"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "modern-realistic"
+    ],
+    "worldType": "modern-realistic",
+    "isActive": true
+  },
+  {
+    "name": "modern-realistic_business_names",
+    "description": "Business and establishment names for Modern Realistic settings",
+    "grammar": {
+      "origin": [
+        "The #descriptor# #noun#",
+        "#descriptor.capitalize# #noun# #businessType#",
+        "#location# #businessType#",
+        "#noun.capitalize# & #noun.capitalize#",
+        "#location# #noun.capitalize# Project"
+      ],
+      "descriptor": [
+        "Urban",
+        "Metro",
+        "Artisan",
+        "Apex",
+        "Riverside",
+        "Heritage"
+      ],
+      "noun": [
+        "Foundry",
+        "Collective",
+        "Press",
+        "Anvil",
+        "Spoke",
+        "Roasters"
+      ],
+      "businessType": [
+        "Cafe",
+        "Bar & Grill",
+        "Consulting",
+        "Creative",
+        "Eatery",
+        "Taphouse",
+        "Goods"
+      ],
+      "location": [
+        "Main Street",
+        "The Annex",
+        "Oakwood",
+        "Union",
+        "Parkside",
+        "District"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "modern-realistic"
+    ],
+    "worldType": "modern-realistic",
+    "isActive": true
+  },
+  {
+    "name": "superhero_character_names",
+    "description": "Character names for Superhero settings",
+    "grammar": {
+      "origin": [
+        "#maleName# #lastName#",
+        "#femaleName# #lastName#"
+      ],
+      "maleName": [
+        "Clark",
+        "Victor",
+        "Rex",
+        "Jax",
+        "Logan",
+        "Tony"
+      ],
+      "femaleName": [
+        "Diana",
+        "Kara",
+        "Natasha",
+        "Raven",
+        "Maya",
+        "Aurora"
+      ],
+      "lastName": [
+        "#lastNamePrefix##lastNameSuffix#"
+      ],
+      "lastNamePrefix": [
+        "Storm",
+        "Iron",
+        "Power",
+        "Star",
+        "Stone",
+        "Silver"
+      ],
+      "lastNameSuffix": [
+        "well",
+        "hart",
+        "son",
+        "field",
+        "crest",
+        "wing"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "superhero"
+    ],
+    "worldType": "superhero",
+    "isActive": true
+  },
+  {
+    "name": "superhero_settlement_names",
+    "description": "Settlement names for Superhero settings",
+    "grammar": {
+      "origin": [
+        "#thematicPrefix# #settlementType#",
+        "#thematicPrefix# #geography#",
+        "#heroName#'s #settlementType#",
+        "#heroName#'s #geography#",
+        "Port #heroName#",
+        "Fort #thematicPrefix#"
+      ],
+      "thematicPrefix": [
+        "Aegis",
+        "Justice",
+        "Paragon",
+        "Quantum",
+        "Solar",
+        "Starlight",
+        "Triumph",
+        "Valor"
+      ],
+      "heroName": [
+        "Apex",
+        "Orion",
+        "Nova",
+        "Sentinel",
+        "Vector",
+        "Zenith"
+      ],
+      "settlementType": [
+        "City",
+        "Spire",
+        "Point",
+        "Landing",
+        "Nexus",
+        "Sanctuary",
+        "Haven"
+      ],
+      "geography": [
+        "Heights",
+        "Bay",
+        "Isle",
+        "Valley",
+        "Ridge",
+        "Cove",
+        "Springs"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "superhero"
+    ],
+    "worldType": "superhero",
+    "isActive": true
+  },
+  {
+    "name": "superhero_business_names",
+    "description": "Business and establishment names for Superhero settings",
+    "grammar": {
+      "origin": [
+        "#namePattern#"
+      ],
+      "namePattern": [
+        "The #heroicAdjective# #powerNoun#",
+        "The #powerNoun#'s #establishmentType#",
+        "#locationNoun# #establishmentType#",
+        "#heroicAdjective# #locationNoun#",
+        "The #powerNoun# and #powerNoun#",
+        "Stark & #powerNoun# #establishmentType#"
+      ],
+      "heroicAdjective": [
+        "Mighty",
+        "Cosmic",
+        "Quantum",
+        "Valiant",
+        "Atomic",
+        "Infinite"
+      ],
+      "powerNoun": [
+        "Gauntlet",
+        "Hammer",
+        "Shield",
+        "Sidekick",
+        "Metahuman",
+        "Vigilante"
+      ],
+      "locationNoun": [
+        "Alley",
+        "Tower",
+        "Sanctum",
+        "Corner",
+        "Bunker",
+        "Lair"
+      ],
+      "establishmentType": [
+        "Tavern",
+        "Inn",
+        "Guild",
+        "Diner",
+        "Supply Co.",
+        "Repairs"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "superhero"
+    ],
+    "worldType": "superhero",
+    "isActive": true
+  },
+  {
+    "name": "horror_character_names",
+    "description": "Character names for Horror settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Alistair",
+        "Silas",
+        "Malachi",
+        "Gideon",
+        "Thaddeus",
+        "Corbin"
+      ],
+      "femaleFirstName": [
+        "Elara",
+        "Lenore",
+        "Seraphina",
+        "Morwenna",
+        "Isolde",
+        "Sybil"
+      ],
+      "lastName": [
+        "#simpleLastName#",
+        "#lastNamePrefix##lastNameSuffix#"
+      ],
+      "simpleLastName": [
+        "Blackwood",
+        "Crowley",
+        "Morrow",
+        "Carver",
+        "Usher",
+        "Vance"
+      ],
+      "lastNamePrefix": [
+        "Ash",
+        "Night",
+        "Grave",
+        "Wither",
+        "Thorne",
+        "Harrow"
+      ],
+      "lastNameSuffix": [
+        "wood",
+        "worth",
+        "croft",
+        "more",
+        "field",
+        "hollow"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "horror"
+    ],
+    "worldType": "horror",
+    "isActive": true
+  },
+  {
+    "name": "horror_settlement_names",
+    "description": "Settlement names for Horror settings",
+    "grammar": {
+      "origin": [
+        "#prefix##location#",
+        "#descriptor# #place#",
+        "#prefix#'s #place#",
+        "#descriptor##location#"
+      ],
+      "descriptor": [
+        "Weeping",
+        "Silent",
+        "Ashen",
+        "The Heretic's",
+        "Hangman's",
+        "Whispering"
+      ],
+      "prefix": [
+        "Black",
+        "Grave",
+        "Harrow",
+        "Murk",
+        "Wither",
+        "Shade"
+      ],
+      "location": [
+        "Hollow",
+        "Mire",
+        "Crag",
+        "Fen",
+        "Wood",
+        "Dell"
+      ],
+      "place": [
+        "Crossing",
+        "Rest",
+        "Folly",
+        "Grief",
+        "End",
+        "Gate"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "horror"
+    ],
+    "worldType": "horror",
+    "isActive": true
+  },
+  {
+    "name": "horror_business_names",
+    "description": "Business and establishment names for Horror settings",
+    "grammar": {
+      "origin": [
+        "#name_pattern#"
+      ],
+      "name_pattern": [
+        "The #adjective# #noun#",
+        "#possessive# #establishment_type#",
+        "The #verb# #noun#",
+        "The #noun#'s #establishment_type#",
+        "#possessive# Folly",
+        "The #adjective# Respite"
+      ],
+      "adjective": [
+        "Shrieking",
+        "Gibbering",
+        "Sunken",
+        "Grave-touched",
+        "Wailing",
+        "Shadowed"
+      ],
+      "noun": [
+        "Corpse",
+        "Spectre",
+        "Ghoul",
+        "Raven",
+        "Nightmare",
+        "Skull"
+      ],
+      "possessive": [
+        "The Hangman's",
+        "The Widow's",
+        "The Madman's",
+        "The Orphan's",
+        "The Collector's"
+      ],
+      "verb": [
+        "Weeping",
+        "Whispering",
+        "Bleeding",
+        "Moaning",
+        "Twitching"
+      ],
+      "establishment_type": [
+        "Tavern",
+        "Inn",
+        "Apothecary",
+        "Curiosities",
+        "Guild",
+        "Sanctum"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "horror"
+    ],
+    "worldType": "horror",
+    "isActive": true
+  },
+  {
+    "name": "mythological_character_names",
+    "description": "Character names for Mythological settings",
+    "grammar": {
+      "origin": [
+        "#maleFirstName# #lastName#",
+        "#femaleFirstName# #lastName#"
+      ],
+      "maleFirstName": [
+        "Orion",
+        "Evander",
+        "Theron",
+        "Lysander",
+        "Caius"
+      ],
+      "femaleFirstName": [
+        "Lyra",
+        "Thalia",
+        "Phaedra",
+        "Calista",
+        "Xylia"
+      ],
+      "lastName": [
+        "#mythicalElement##lastNameElement#",
+        "#simpleLastName#"
+      ],
+      "mythicalElement": [
+        "Aether",
+        "Storm",
+        "Star",
+        "Iron",
+        "Sky",
+        "Stone"
+      ],
+      "lastNameElement": [
+        "breaker",
+        "wing",
+        "heart",
+        "caller",
+        "fall",
+        "forged"
+      ],
+      "simpleLastName": [
+        "Valerius",
+        "Helios",
+        "Draconis",
+        "Aethel",
+        "Cinder"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "mythological"
+    ],
+    "worldType": "mythological",
+    "isActive": true
+  },
+  {
+    "name": "mythological_settlement_names",
+    "description": "Settlement names for Mythological settings",
+    "grammar": {
+      "origin": [
+        "#divineName#'s #locationNoun#",
+        "#creatureName##locationSuffix#",
+        "The #locationNoun# of the #creatureName#",
+        "Mount #divineName#",
+        "#creatureName#'s #divineName#"
+      ],
+      "divineName": [
+        "Helios",
+        "Artemis",
+        "Olympus",
+        "Delphi",
+        "Styx",
+        "Ares"
+      ],
+      "creatureName": [
+        "Griffin",
+        "Chimera",
+        "Hydra",
+        "Centaur",
+        "Gorgon",
+        "Phoenix"
+      ],
+      "locationNoun": [
+        "Ascension",
+        "Respite",
+        "Folly",
+        "Sanctuary",
+        "Lament",
+        "Crossing"
+      ],
+      "locationSuffix": [
+        "peak",
+        "reach",
+        "wood",
+        "spire",
+        "ford",
+        "gate"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "mythological"
+    ],
+    "worldType": "mythological",
+    "isActive": true
+  },
+  {
+    "name": "mythological_business_names",
+    "description": "Business and establishment names for Mythological settings",
+    "grammar": {
+      "origin": [
+        "The #descriptor# #mythic_figure#",
+        "#mythic_figure_possessive# #establishment_type#",
+        "The #object# and the #object#",
+        "#mythic_figure_possessive# #descriptor# #establishment_type#",
+        "The #mythic_figure# of the #object#"
+      ],
+      "mythic_figure": [
+        "Gorgon",
+        "Centaur",
+        "Hydra",
+        "Chimera",
+        "Siren",
+        "Satyr",
+        "Nymph"
+      ],
+      "mythic_figure_possessive": [
+        "Apollo's",
+        "Artemis'",
+        "Hermes'",
+        "Hephaestus'",
+        "The Minotaur's",
+        "The Cyclops'"
+      ],
+      "establishment_type": [
+        "Tavern",
+        "Inn",
+        "Forge",
+        "Apothecary",
+        "Guild",
+        "Emporium",
+        "Menagerie"
+      ],
+      "descriptor": [
+        "Golden",
+        "Sunken",
+        "Whispering",
+        "Eternal",
+        "Olympian",
+        "Gilded",
+        "Bronze"
+      ],
+      "object": [
+        "Fleece",
+        "Lyre",
+        "Labyrinth",
+        "Oracle",
+        "Trident",
+        "Caduceus",
+        "Aegis"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "mythological"
+    ],
+    "worldType": "mythological",
+    "isActive": true
+  },
+  {
+    "name": "solarpunk_character_names",
+    "description": "Character names for Solarpunk settings",
+    "grammar": {
+      "origin": [
+        "#firstName# #lastName#"
+      ],
+      "firstName": [
+        "#maleFirstName#",
+        "#femaleFirstName#"
+      ],
+      "maleFirstName": [
+        "Ren",
+        "Zephyr",
+        "Kael",
+        "Helio",
+        "Joul",
+        "Orin"
+      ],
+      "femaleFirstName": [
+        "Lyra",
+        "Solara",
+        "Veridia",
+        "Cyra",
+        "Elara",
+        "Terra"
+      ],
+      "lastName": [
+        "#lastNamePrefix##lastNameSuffix#"
+      ],
+      "lastNamePrefix": [
+        "Sun",
+        "Aero",
+        "Hydro",
+        "Spire",
+        "Circuit",
+        "Bloom"
+      ],
+      "lastNameSuffix": [
+        "bright",
+        "gen",
+        "weaver",
+        "sprout",
+        "stream",
+        "warden"
+      ]
+    },
+    "tags": [
+      "names",
+      "character",
+      "solarpunk"
+    ],
+    "worldType": "solarpunk",
+    "isActive": true
+  },
+  {
+    "name": "solarpunk_settlement_names",
+    "description": "Settlement names for Solarpunk settings",
+    "grammar": {
+      "origin": [
+        "#prefix##noun#",
+        "#noun##suffix#",
+        "#adjective# #noun#",
+        "#noun#'s #suffix#",
+        "#prefix#-#noun# #suffix#"
+      ],
+      "prefix": [
+        "Aero",
+        "Bio",
+        "Eco",
+        "Sol",
+        "Veridia",
+        "Hydro"
+      ],
+      "noun": [
+        "Spire",
+        "Garden",
+        "Weave",
+        "Bloom",
+        "Root",
+        "Current"
+      ],
+      "suffix": [
+        "Commons",
+        "Haven",
+        "Crest",
+        "Nexus",
+        "Glade",
+        "Landing"
+      ],
+      "adjective": [
+        "Verdant",
+        "Sun-Kissed",
+        "Bright",
+        "Living",
+        "Woven",
+        "New"
+      ]
+    },
+    "tags": [
+      "names",
+      "settlement",
+      "places",
+      "solarpunk"
+    ],
+    "worldType": "solarpunk",
+    "isActive": true
+  },
+  {
+    "name": "solarpunk_business_names",
+    "description": "Business and establishment names for Solarpunk settings",
+    "grammar": {
+      "origin": [
+        "The #solarpunk_adjective# #noun#",
+        "#noun# & #noun#",
+        "The #noun#'s #establishment#",
+        "#solarpunk_adjective# #establishment#",
+        "#noun# & #tech_noun# #establishment#"
+      ],
+      "solarpunk_adjective": [
+        "Solar-Woven",
+        "Verdant",
+        "Mycelial",
+        "Upcycled",
+        "Living",
+        "Sun-Kissed"
+      ],
+      "noun": [
+        "#natural_noun#",
+        "#tech_noun#"
+      ],
+      "natural_noun": [
+        "Sprout",
+        "Leaf",
+        "Root",
+        "Spore",
+        "Vine",
+        "Petal"
+      ],
+      "tech_noun": [
+        "Coil",
+        "Gear",
+        "Lens",
+        "Loom",
+        "Dynamo",
+        "Spire"
+      ],
+      "establishment": [
+        "Tavern",
+        "Co-op",
+        "Guild",
+        "Workshop",
+        "Cafe",
+        "Commons"
+      ]
+    },
+    "tags": [
+      "names",
+      "business",
+      "solarpunk"
+    ],
+    "worldType": "solarpunk",
+    "isActive": true
+  }
+];

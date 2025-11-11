@@ -3,7 +3,7 @@
  * Calculate population dynamically based on actual characters
  */
 
-import { storage } from '../storage';
+import { storage } from '../db/storage';
 
 /**
  * Get the actual population of a world by counting characters

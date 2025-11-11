@@ -1,8 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from './storage';
-import { nameGenerator } from './services/name-generator.js';
+import { storage } from './db/storage';
+import { nameGenerator } from './generators/name-generator.js';
 import { isGeminiConfigured, getModel, GEMINI_MODELS } from './config/gemini.js';
+import { grammarTemplates, getCategories as getGrammarCategories, getAllTags as getAllGrammarTags, getTemplate as getGrammarTemplate } from './services/grammar-templates.js';
+import { seedGrammars } from './seed/seed-grammars.js';
 import {
   insertRuleSchema,
   insertGrammarSchema,
@@ -17,9 +19,115 @@ import {
   type InsertRule
 } from "@shared/schema";
 import { z } from "zod";
-import { addImpulse, getImpulseStrength, decayImpulses } from "./extensions/impulse-system.js";
-import { setRelationship, modifyRelationship, queryRelationships } from "./extensions/relationship-utils.js";
-import { selectVolition } from "./extensions/volition-system.js";
+import { addImpulse, getImpulseStrength, decayImpulses } from "./extensions/kismet/impulse-system.js";
+import { setRelationship, modifyRelationship, queryRelationships } from "./extensions/tott/relationship-utils.js";
+import { selectVolition } from "./extensions/kismet/volition-system.js";
+import { 
+  evaluateCandidate, 
+  fillVacancy, 
+  fireEmployee, 
+  findCandidates,
+  getBusinessEmployees,
+  getOccupationHistory,
+  promoteEmployee 
+} from "./extensions/tott/hiring-system.js";
+import { 
+  generateEvent, 
+  getCharacterEvents, 
+  getWorldEvents, 
+  triggerAutomaticEvents,
+  createBirthEvent,
+  createMarriageEvent 
+} from "./extensions/tott/event-system.js";
+import { 
+  setRoutine, 
+  getCurrentActivity, 
+  getCharactersAtLocation, 
+  updateWhereabouts, 
+  generateDefaultRoutine,
+  getRoutine,
+  updateAllWhereabouts 
+} from "./extensions/tott/routine-system.js";
+import {
+  getRelationshipDetails,
+  updateRelationship,
+  getSalience,
+  updateSalience,
+  getMostSalientPeople,
+  socialize,
+  simulateLocationSocializing,
+  getSocialSummary
+} from "./extensions/tott/social-dynamics-system.js";
+import {
+  initializeMentalModel,
+  getMentalModel,
+  addKnownFact,
+  addKnownValue,
+  addBelief,
+  propagateKnowledge,
+  propagateAllKnowledge,
+  initializeCoworkerKnowledge,
+  initializeFamilyKnowledge,
+  getKnowledgeSummary
+} from "./extensions/tott/knowledge-system.js";
+import {
+  startConversation,
+  continueConversation,
+  endConversation,
+  simulateConversation,
+  getConversation,
+  getCharacterConversationHistory
+} from "./extensions/tott/conversation-system.js";
+import {
+  getWealth,
+  addMoney,
+  subtractMoney,
+  transferMoney,
+  getWealthDistribution,
+  hireEmployee as economicsHireEmployee,
+  fireEmployee as economicsFireEmployee,
+  promoteEmployee as economicsPromoteEmployee,
+  paySalaries,
+  executeTrade,
+  getTradeHistory,
+  getMarketData,
+  updateMarketPrice,
+  createLoan,
+  repayDebt,
+  getCharacterDebts,
+  getEconomicStats,
+  getUnemploymentRate
+} from "./extensions/tott/economics-system.js";
+import {
+  scheduleEvent,
+  startEvent,
+  endEvent,
+  addAttendee,
+  removeAttendee,
+  getEvent,
+  getWorldEvents as getTownEvents,
+  getUpcomingEvents,
+  scheduleFestival,
+  scheduleMarket,
+  scheduleWedding,
+  scheduleFuneral,
+  triggerDisaster,
+  scheduleCommunityMeeting,
+  getCommunityMorale,
+  adjustCommunityMorale,
+  getEventHistory,
+  populateEventAttendance,
+  checkRandomEvents
+} from "./extensions/tott/town-events-system.js";
+import { 
+  foundBusiness, 
+  closeBusiness, 
+  transferOwnership, 
+  getBusinessSummary,
+  getCharacterBusinesses,
+  getBusinessesByStatus,
+  getBusinessStatistics 
+} from "./extensions/tott/business-system.js";
 import { WorldGenerator } from "./generators/world-generator.js";
 
 // Helper function to generate narrative text from actual characters
@@ -59,7 +167,7 @@ async function generateDetailedResults(
   const shuffledRules = [...rules].sort(() => Math.random() - 0.5);
   for (let i = 0; i < Math.min(rulesCount, shuffledRules.length); i++) {
     const rule = shuffledRules[i];
-    selectedRules.push(`${rule.name} (${rule.systemType})`);
+    selectedRules.push(`${rule.name} (${rule.sourceFormat})`);
   }
   
   // If we don't have enough rules, add generic ones
@@ -134,18 +242,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      const { generateRule, generateBulkRules } = await import("./gemini-ai.js");
-      const { prompt, systemType, bulkCreate = false } = req.body;
+      const { generateRule, generateBulkRules } = await import("./services/gemini-ai.js");
+      const { prompt, sourceFormat, bulkCreate = false } = req.body;
       
-      if (!prompt || !systemType) {
-        return res.status(400).json({ error: "Missing prompt or systemType" });
+      if (!prompt || !sourceFormat) {
+        return res.status(400).json({ error: "Missing prompt or sourceFormat" });
       }
 
-      console.log(`Generating ${bulkCreate ? 'bulk' : 'single'} rule for system: ${systemType}`);
+      console.log(`Generating ${bulkCreate ? 'bulk' : 'single'} rule for system: ${sourceFormat}`);
       
       const generatedRule = bulkCreate 
-        ? await generateBulkRules(prompt, systemType)
-        : await generateRule(prompt, systemType);
+        ? await generateBulkRules(prompt, sourceFormat)
+        : await generateRule(prompt, sourceFormat);
       
       console.log('Rule generated successfully');
       res.json({ rule: generatedRule, isBulk: bulkCreate });
@@ -159,14 +267,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Edit rule using AI
   app.post("/api/edit-rule", async (req, res) => {
     try {
-      const { editRuleWithAI } = await import("./gemini-ai.js");
-      const { currentContent, editInstructions, systemType } = req.body;
+      const { editRuleWithAI } = await import("./services/gemini-ai.js");
+      const { currentContent, editInstructions, sourceFormat } = req.body;
       
-      if (!currentContent || !editInstructions || !systemType) {
-        return res.status(400).json({ error: "Missing required fields: currentContent, editInstructions, or systemType" });
+      if (!currentContent || !editInstructions || !sourceFormat) {
+        return res.status(400).json({ error: "Missing required fields: currentContent, editInstructions, or sourceFormat" });
       }
 
-      const editedRule = await editRuleWithAI(currentContent, editInstructions, systemType);
+      const editedRule = await editRuleWithAI(currentContent, editInstructions, sourceFormat);
         
       res.json({ rule: editedRule });
     } catch (error) {
@@ -175,13 +283,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Social Rules
+  // Social Rules - Get rules for a world or all base rules
   app.get("/api/worlds/:worldId/rules", async (req, res) => {
     try {
       const rules = await storage.getRulesByWorld(req.params.worldId);
       res.json(rules);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch social rules" });
+    }
+  });
+
+  // Get base rules
+  app.get("/api/rules/base", async (req, res) => {
+    try {
+      const rules = await storage.getBaseRules();
+      console.log(`Found ${rules.length} base rules`);
+      if (rules.length > 0) {
+        console.log('First base rule:', {
+          id: rules[0].id,
+          name: rules[0].name,
+          isBase: rules[0].isBase,
+          worldId: rules[0].worldId,
+          worldIdType: typeof rules[0].worldId
+        });
+      }
+      res.json(rules);
+    } catch (error) {
+      console.error('Error fetching base rules:', error);
+      res.status(500).json({ error: "Failed to fetch base rules" });
     }
   });
 
@@ -197,14 +326,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/rules", async (req, res) => {
     try {
-      const validatedData = insertRuleSchema.parse(req.body);
+      // If isBase is true, set worldId to null and ensure isBase flag
+      const data = req.body.isBase ? { ...req.body, worldId: null, isBase: true } : req.body;
+      
+      // Log incoming data for debugging
+      console.log('Creating rule:', {
+        name: data.name,
+        isBase: data.isBase,
+        worldId: data.worldId,
+        sourceFormat: data.sourceFormat,
+        hasContent: !!data.content,
+        hasConditions: !!data.conditions,
+        hasEffects: !!data.effects
+      });
+      
+      const validatedData = insertRuleSchema.parse(data);
+      console.log('After validation:', {
+        name: validatedData.name,
+        isBase: validatedData.isBase,
+        worldId: validatedData.worldId,
+        worldIdType: typeof validatedData.worldId
+      });
+      
       const rule = await storage.createRule(validatedData);
+      console.log('Created rule in DB:', {
+        id: rule.id,
+        name: rule.name,
+        isBase: rule.isBase,
+        worldId: rule.worldId,
+        worldIdType: typeof rule.worldId
+      });
+      
       res.status(201).json(rule);
     } catch (error) {
+      console.error("Failed to create rule:", error);
+      console.error("Request body:", JSON.stringify(req.body, null, 2));
+      
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid rule data", details: error.errors });
+        return res.status(400).json({ 
+          error: "Invalid rule data", 
+          details: error.errors,
+          receivedData: {
+            name: req.body.name,
+            sourceFormat: req.body.sourceFormat,
+            isBase: req.body.isBase
+          }
+        });
       }
-      res.status(500).json({ error: "Failed to create rule" });
+      
+      res.status(500).json({ 
+        error: "Failed to create rule",
+        message: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.stack : undefined
+      });
     }
   });
 
@@ -236,6 +410,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get rules by category (base rules)
+  app.get("/api/rules/category/:category", async (req, res) => {
+    try {
+      const rules = await storage.getBaseRulesByCategory(req.params.category);
+      res.json(rules);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch rules by category" });
+    }
+  });
+
   // ============================================================
   // Grammar operations - Tracery templates for narrative generation
   // ============================================================
@@ -246,6 +430,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(grammars);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch grammars" });
+    }
+  });
+
+  // Get grammar templates (MUST come before /api/grammars/:id)
+  app.get("/api/grammars/templates", async (req, res) => {
+    try {
+      res.json({
+        templates: grammarTemplates,
+        categories: getGrammarCategories(),
+        tags: getAllGrammarTags(),
+      });
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+      console.error("Error details:", error instanceof Error ? error.message : error);
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack');
+      res.status(500).json({ error: "Failed to fetch templates", details: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  // Get template by ID
+  app.get("/api/grammars/templates/:id", async (req, res) => {
+    try {
+      const template = getGrammarTemplate(req.params.id);
+      
+      if (!template) {
+        return res.status(404).json({ error: "Template not found" });
+      }
+
+      res.json(template);
+    } catch (error) {
+      console.error("Error fetching template:", error);
+      res.status(500).json({ error: "Failed to fetch template" });
     }
   });
 
@@ -314,6 +530,208 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/grammars/test", async (req, res) => {
+    try {
+      const { TraceryService } = await import("./services/tracery-service.js");
+      const { grammar, variables = {}, iterations = 5 } = req.body;
+
+      if (!grammar) {
+        return res.status(400).json({ error: "Grammar is required" });
+      }
+
+      // Validate grammar has origin
+      if (!grammar.origin) {
+        return res.status(400).json({ error: "Grammar must have an 'origin' symbol" });
+      }
+
+      // Generate multiple variations
+      const results = TraceryService.test(grammar, variables, Math.min(iterations, 20));
+
+      res.json({ results });
+    } catch (error) {
+      console.error("Error testing grammar:", error);
+      res.status(500).json({ error: "Failed to test grammar" });
+    }
+  });
+
+  // Generate grammar using AI
+  app.post("/api/grammars/generate", async (req, res) => {
+    try {
+      const { grammarGenerator } = await import("./services/grammar-generator.js");
+      const { description, theme, complexity, symbolCount, worldId } = req.body;
+
+      if (!description) {
+        return res.status(400).json({ error: "Description is required" });
+      }
+
+      // Get world context if worldId provided
+      let worldContext;
+      if (worldId) {
+        const world = await storage.getWorld(worldId);
+        if (world) {
+          worldContext = {
+            worldName: world.name,
+            worldDescription: world.description || undefined,
+          };
+        }
+      }
+
+      const generated = await grammarGenerator.generateGrammar({
+        description,
+        theme,
+        complexity: complexity || 'medium',
+        symbolCount: symbolCount || 5,
+        worldContext,
+      });
+
+      res.json(generated);
+    } catch (error) {
+      console.error("Error generating grammar:", error);
+      res.status(500).json({ 
+        error: "Failed to generate grammar", 
+        details: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // Extend existing grammar
+  app.post("/api/grammars/:id/extend", async (req, res) => {
+    try {
+      const { grammarGenerator } = await import("./services/grammar-generator.js");
+      const { extensionTheme, addRules = 5 } = req.body;
+
+      if (!extensionTheme) {
+        return res.status(400).json({ error: "Extension theme is required" });
+      }
+
+      const grammar = await storage.getGrammar(req.params.id);
+      if (!grammar) {
+        return res.status(404).json({ error: "Grammar not found" });
+      }
+
+      const extended = await grammarGenerator.extendGrammar(
+        grammar.grammar,
+        extensionTheme,
+        addRules
+      );
+
+      res.json({ grammar: extended });
+    } catch (error) {
+      console.error("Error extending grammar:", error);
+      res.status(500).json({ 
+        error: "Failed to extend grammar",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Generate grammar from examples
+  app.post("/api/grammars/from-examples", async (req, res) => {
+    try {
+      const { grammarGenerator } = await import("./services/grammar-generator.js");
+      const { examples, symbolName = 'origin' } = req.body;
+
+      if (!examples || !Array.isArray(examples) || examples.length === 0) {
+        return res.status(400).json({ error: "Examples array is required" });
+      }
+
+      const grammar = await grammarGenerator.grammarFromExamples(examples, symbolName);
+
+      res.json({ grammar });
+    } catch (error) {
+      console.error("Error creating grammar from examples:", error);
+      res.status(500).json({ 
+        error: "Failed to create grammar from examples",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // ============================================================
+  // Name Generation Endpoints
+  // ============================================================
+
+  // Generate name using Tracery
+  app.post("/api/worlds/:worldId/names/generate", async (req, res) => {
+    try {
+      const { NameGenerator } = await import("./services/name-generator.js");
+      const nameGen = new NameGenerator(storage);
+      
+      const { count = 1, culture, grammarId, grammarName, gender } = req.body;
+
+      const names = await nameGen.generateNames(req.params.worldId, {
+        count,
+        culture,
+        grammarId,
+        grammarName,
+        gender,
+      });
+
+      res.json({ names });
+    } catch (error) {
+      console.error("Error generating names:", error);
+      res.status(500).json({ 
+        error: "Failed to generate names",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Generate single name
+  app.post("/api/worlds/:worldId/names/generate-one", async (req, res) => {
+    try {
+      const { NameGenerator } = await import("./services/name-generator.js");
+      const nameGen = new NameGenerator(storage);
+      
+      const { culture, grammarId, grammarName, gender } = req.body;
+
+      const name = await nameGen.generateName(req.params.worldId, {
+        culture,
+        grammarId,
+        grammarName,
+        gender,
+      });
+
+      res.json(name);
+    } catch (error) {
+      console.error("Error generating name:", error);
+      res.status(500).json({ 
+        error: "Failed to generate name",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get available name grammars for world
+  app.get("/api/worlds/:worldId/names/grammars", async (req, res) => {
+    try {
+      const { NameGenerator } = await import("./services/name-generator.js");
+      const nameGen = new NameGenerator(storage);
+      
+      const grammars = await nameGen.getNameGrammars(req.params.worldId);
+
+      res.json({ grammars });
+    } catch (error) {
+      console.error("Error fetching name grammars:", error);
+      res.status(500).json({ error: "Failed to fetch name grammars" });
+    }
+  });
+
+  // Get available cultures from name grammars
+  app.get("/api/worlds/:worldId/names/cultures", async (req, res) => {
+    try {
+      const { NameGenerator } = await import("./services/name-generator.js");
+      const nameGen = new NameGenerator(storage);
+      
+      const cultures = await nameGen.getCultures(req.params.worldId);
+
+      res.json({ cultures });
+    } catch (error) {
+      console.error("Error fetching cultures:", error);
+      res.status(500).json({ error: "Failed to fetch cultures" });
+    }
+  });
+
   // ============================================================
   // Legacy /api/files endpoints - maps to individual rules
   // These provide backward compatibility for the frontend
@@ -330,7 +748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: rule.name,
         path: `Rules/${rule.name}`,
         content: rule.content,
-        systemType: rule.systemType,
+        sourceFormat: rule.sourceFormat,
         worldId: rule.worldId,
       }));
       
@@ -343,10 +761,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new "file" (actually creates individual rules)
   app.post("/api/files", async (req, res) => {
     try {
-      const { name, path, content, systemType, worldId } = req.body;
+      const { name, path, content, sourceFormat, worldId } = req.body;
       
-      if (!name || !content || !systemType || !worldId) {
-        return res.status(400).json({ error: "Missing required fields: name, content, systemType, worldId" });
+      if (!name || !content || !sourceFormat || !worldId) {
+        return res.status(400).json({ error: "Missing required fields: name, content, sourceFormat, worldId" });
       }
 
       // Create a single rule with the content
@@ -355,7 +773,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         worldId,
         name: name,
         content: content,
-        systemType: systemType,
+        sourceFormat: sourceFormat,
         ruleType: 'trigger',
         priority: 5,
         likelihood: 1.0,
@@ -373,7 +791,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: rule.name,
         path: `Rules/${rule.name}`,
         content: rule.content,
-        systemType: rule.systemType,
+        sourceFormat: rule.sourceFormat,
         worldId: rule.worldId,
       });
     } catch (error) {
@@ -388,12 +806,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update a "file" (updates a rule)
   app.put("/api/files/:id", async (req, res) => {
     try {
-      const { content, name, systemType } = req.body;
+      const { content, name, sourceFormat } = req.body;
       
       const updateData: Partial<InsertRule> = {};
       if (content !== undefined) updateData.content = content;
       if (name !== undefined) updateData.name = name;
-      if (systemType !== undefined) updateData.systemType = systemType;
+      if (sourceFormat !== undefined) updateData.sourceFormat = sourceFormat;
 
       const rule = await storage.updateRule(req.params.id, updateData);
       if (!rule) {
@@ -406,7 +824,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: rule.name,
         path: `Rules/${rule.name}`,
         content: rule.content,
-        systemType: rule.systemType,
+        sourceFormat: rule.sourceFormat,
         worldId: rule.worldId,
       });
     } catch (error) {
@@ -848,6 +1266,240 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Business Management endpoints (TotT Business System)
+  app.post("/api/businesses/found", async (req, res) => {
+    try {
+      const { worldId, founderId, name, businessType, address, currentYear, currentTimestep, initialVacancies } = req.body;
+      
+      if (!worldId || !founderId || !name || !businessType || !address || currentYear === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "Missing required fields: worldId, founderId, name, businessType, address, currentYear, currentTimestep" });
+      }
+      
+      const business = await foundBusiness({
+        worldId,
+        founderId,
+        name,
+        businessType,
+        address,
+        currentYear,
+        currentTimestep,
+        initialVacancies
+      });
+      
+      res.status(201).json(business);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to found business", details: (error as Error).message });
+    }
+  });
+
+  app.post("/api/businesses/:id/close", async (req, res) => {
+    try {
+      const { reason, currentYear, currentTimestep, notifyEmployees } = req.body;
+      
+      if (!reason || currentYear === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "Missing required fields: reason, currentYear, currentTimestep" });
+      }
+      
+      await closeBusiness({
+        businessId: req.params.id,
+        reason,
+        currentYear,
+        currentTimestep,
+        notifyEmployees
+      });
+      
+      res.json({ success: true, message: "Business closed successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to close business", details: (error as Error).message });
+    }
+  });
+
+  app.post("/api/businesses/:id/transfer-ownership", async (req, res) => {
+    try {
+      const { newOwnerId, transferReason, salePrice, currentYear, currentTimestep } = req.body;
+      
+      if (!newOwnerId || !transferReason || currentYear === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "Missing required fields: newOwnerId, transferReason, currentYear, currentTimestep" });
+      }
+      
+      await transferOwnership({
+        businessId: req.params.id,
+        newOwnerId,
+        transferReason,
+        salePrice,
+        currentYear,
+        currentTimestep
+      });
+      
+      res.json({ success: true, message: "Ownership transferred successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to transfer ownership", details: (error as Error).message });
+    }
+  });
+
+  app.get("/api/businesses/:id/summary", async (req, res) => {
+    try {
+      const summary = await getBusinessSummary(req.params.id);
+      res.json(summary);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get business summary", details: (error as Error).message });
+    }
+  });
+
+  app.get("/api/characters/:id/businesses", async (req, res) => {
+    try {
+      const businesses = await getCharacterBusinesses(req.params.id);
+      res.json(businesses);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get character businesses" });
+    }
+  });
+
+  app.get("/api/worlds/:id/businesses", async (req, res) => {
+    try {
+      const { isOutOfBusiness } = req.query;
+      const isOutOfBusinessBool = isOutOfBusiness === 'true' ? true : isOutOfBusiness === 'false' ? false : undefined;
+      
+      const businesses = await getBusinessesByStatus(req.params.id, isOutOfBusinessBool);
+      res.json(businesses);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get businesses" });
+    }
+  });
+
+  app.get("/api/worlds/:id/business-statistics", async (req, res) => {
+    try {
+      const stats = await getBusinessStatistics(req.params.id);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get business statistics" });
+    }
+  });
+
+  // Business hiring endpoints (TotT Hiring System)
+  app.get("/api/businesses/:id/employees", async (req, res) => {
+    try {
+      const business = await storage.getBusiness(req.params.id);
+      if (!business) {
+        return res.status(404).json({ error: "Business not found" });
+      }
+      const employees = await getBusinessEmployees(req.params.id, business.worldId);
+      res.json(employees);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch employees" });
+    }
+  });
+
+  app.post("/api/businesses/:id/find-candidates", async (req, res) => {
+    try {
+      const { vocation, shift, hiringManagerId, currentYear, limit } = req.body;
+      const business = await storage.getBusiness(req.params.id);
+      if (!business) {
+        return res.status(404).json({ error: "Business not found" });
+      }
+      
+      const candidates = await findCandidates(
+        req.params.id,
+        vocation,
+        shift,
+        hiringManagerId,
+        business.worldId,
+        currentYear || 1900,
+        limit || 10
+      );
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to find candidates", details: (error as Error).message });
+    }
+  });
+
+  app.post("/api/businesses/:id/hire", async (req, res) => {
+    try {
+      const { candidateId, vocation, shift, hiringManagerId, currentYear, isSupplemental, hiredAsFavor } = req.body;
+      
+      if (!candidateId || !vocation || !shift || !hiringManagerId) {
+        return res.status(400).json({ error: "Missing required fields: candidateId, vocation, shift, hiringManagerId" });
+      }
+      
+      await fillVacancy(
+        req.params.id,
+        candidateId,
+        vocation,
+        shift,
+        hiringManagerId,
+        currentYear || 1900,
+        isSupplemental || false,
+        hiredAsFavor || false
+      );
+      
+      res.json({ success: true, message: "Candidate hired successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to hire candidate", details: (error as Error).message });
+    }
+  });
+
+  app.post("/api/businesses/:id/evaluate-candidate", async (req, res) => {
+    try {
+      const { candidateId, vocation, hiringManagerId, currentYear } = req.body;
+      
+      if (!candidateId || !vocation || !hiringManagerId) {
+        return res.status(400).json({ error: "Missing required fields: candidateId, vocation, hiringManagerId" });
+      }
+      
+      const evaluation = await evaluateCandidate(
+        req.params.id,
+        candidateId,
+        vocation,
+        hiringManagerId,
+        currentYear || 1900
+      );
+      
+      res.json(evaluation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to evaluate candidate", details: (error as Error).message });
+    }
+  });
+
+  // Character employment endpoints (TotT Hiring System)
+  app.delete("/api/characters/:id/employment", async (req, res) => {
+    try {
+      const { reason, currentYear } = req.body;
+      
+      if (!reason) {
+        return res.status(400).json({ error: "Missing required field: reason" });
+      }
+      
+      await fireEmployee(req.params.id, reason, currentYear || 1900);
+      res.json({ success: true, message: "Employee terminated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to terminate employment", details: (error as Error).message });
+    }
+  });
+
+  app.get("/api/characters/:id/occupation-history", async (req, res) => {
+    try {
+      const history = await getOccupationHistory(req.params.id);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch occupation history" });
+    }
+  });
+
+  app.post("/api/characters/:id/promote", async (req, res) => {
+    try {
+      const { newVocation, newLevel } = req.body;
+      
+      if (!newVocation || newLevel === undefined) {
+        return res.status(400).json({ error: "Missing required fields: newVocation, newLevel" });
+      }
+      
+      await promoteEmployee(req.params.id, newVocation, newLevel);
+      res.json({ success: true, message: "Employee promoted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to promote employee", details: (error as Error).message });
+    }
+  });
+
   // Residences routes
   app.get("/api/settlements/:settlementId/residences", async (req, res) => {
     try {
@@ -864,6 +1516,1195 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(residence);
     } catch (error) {
       res.status(500).json({ error: "Failed to create residence" });
+    }
+  });
+
+  // Event System endpoints (TotT Event System)
+  app.post("/api/events", async (req, res) => {
+    try {
+      const { worldId, currentYear, currentTimestep, season, characterId, eventType, autoGenerateNarrative, customData } = req.body;
+      
+      if (!worldId || currentYear === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "Missing required fields: worldId, currentYear, currentTimestep" });
+      }
+      
+      const event = await generateEvent({
+        worldId,
+        currentYear,
+        currentTimestep,
+        season,
+        characterId,
+        eventType,
+        autoGenerateNarrative: autoGenerateNarrative !== false
+      }, customData);
+      
+      res.status(201).json(event);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate event", details: (error as Error).message });
+    }
+  });
+
+  app.get("/api/characters/:id/events", async (req, res) => {
+    try {
+      const { eventType, startYear, endYear, limit } = req.query;
+      const events = await getCharacterEvents(req.params.id, {
+        eventType: eventType as any,
+        startYear: startYear ? parseInt(startYear as string) : undefined,
+        endYear: endYear ? parseInt(endYear as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined
+      });
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch character events" });
+    }
+  });
+
+  app.get("/api/worlds/:id/events", async (req, res) => {
+    try {
+      const { eventType, characterId, startYear, endYear, limit } = req.query;
+      const events = await getWorldEvents(req.params.id, {
+        eventType: eventType as any,
+        characterId: characterId as string,
+        startYear: startYear ? parseInt(startYear as string) : undefined,
+        endYear: endYear ? parseInt(endYear as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined
+      });
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch world events" });
+    }
+  });
+
+  app.post("/api/worlds/:id/trigger-events", async (req, res) => {
+    try {
+      const { currentYear, currentTimestep } = req.body;
+      
+      if (currentYear === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "Missing required fields: currentYear, currentTimestep" });
+      }
+      
+      const events = await triggerAutomaticEvents(req.params.id, currentYear, currentTimestep);
+      res.json({ success: true, eventsGenerated: events.length, events });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to trigger automatic events", details: (error as Error).message });
+    }
+  });
+
+  app.post("/api/events/birth", async (req, res) => {
+    try {
+      const { worldId, parentIds, currentYear, currentTimestep, childData } = req.body;
+      
+      if (!worldId || !parentIds || !Array.isArray(parentIds) || currentYear === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "Missing required fields: worldId, parentIds (array), currentYear, currentTimestep" });
+      }
+      
+      const result = await createBirthEvent(worldId, parentIds, currentYear, currentTimestep, childData);
+      res.status(201).json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create birth event", details: (error as Error).message });
+    }
+  });
+
+  app.post("/api/events/marriage", async (req, res) => {
+    try {
+      const { worldId, characterId1, characterId2, currentYear, currentTimestep } = req.body;
+      
+      if (!worldId || !characterId1 || !characterId2 || currentYear === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "Missing required fields: worldId, characterId1, characterId2, currentYear, currentTimestep" });
+      }
+      
+      const event = await createMarriageEvent(worldId, characterId1, characterId2, currentYear, currentTimestep);
+      res.status(201).json(event);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create marriage event", details: (error as Error).message });
+    }
+  });
+
+  // Routine System endpoints (TotT Routine System)
+  app.post("/api/characters/:id/routine", async (req, res) => {
+    try {
+      const { routine } = req.body;
+      
+      if (!routine || !routine.day || !routine.night) {
+        return res.status(400).json({ error: "Missing required field: routine (must have day and night schedules)" });
+      }
+      
+      await setRoutine(req.params.id, routine);
+      res.json({ success: true, message: "Routine set successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to set routine", details: (error as Error).message });
+    }
+  });
+
+  app.get("/api/characters/:id/routine", async (req, res) => {
+    try {
+      const routine = await getRoutine(req.params.id);
+      if (!routine) {
+        return res.status(404).json({ error: "No routine found for character" });
+      }
+      res.json(routine);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get routine" });
+    }
+  });
+
+  app.post("/api/characters/:id/routine/generate", async (req, res) => {
+    try {
+      const routine = await generateDefaultRoutine(req.params.id);
+      await setRoutine(req.params.id, routine);
+      res.json({ success: true, routine });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate routine", details: (error as Error).message });
+    }
+  });
+
+  app.get("/api/characters/:id/activity", async (req, res) => {
+    try {
+      const { timeOfDay, currentHour } = req.query;
+      
+      if (!timeOfDay) {
+        return res.status(400).json({ error: "Missing required query parameter: timeOfDay" });
+      }
+      
+      const activity = await getCurrentActivity(
+        req.params.id,
+        timeOfDay as 'day' | 'night',
+        currentHour ? parseInt(currentHour as string) : 12
+      );
+      
+      if (!activity) {
+        return res.status(404).json({ error: "No activity found for character at this time" });
+      }
+      
+      res.json(activity);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get current activity" });
+    }
+  });
+
+  app.post("/api/characters/:id/whereabouts", async (req, res) => {
+    try {
+      const { worldId, location, locationType, occasion, timestep, timeOfDay } = req.body;
+      
+      if (!worldId || !location || !locationType || !occasion || timestep === undefined || !timeOfDay) {
+        return res.status(400).json({ error: "Missing required fields: worldId, location, locationType, occasion, timestep, timeOfDay" });
+      }
+      
+      await updateWhereabouts(worldId, req.params.id, location, locationType, occasion, timestep, timeOfDay);
+      res.json({ success: true, message: "Whereabouts updated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update whereabouts", details: (error as Error).message });
+    }
+  });
+
+  app.get("/api/worlds/:id/locations/:location/characters", async (req, res) => {
+    try {
+      const { timeOfDay, currentHour } = req.query;
+      
+      const characters = await getCharactersAtLocation(
+        req.params.id,
+        req.params.location,
+        timeOfDay as 'day' | 'night' | undefined,
+        currentHour ? parseInt(currentHour as string) : undefined
+      );
+      
+      res.json(characters);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get characters at location" });
+    }
+  });
+
+  app.post("/api/worlds/:id/whereabouts/update-all", async (req, res) => {
+    try {
+      const { timestep, timeOfDay, currentHour } = req.body;
+      
+      if (timestep === undefined || !timeOfDay || currentHour === undefined) {
+        return res.status(400).json({ error: "Missing required fields: timestep, timeOfDay, currentHour" });
+      }
+      
+      const updatedCount = await updateAllWhereabouts(req.params.id, timestep, timeOfDay, currentHour);
+      res.json({ success: true, updatedCount, message: `Updated ${updatedCount} character whereabouts` });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update all whereabouts", details: (error as Error).message });
+    }
+  });
+
+  // Social Dynamics System endpoints (Phase 5: TotT Social Dynamics)
+  
+  // Get relationship details between two characters
+  app.get("/api/relationships/:char1Id/:char2Id", async (req, res) => {
+    try {
+      const { currentYear } = req.query;
+      
+      if (!currentYear) {
+        return res.status(400).json({ error: "currentYear is required" });
+      }
+      
+      const relationship = await getRelationshipDetails(
+        req.params.char1Id,
+        req.params.char2Id,
+        parseInt(currentYear as string)
+      );
+      
+      res.json(relationship);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get relationship details", details: (error as Error).message });
+    }
+  });
+  
+  // Update relationship after interaction
+  app.post("/api/relationships/:char1Id/:char2Id/interact", async (req, res) => {
+    try {
+      const { interactionQuality, currentYear } = req.body;
+      
+      if (!interactionQuality || !currentYear) {
+        return res.status(400).json({ error: "interactionQuality and currentYear are required" });
+      }
+      
+      const relationship = await updateRelationship(
+        req.params.char1Id,
+        req.params.char2Id,
+        interactionQuality,
+        currentYear
+      );
+      
+      res.json(relationship);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update relationship", details: (error as Error).message });
+    }
+  });
+  
+  // Get salience (importance) of one character to another
+  app.get("/api/salience/:observerId/:subjectId", async (req, res) => {
+    try {
+      const salience = await getSalience(req.params.observerId, req.params.subjectId);
+      res.json({ salience });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get salience", details: (error as Error).message });
+    }
+  });
+  
+  // Update salience after observation/interaction
+  app.post("/api/salience/:observerId/:subjectId", async (req, res) => {
+    try {
+      const { boost } = req.body;
+      
+      const salience = await updateSalience(
+        req.params.observerId,
+        req.params.subjectId,
+        boost
+      );
+      
+      res.json({ salience });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update salience", details: (error as Error).message });
+    }
+  });
+  
+  // Get most salient (important) people for a character
+  app.get("/api/characters/:id/salient-people", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      
+      const salientPeople = await getMostSalientPeople(req.params.id, limit);
+      res.json(salientPeople);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get salient people", details: (error as Error).message });
+    }
+  });
+  
+  // Simulate a social interaction between two characters
+  app.post("/api/social/interact", async (req, res) => {
+    try {
+      const { initiatorId, targetId, location, currentYear } = req.body;
+      
+      if (!initiatorId || !targetId || !location || !currentYear) {
+        return res.status(400).json({ error: "initiatorId, targetId, location, and currentYear are required" });
+      }
+      
+      const result = await socialize(initiatorId, targetId, location, currentYear);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to simulate interaction", details: (error as Error).message });
+    }
+  });
+  
+  // Simulate autonomous socializing at a location
+  app.post("/api/worlds/:worldId/locations/:location/socialize", async (req, res) => {
+    try {
+      const { timestep, currentYear } = req.body;
+      
+      if (timestep === undefined || !currentYear) {
+        return res.status(400).json({ error: "timestep and currentYear are required" });
+      }
+      
+      const interactions = await simulateLocationSocializing(
+        req.params.worldId,
+        req.params.location,
+        timestep,
+        currentYear
+      );
+      
+      res.json({
+        success: true,
+        interactionCount: interactions.length,
+        interactions
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to simulate location socializing", details: (error as Error).message });
+    }
+  });
+  
+  // Get social summary for a character
+  app.get("/api/characters/:id/social-summary", async (req, res) => {
+    try {
+      const { currentYear } = req.query;
+      
+      if (!currentYear) {
+        return res.status(400).json({ error: "currentYear is required" });
+      }
+      
+      const summary = await getSocialSummary(req.params.id, parseInt(currentYear as string));
+      res.json(summary);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get social summary", details: (error as Error).message });
+    }
+  });
+
+  // Knowledge & Belief System endpoints (Phase 6: TotT Knowledge)
+  
+  // Initialize mental model
+  app.post("/api/knowledge/init", async (req, res) => {
+    try {
+      const { observerId, subjectId, initialFacts, relationshipType, currentTimestep } = req.body;
+      
+      if (!observerId || !subjectId) {
+        return res.status(400).json({ error: "observerId and subjectId are required" });
+      }
+      
+      const model = await initializeMentalModel(
+        observerId,
+        subjectId,
+        initialFacts || ['name'],
+        relationshipType,
+        currentTimestep || 0
+      );
+      
+      res.json(model);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to initialize mental model", details: (error as Error).message });
+    }
+  });
+  
+  // Get mental model
+  app.get("/api/knowledge/:observerId/:subjectId", async (req, res) => {
+    try {
+      const { currentTimestep } = req.query;
+      
+      const model = await getMentalModel(
+        req.params.observerId,
+        req.params.subjectId,
+        true,
+        currentTimestep ? parseInt(currentTimestep as string) : 0
+      );
+      
+      res.json(model);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get mental model", details: (error as Error).message });
+    }
+  });
+  
+  // Get all knowledge for an observer
+  app.get("/api/knowledge/:observerId", async (req, res) => {
+    try {
+      const summary = await getKnowledgeSummary(req.params.observerId);
+      res.json(summary);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get knowledge summary", details: (error as Error).message });
+    }
+  });
+  
+  // Add known fact
+  app.post("/api/knowledge/add-fact", async (req, res) => {
+    try {
+      const { observerId, subjectId, fact, currentTimestep } = req.body;
+      
+      if (!observerId || !subjectId || !fact) {
+        return res.status(400).json({ error: "observerId, subjectId, and fact are required" });
+      }
+      
+      await addKnownFact(observerId, subjectId, fact, currentTimestep || 0);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add known fact", details: (error as Error).message });
+    }
+  });
+  
+  // Add known value
+  app.post("/api/knowledge/add-value", async (req, res) => {
+    try {
+      const { observerId, subjectId, attribute, value, currentTimestep } = req.body;
+      
+      if (!observerId || !subjectId || !attribute || value === undefined) {
+        return res.status(400).json({ error: "observerId, subjectId, attribute, and value are required" });
+      }
+      
+      await addKnownValue(observerId, subjectId, attribute, value, currentTimestep || 0);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add known value", details: (error as Error).message });
+    }
+  });
+  
+  // Add belief
+  app.post("/api/knowledge/add-belief", async (req, res) => {
+    try {
+      const { observerId, subjectId, quality, confidence, evidence, currentTimestep } = req.body;
+      
+      if (!observerId || !subjectId || !quality || confidence === undefined || !evidence) {
+        return res.status(400).json({ error: "observerId, subjectId, quality, confidence, and evidence are required" });
+      }
+      
+      const belief = await addBelief(
+        observerId,
+        subjectId,
+        quality,
+        confidence,
+        evidence,
+        currentTimestep || 0
+      );
+      
+      res.json(belief);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add belief", details: (error as Error).message });
+    }
+  });
+  
+  // Propagate knowledge from speaker to listener
+  app.post("/api/knowledge/propagate", async (req, res) => {
+    try {
+      const { speakerId, listenerId, subjectId, currentTimestep, trustOverride } = req.body;
+      
+      if (!speakerId || !listenerId || !subjectId || currentTimestep === undefined) {
+        return res.status(400).json({ error: "speakerId, listenerId, subjectId, and currentTimestep are required" });
+      }
+      
+      const result = await propagateKnowledge(
+        speakerId,
+        listenerId,
+        subjectId,
+        currentTimestep,
+        trustOverride
+      );
+      
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to propagate knowledge", details: (error as Error).message });
+    }
+  });
+  
+  // Propagate all knowledge from speaker to listener
+  app.post("/api/knowledge/propagate-all", async (req, res) => {
+    try {
+      const { speakerId, listenerId, currentTimestep } = req.body;
+      
+      if (!speakerId || !listenerId || currentTimestep === undefined) {
+        return res.status(400).json({ error: "speakerId, listenerId, and currentTimestep are required" });
+      }
+      
+      const results = await propagateAllKnowledge(speakerId, listenerId, currentTimestep);
+      
+      res.json({
+        success: true,
+        propagationCount: results.length,
+        results
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to propagate all knowledge", details: (error as Error).message });
+    }
+  });
+  
+  // Initialize coworker knowledge for a business
+  app.post("/api/knowledge/init-coworkers", async (req, res) => {
+    try {
+      const { businessId, worldId, currentTimestep } = req.body;
+      
+      if (!businessId || !worldId) {
+        return res.status(400).json({ error: "businessId and worldId are required" });
+      }
+      
+      const initialized = await initializeCoworkerKnowledge(businessId, worldId, currentTimestep || 0);
+      
+      res.json({
+        success: true,
+        initialized,
+        message: `Initialized knowledge for ${initialized} coworker pairs`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to initialize coworker knowledge", details: (error as Error).message });
+    }
+  });
+  
+  // Initialize family knowledge for a character
+  app.post("/api/knowledge/init-family", async (req, res) => {
+    try {
+      const { characterId, currentTimestep } = req.body;
+      
+      if (!characterId) {
+        return res.status(400).json({ error: "characterId is required" });
+      }
+      
+      const initialized = await initializeFamilyKnowledge(characterId, currentTimestep || 0);
+      
+      res.json({
+        success: true,
+        initialized,
+        message: `Initialized knowledge for ${initialized} family members`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to initialize family knowledge", details: (error as Error).message });
+    }
+  });
+
+  // Conversation System endpoints (Phase 7: TotT Conversations)
+  
+  // Start conversation
+  app.post("/api/conversations/start", async (req, res) => {
+    try {
+      const { initiatorId, targetId, location, currentTimestep } = req.body;
+      
+      if (!initiatorId || !targetId || !location || currentTimestep === undefined) {
+        return res.status(400).json({ error: "initiatorId, targetId, location, and currentTimestep are required" });
+      }
+      
+      const conversation = await startConversation(initiatorId, targetId, location, currentTimestep);
+      res.json(conversation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to start conversation", details: (error as Error).message });
+    }
+  });
+  
+  // Continue conversation
+  app.post("/api/conversations/:id/continue", async (req, res) => {
+    try {
+      const { currentTimestep } = req.body;
+      
+      if (currentTimestep === undefined) {
+        return res.status(400).json({ error: "currentTimestep is required" });
+      }
+      
+      const utterance = await continueConversation(req.params.id, currentTimestep);
+      
+      if (!utterance) {
+        return res.status(404).json({ error: "Conversation not found or ended" });
+      }
+      
+      res.json(utterance);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to continue conversation", details: (error as Error).message });
+    }
+  });
+  
+  // End conversation
+  app.post("/api/conversations/:id/end", async (req, res) => {
+    try {
+      const { currentTimestep } = req.body;
+      
+      if (currentTimestep === undefined) {
+        return res.status(400).json({ error: "currentTimestep is required" });
+      }
+      
+      const conversation = await endConversation(req.params.id, currentTimestep);
+      
+      if (!conversation) {
+        return res.status(404).json({ error: "Conversation not found" });
+      }
+      
+      res.json(conversation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to end conversation", details: (error as Error).message });
+    }
+  });
+  
+  // Get conversation
+  app.get("/api/conversations/:id", async (req, res) => {
+    try {
+      const conversation = await getConversation(req.params.id);
+      
+      if (!conversation) {
+        return res.status(404).json({ error: "Conversation not found" });
+      }
+      
+      res.json(conversation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get conversation", details: (error as Error).message });
+    }
+  });
+  
+  // Simulate full conversation
+  app.post("/api/conversations/simulate", async (req, res) => {
+    try {
+      const { char1Id, char2Id, location, duration, currentTimestep } = req.body;
+      
+      if (!char1Id || !char2Id || !location || currentTimestep === undefined) {
+        return res.status(400).json({ error: "char1Id, char2Id, location, and currentTimestep are required" });
+      }
+      
+      const conversation = await simulateConversation(
+        char1Id,
+        char2Id,
+        location,
+        duration || 5,
+        currentTimestep
+      );
+      
+      res.json({
+        success: true,
+        conversation,
+        utteranceCount: conversation.utterances.length,
+        knowledgeTransfers: conversation.knowledgeTransfers.length,
+        liesDetected: conversation.liesDetected.length,
+        eavesdroppers: conversation.eavesdroppers.length
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to simulate conversation", details: (error as Error).message });
+    }
+  });
+  
+  // Get character conversation history
+  app.get("/api/conversations/character/:id/history", async (req, res) => {
+    try {
+      const history = await getCharacterConversationHistory(req.params.id);
+      
+      if (!history) {
+        return res.status(404).json({ error: "Character not found" });
+      }
+      
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get conversation history", details: (error as Error).message });
+    }
+  });
+
+  // Economics System endpoints (Phase 9: TotT Economics)
+  
+  // Get character wealth
+  app.get("/api/economy/wealth/:characterId", async (req, res) => {
+    try {
+      const wealth = await getWealth(req.params.characterId);
+      res.json(wealth);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get wealth", details: (error as Error).message });
+    }
+  });
+  
+  // Add money
+  app.post("/api/economy/wealth/add", async (req, res) => {
+    try {
+      const { characterId, amount, reason, currentTimestep } = req.body;
+      
+      if (!characterId || amount === undefined || !reason || currentTimestep === undefined) {
+        return res.status(400).json({ error: "characterId, amount, reason, and currentTimestep are required" });
+      }
+      
+      const wealth = await addMoney(characterId, amount, reason, currentTimestep);
+      res.json(wealth);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add money", details: (error as Error).message });
+    }
+  });
+  
+  // Subtract money
+  app.post("/api/economy/wealth/subtract", async (req, res) => {
+    try {
+      const { characterId, amount, reason, currentTimestep } = req.body;
+      
+      if (!characterId || amount === undefined || !reason || currentTimestep === undefined) {
+        return res.status(400).json({ error: "characterId, amount, reason, and currentTimestep are required" });
+      }
+      
+      const wealth = await subtractMoney(characterId, amount, reason, currentTimestep);
+      res.json(wealth);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to subtract money", details: (error as Error).message });
+    }
+  });
+  
+  // Transfer money
+  app.post("/api/economy/wealth/transfer", async (req, res) => {
+    try {
+      const { fromId, toId, amount, reason, currentTimestep } = req.body;
+      
+      if (!fromId || !toId || amount === undefined || !reason || currentTimestep === undefined) {
+        return res.status(400).json({ error: "fromId, toId, amount, reason, and currentTimestep are required" });
+      }
+      
+      const result = await transferMoney(fromId, toId, amount, reason, currentTimestep);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to transfer money", details: (error as Error).message });
+    }
+  });
+  
+  // Get wealth distribution
+  app.get("/api/economy/wealth/distribution/:worldId", async (req, res) => {
+    try {
+      const distribution = await getWealthDistribution(req.params.worldId);
+      res.json(distribution);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get wealth distribution", details: (error as Error).message });
+    }
+  });
+  
+  // Hire employee
+  app.post("/api/economy/employment/hire", async (req, res) => {
+    try {
+      const { employeeId, businessId, occupation, salary, currentTimestep } = req.body;
+      
+      if (!employeeId || !businessId || !occupation || salary === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "employeeId, businessId, occupation, salary, and currentTimestep are required" });
+      }
+      
+      const contract = await economicsHireEmployee(employeeId, businessId, occupation, salary, currentTimestep);
+      res.json(contract);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to hire employee", details: (error as Error).message });
+    }
+  });
+  
+  // Fire employee
+  app.post("/api/economy/employment/fire", async (req, res) => {
+    try {
+      const { employeeId, businessId, reason, currentTimestep } = req.body;
+      
+      if (!employeeId || !businessId || !reason || currentTimestep === undefined) {
+        return res.status(400).json({ error: "employeeId, businessId, reason, and currentTimestep are required" });
+      }
+      
+      await economicsFireEmployee(employeeId, businessId, reason, currentTimestep);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fire employee", details: (error as Error).message });
+    }
+  });
+  
+  // Promote employee
+  app.post("/api/economy/employment/promote", async (req, res) => {
+    try {
+      const { employeeId, businessId, newPosition, newSalary, currentTimestep } = req.body;
+      
+      if (!employeeId || !businessId || !newPosition || newSalary === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "employeeId, businessId, newPosition, newSalary, and currentTimestep are required" });
+      }
+      
+      const contract = await economicsPromoteEmployee(employeeId, businessId, newPosition, newSalary, currentTimestep);
+      res.json(contract);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to promote employee", details: (error as Error).message });
+    }
+  });
+  
+  // Pay salaries
+  app.post("/api/economy/employment/pay-salaries", async (req, res) => {
+    try {
+      const { worldId, currentTimestep } = req.body;
+      
+      if (!worldId || currentTimestep === undefined) {
+        return res.status(400).json({ error: "worldId and currentTimestep are required" });
+      }
+      
+      const totalPaid = await paySalaries(worldId, currentTimestep);
+      res.json({ success: true, totalPaid });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to pay salaries", details: (error as Error).message });
+    }
+  });
+  
+  // Execute trade
+  app.post("/api/economy/trade", async (req, res) => {
+    try {
+      const { sellerId, buyerId, item, quantity, location, currentTimestep } = req.body;
+      
+      if (!sellerId || !buyerId || !item || quantity === undefined || !location || currentTimestep === undefined) {
+        return res.status(400).json({ error: "sellerId, buyerId, item, quantity, location, and currentTimestep are required" });
+      }
+      
+      const trade = await executeTrade(sellerId, buyerId, item, quantity, location, currentTimestep);
+      res.json(trade);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to execute trade", details: (error as Error).message });
+    }
+  });
+  
+  // Get trade history
+  app.get("/api/economy/trade/history/:characterId", async (req, res) => {
+    try {
+      const history = await getTradeHistory(req.params.characterId);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get trade history", details: (error as Error).message });
+    }
+  });
+  
+  // Get market prices
+  app.get("/api/economy/market/prices/:worldId", async (req, res) => {
+    try {
+      const { currentTimestep } = req.query;
+      const market = await getMarketData(req.params.worldId, currentTimestep ? parseInt(currentTimestep as string) : Date.now());
+      res.json(market);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get market data", details: (error as Error).message });
+    }
+  });
+  
+  // Update market price
+  app.post("/api/economy/market/price", async (req, res) => {
+    try {
+      const { worldId, item, newPrice } = req.body;
+      
+      if (!worldId || !item || newPrice === undefined) {
+        return res.status(400).json({ error: "worldId, item, and newPrice are required" });
+      }
+      
+      const market = await updateMarketPrice(worldId, item, newPrice);
+      res.json(market);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update market price", details: (error as Error).message });
+    }
+  });
+  
+  // Create loan
+  app.post("/api/economy/loan/create", async (req, res) => {
+    try {
+      const { debtorId, creditorId, amount, interestRate, dueDate, currentTimestep } = req.body;
+      
+      if (!debtorId || !creditorId || amount === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "debtorId, creditorId, amount, and currentTimestep are required" });
+      }
+      
+      const debt = await createLoan(debtorId, creditorId, amount, interestRate, dueDate, currentTimestep);
+      res.json(debt);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create loan", details: (error as Error).message });
+    }
+  });
+  
+  // Repay debt
+  app.post("/api/economy/loan/repay", async (req, res) => {
+    try {
+      const { debtId, amount, currentTimestep } = req.body;
+      
+      if (!debtId || amount === undefined || currentTimestep === undefined) {
+        return res.status(400).json({ error: "debtId, amount, and currentTimestep are required" });
+      }
+      
+      const debt = await repayDebt(debtId, amount, currentTimestep);
+      res.json(debt);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to repay debt", details: (error as Error).message });
+    }
+  });
+  
+  // Get character debts
+  app.get("/api/economy/loan/:characterId", async (req, res) => {
+    try {
+      const debts = await getCharacterDebts(req.params.characterId);
+      res.json(debts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get character debts", details: (error as Error).message });
+    }
+  });
+  
+  // Get economic statistics
+  app.get("/api/economy/stats/:worldId", async (req, res) => {
+    try {
+      const stats = await getEconomicStats(req.params.worldId);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get economic stats", details: (error as Error).message });
+    }
+  });
+  
+  // Get unemployment rate
+  app.get("/api/economy/stats/:worldId/unemployment", async (req, res) => {
+    try {
+      const rate = await getUnemploymentRate(req.params.worldId);
+      res.json({ unemploymentRate: rate });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get unemployment rate", details: (error as Error).message });
+    }
+  });
+
+  // Town Events & Community System endpoints (Phase 10: TotT Town Events) - THE FINAL PHASE!
+  
+  // Schedule event
+  app.post("/api/events/schedule", async (req, res) => {
+    try {
+      const { worldId, type, name, location, scheduledTimestep, duration, organizers } = req.body;
+      
+      if (!worldId || !type || !name || !location || scheduledTimestep === undefined || duration === undefined) {
+        return res.status(400).json({ error: "worldId, type, name, location, scheduledTimestep, and duration are required" });
+      }
+      
+      const event = await scheduleEvent(worldId, type, name, location, scheduledTimestep, duration, organizers || []);
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to schedule event", details: (error as Error).message });
+    }
+  });
+  
+  // Start event
+  app.post("/api/events/:id/start", async (req, res) => {
+    try {
+      const { currentTimestep } = req.body;
+      
+      if (currentTimestep === undefined) {
+        return res.status(400).json({ error: "currentTimestep is required" });
+      }
+      
+      const event = await startEvent(req.params.id, currentTimestep);
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to start event", details: (error as Error).message });
+    }
+  });
+  
+  // End event
+  app.post("/api/events/:id/end", async (req, res) => {
+    try {
+      const { currentTimestep } = req.body;
+      
+      if (currentTimestep === undefined) {
+        return res.status(400).json({ error: "currentTimestep is required" });
+      }
+      
+      const event = await endEvent(req.params.id, currentTimestep);
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to end event" });
+    }
+  });
+  
+  // Remove attendee
+  app.post("/api/events/:id/leave", async (req, res) => {
+    try {
+      const { characterId } = req.body;
+      
+      if (!characterId) {
+        return res.status(400).json({ error: "characterId is required" });
+      }
+      
+      await removeAttendee(req.params.id, characterId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to remove attendee", details: (error as Error).message });
+    }
+  });
+  
+  // Get event details
+  app.get("/api/events/:id", async (req, res) => {
+    try {
+      const event = getEvent(req.params.id);
+      
+      if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+      }
+      
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get event", details: (error as Error).message });
+    }
+  });
+  
+  // Get all events for world
+  app.get("/api/events/world/:worldId", async (req, res) => {
+    try {
+      const events = await getTownEvents(req.params.worldId);
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get world events", details: (error as Error).message });
+    }
+  });
+  
+  // Get upcoming events
+  app.get("/api/events/world/:worldId/upcoming", async (req, res) => {
+    try {
+      const { currentTimestep } = req.query;
+      
+      if (!currentTimestep) {
+        return res.status(400).json({ error: "currentTimestep is required" });
+      }
+      
+      const events = await getUpcomingEvents(req.params.worldId, parseInt(currentTimestep as string));
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get upcoming events", details: (error as Error).message });
+    }
+  });
+  
+  // Get event history
+  app.get("/api/events/world/:worldId/history", async (req, res) => {
+    try {
+      const { limit } = req.query;
+      const history = await getEventHistory(req.params.worldId, limit ? parseInt(limit as string) : 50);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get event history", details: (error as Error).message });
+    }
+  });
+  
+  // Schedule festival
+  app.post("/api/events/festival", async (req, res) => {
+    try {
+      const { worldId, festivalType, location, scheduledTimestep } = req.body;
+      
+      if (!worldId || !festivalType || !location || scheduledTimestep === undefined) {
+        return res.status(400).json({ error: "worldId, festivalType, location, and scheduledTimestep are required" });
+      }
+      
+      const festival = await scheduleFestival(worldId, festivalType, location, scheduledTimestep);
+      res.json(festival);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to schedule festival", details: (error as Error).message });
+    }
+  });
+  
+  // Schedule market
+  app.post("/api/events/market", async (req, res) => {
+    try {
+      const { worldId, location, scheduledTimestep } = req.body;
+      
+      if (!worldId || !location || scheduledTimestep === undefined) {
+        return res.status(400).json({ error: "worldId, location, and scheduledTimestep are required" });
+      }
+      
+      const market = await scheduleMarket(worldId, location, scheduledTimestep);
+      res.json(market);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to schedule market", details: (error as Error).message });
+    }
+  });
+  
+  // Schedule wedding
+  app.post("/api/events/wedding", async (req, res) => {
+    try {
+      const { worldId, spouse1Id, spouse2Id, location, scheduledTimestep } = req.body;
+      
+      if (!worldId || !spouse1Id || !spouse2Id || !location || scheduledTimestep === undefined) {
+        return res.status(400).json({ error: "worldId, spouse1Id, spouse2Id, location, and scheduledTimestep are required" });
+      }
+      
+      const wedding = await scheduleWedding(worldId, spouse1Id, spouse2Id, location, scheduledTimestep);
+      res.json(wedding);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to schedule wedding", details: (error as Error).message });
+    }
+  });
+  
+  // Schedule funeral
+  app.post("/api/events/funeral", async (req, res) => {
+    try {
+      const { worldId, deceasedId, location, scheduledTimestep } = req.body;
+      
+      if (!worldId || !deceasedId || !location || scheduledTimestep === undefined) {
+        return res.status(400).json({ error: "worldId, deceasedId, location, and scheduledTimestep are required" });
+      }
+      
+      const funeral = await scheduleFuneral(worldId, deceasedId, location, scheduledTimestep);
+      res.json(funeral);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to schedule funeral", details: (error as Error).message });
+    }
+  });
+  
+  // Trigger disaster
+  app.post("/api/events/disaster", async (req, res) => {
+    try {
+      const { worldId, disasterType, severity, location, currentTimestep } = req.body;
+      
+      if (!worldId || !disasterType || !severity || !location || currentTimestep === undefined) {
+        return res.status(400).json({ error: "worldId, disasterType, severity, location, and currentTimestep are required" });
+      }
+      
+      const disaster = await triggerDisaster(worldId, disasterType, severity, location, currentTimestep);
+      res.json(disaster);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to trigger disaster", details: (error as Error).message });
+    }
+  });
+  
+  // Schedule community meeting
+  app.post("/api/events/meeting", async (req, res) => {
+    try {
+      const { worldId, purpose, location, scheduledTimestep } = req.body;
+      
+      if (!worldId || !purpose || !location || scheduledTimestep === undefined) {
+        return res.status(400).json({ error: "worldId, purpose, location, and scheduledTimestep are required" });
+      }
+      
+      const meeting = await scheduleCommunityMeeting(worldId, purpose, location, scheduledTimestep);
+      res.json(meeting);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to schedule community meeting", details: (error as Error).message });
+    }
+  });
+  
+  // Get community morale
+  app.get("/api/community/:worldId/morale", async (req, res) => {
+    try {
+      const morale = getCommunityMorale(req.params.worldId);
+      res.json({ morale });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get community morale", details: (error as Error).message });
+    }
+  });
+  
+  // Adjust community morale
+  app.post("/api/community/:worldId/morale", async (req, res) => {
+    try {
+      const { amount } = req.body;
+      
+      if (amount === undefined) {
+        return res.status(400).json({ error: "amount is required" });
+      }
+      
+      const newMorale = await adjustCommunityMorale(req.params.worldId, amount);
+      res.json({ morale: newMorale });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to adjust community morale", details: (error as Error).message });
+    }
+  });
+  
+  // Populate event attendance
+  app.post("/api/events/:id/populate-attendance", async (req, res) => {
+    try {
+      const { attendanceRate } = req.body;
+      
+      const event = getEvent(req.params.id);
+      if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+      }
+      
+      await populateEventAttendance(event, attendanceRate);
+      res.json({ success: true, attendees: event.attendees.length });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to populate attendance", details: (error as Error).message });
+    }
+  });
+  
+  // Check for random events
+  app.post("/api/events/world/:worldId/check-random", async (req, res) => {
+    try {
+      const { currentTimestep } = req.body;
+      
+      if (currentTimestep === undefined) {
+        return res.status(400).json({ error: "currentTimestep is required" });
+      }
+      
+      const events = await checkRandomEvents(req.params.worldId, currentTimestep);
+      res.json({ triggeredEvents: events });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to check random events", details: (error as Error).message });
     }
   });
 
@@ -933,6 +2774,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/generate/hierarchical", async (req, res) => {
     try {
       const config = req.body;
+      const { worldType, customPrompt, customLabel, gameType } = config;
       let totalPopulation = 0;
       let numCountries = 0;
       let numStates = 0;
@@ -940,19 +2782,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Single-shot mode: Generate ALL names in one API call (experimental, much faster)
       const useSingleShot = config.useSingleShot !== false; // Enabled by default
-      
+
       if (useSingleShot && nameGenerator.isEnabled() && config.generateGenealogy) {
         console.log('🚀 Using SINGLE-SHOT generation mode for maximum efficiency...');
-        
+
         const world = await storage.getWorld(config.worldId);
-        
+
         // Build settlement plan
         const settlementPlan = [];
         const numStatesForCountry = config.generateStates ? (config.numStatesPerCountry || 3) : 1;
         const numCities = config.numCitiesPerState || 0;
         const numTowns = config.numTownsPerState || 0;
         const numVillages = config.numVillagesPerState || 0;
-        
+
         for (let j = 0; j < numStatesForCountry; j++) {
           for (let k = 0; k < numCities; k++) {
             settlementPlan.push({ type: 'city' as const, numFamilies: config.numFoundingFamilies || 10, childrenPerFamily: 2 });
@@ -964,15 +2806,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             settlementPlan.push({ type: 'village' as const, numFamilies: config.numFoundingFamilies || 10, childrenPerFamily: 2 });
           }
         }
-        
+
         if (settlementPlan.length === 0) {
           console.log('⚠️ No settlements to generate, skipping single-shot mode');
           // Fall through to traditional generation
         } else {
           // Generate ALL names in ONE API call
           const allNames = await nameGenerator.generateCompleteWorldNames({
+            worldId: config.worldId,
             worldName: world?.name || 'Unknown World',
-            worldDescription: world?.description || undefined,
+            worldDescription: config.worldDescription || world?.description || undefined,
+            worldType,
+            customPrompt,
+            customLabel,
+            gameType,
             numCountries: 1,
             numStatesPerCountry: config.generateStates ? numStatesForCountry : 0,
             governmentType: config.governmentType || 'monarchy',
@@ -1419,7 +3266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Progress tracking endpoints
   app.get("/api/progress/:taskId", async (req, res) => {
     try {
-      const { progressTracker } = await import("./progress-tracker.js");
+      const { progressTracker } = await import("./utils/progress-tracker.js");
       const progress = progressTracker.getLatestProgress(req.params.taskId);
       
       if (!progress) {
@@ -1435,8 +3282,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Complete world generation (societies + rules + actions + quests)
   app.post("/api/generate/complete-world", async (req, res) => {
     try {
-      const { worldId, worldType, customPrompt, worldName, worldDescription } = req.body;
-      const { progressTracker } = await import("./progress-tracker.js");
+      const { worldId, worldType, customPrompt, customLabel, gameType, worldName, worldDescription } = req.body;
+      const { progressTracker } = await import("./utils/progress-tracker.js");
       const taskId = `world-gen-${worldId}-${Date.now()}`;
       
       // Start tracking progress
@@ -1492,6 +3339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let numRules = 0;
       let numActions = 0;
       let numQuests = 0;
+      let numGrammars = 0;
       let numCountries = 0;
       let numSettlements = 0;
       
@@ -1503,6 +3351,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           worldId,
+          worldType,
+          customPrompt,
+          customLabel,
+          gameType,
+          worldDescription: enrichedDescription,
           numCountries: 1,
           generateStates: true,
           numStatesPerCountry: 2,
@@ -1645,12 +3498,44 @@ Return as a JSON array with this structure:
 [
   {
     "name": "Short descriptive rule name",
-    "content": "The actual rule text in Insimul format",
+    "content": "The actual rule in Insimul format",
     "ruleType": "social|cultural|legal|moral"
   }
 ]
 
-Make the rule names creative and fitting for the world's theme. Example for cyberpunk: "Corporate Respect Protocol" or "Neural Privacy Laws"`;
+IMPORTANT: The "content" field must be a complete Insimul rule following this exact syntax:
+
+rule rule_name {
+  when (
+    Condition1(?var1) and
+    Condition2(?var2)
+  )
+  then {
+    effect_action(?var1)
+    another_effect(?var2)
+  }
+  priority: 5
+  tags: [social, generated]
+}
+
+Example for a social hierarchy rule:
+rule respect_nobility {
+  when (
+    Character(?commoner) and
+    Character(?noble) and
+    has_status(?commoner, "commoner") and
+    has_status(?noble, "nobility") and
+    meets(?commoner, ?noble)
+  )
+  then {
+    bow_to(?commoner, ?noble)
+    increase_relationship(?noble, ?commoner, 5)
+  }
+  priority: 7
+  tags: [social, hierarchy]
+}
+
+Make the rule names creative and fitting for the world's theme. Example for cyberpunk: "corporate_respect_protocol" or "neural_privacy_law"`;
           
           const genAI = new GoogleGenerativeAI(getGeminiApiKey()!);
           const model = genAI.getGenerativeModel({ 
@@ -1673,9 +3558,10 @@ Make the rule names creative and fitting for the world's theme. Example for cybe
                   worldId,
                   name: rule.name,
                   content: rule.content,
-                  systemType: 'insimul',
+                  sourceFormat: 'insimul',
                   ruleType: rule.ruleType || 'default',
                   priority: 5,
+                  likelihood: 1.0,
                   conditions: [],
                   effects: [],
                   tags: ['generated', 'ai'],
@@ -1744,7 +3630,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
                   name: action.name,
                   description: action.description,
                   actionType: action.actionType || 'social',
-                  systemType: 'insimul',
+                  sourceFormat: 'insimul',
                   prerequisites: [],
                   effects: [],
                   tags: ['generated', 'ai'],
@@ -1766,7 +3652,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
         console.log('🎯 Step 5: Generating quests...');
         progressTracker.updateProgress(taskId, 'quests', 'Generating quest storylines...', 92);
         try {
-          const { generateBulkRules } = await import("./gemini-ai.js");
+          const { generateBulkRules } = await import("./services/gemini-ai.js");
           
           const worldContext = customPrompt || 
             `A ${worldType || 'medieval-fantasy'} world named "${worldName}". ${worldDescription || ''}`;
@@ -1805,10 +3691,81 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
           console.warn('⚠️ Quest generation skipped:', (error as Error).message);
         }
       }
+
+      // Step 6: Setup grammars (generate for custom world types, use seeded for preset types)
+      if (customLabel && customPrompt && isGeminiConfigured()) {
+        // Custom world type: Generate custom grammars with LLM
+        console.log(`📝 Step 6: Generating custom grammars for "${customLabel}"...`);
+        progressTracker.updateProgress(taskId, 'grammars', 'Generating custom procedural grammars...', 97);
+        try {
+          const { grammarGenerator } = await import("./services/grammar-generator.js");
+
+          const generatedGrammars = await grammarGenerator.generateCustomGrammars(
+            customLabel,
+            customPrompt
+          );
+
+          // Save each grammar to the database with worldId
+          for (const grammar of generatedGrammars) {
+            await storage.createGrammar({
+              worldId,
+              name: grammar.name,
+              description: grammar.description,
+              grammar: grammar.grammar,
+              tags: grammar.tags,
+              worldType: customLabel,
+              gameType: gameType,
+              isActive: true,
+            });
+            numGrammars++;
+          }
+
+          console.log(`✅ Generated ${numGrammars} custom grammars for ${customLabel}`);
+          progressTracker.updateProgress(taskId, 'grammars-complete', `Generated ${numGrammars} custom grammars`, 99);
+        } catch (error) {
+          console.warn('⚠️ Custom grammar generation failed:', (error as Error).message);
+        }
+      } else if (worldType) {
+        // Preset world type: Seed static grammars from seed-grammars.ts (no LLM generation needed)
+        console.log(`📝 Step 6: Seeding static grammars for ${worldType}...`);
+        progressTracker.updateProgress(taskId, 'grammars', `Seeding pre-generated grammars for ${worldType}`, 97);
+
+        try {
+          // Filter grammars by worldType
+          const worldTypeGrammars = seedGrammars.filter((g: any) =>
+            g.worldType === worldType || (g.tags && g.tags.includes(worldType))
+          );
+
+          console.log(`  Found ${worldTypeGrammars.length} grammars for ${worldType}`);
+
+          // Insert each grammar into the database
+          for (const grammar of worldTypeGrammars) {
+            await storage.createGrammar({
+              worldId,
+              name: grammar.name,
+              description: grammar.description,
+              grammar: grammar.grammar,
+              tags: grammar.tags || [],
+              worldType: grammar.worldType || worldType,
+              gameType: gameType,
+              isActive: grammar.isActive !== false,
+            });
+            numGrammars++;
+          }
+
+          console.log(`✅ Seeded ${numGrammars} grammars for ${worldType} (no LLM calls!)`);
+          progressTracker.updateProgress(taskId, 'grammars-complete', `Seeded ${numGrammars} static grammars`, 99);
+        } catch (error) {
+          console.warn('⚠️ Grammar seeding failed:', (error as Error).message);
+        }
+      } else {
+        console.log('📝 Step 6: No specific grammars configured');
+        progressTracker.updateProgress(taskId, 'grammars', 'Using default grammars', 99);
+      }
       
       console.log(`🎉 Complete world generation finished!`);
           
-          progressTracker.completeTask(taskId, `World generated! ${totalPopulation} characters, ${numRules} rules, ${numActions} actions, ${numQuests} quests`);
+          progressTracker.completeTask(taskId, `World generated! ${totalPopulation} characters, ${numRules} rules, ${numActions} actions, ${numQuests} quests, ${numGrammars} grammars`);
         } catch (error) {
           console.error("Complete world generation error:", error);
           progressTracker.failTask(taskId, error instanceof Error ? error.message : 'Unknown error');
@@ -1870,7 +3827,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
       // Parse simulation parameters from request body
       const config = req.body || {};
       const {
-        systemTypes = ["insimul"],
+        sourceFormats = ["insimul"],
         maxRules = 12,
         maxEvents = 8,
         maxCharacters = 6,
@@ -1890,8 +3847,8 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
       // Update simulation with new configuration
       await storage.updateSimulation(req.params.id, { 
         status: "running",
-        systemTypes,
         config: {
+          sourceFormats,
           maxRules,
           maxEvents, 
           maxCharacters,
@@ -2121,7 +4078,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
   // Rule validation and testing
   app.post("/api/rules/validate", async (req, res) => {
     try {
-      const { content, systemType } = req.body;
+      const { content, sourceFormat } = req.body;
       
       // Basic syntax validation based on system type
       const validation: {
@@ -2142,7 +4099,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
         return res.json(validation);
       }
 
-      if (systemType === "insimul") {
+      if (sourceFormat === "insimul") {
         // Insimul syntax validation
         if (!content.includes("rule ")) {
           validation.isValid = false;
@@ -2173,7 +4130,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
         if (!content.includes("priority:") && !content.includes("priority :")) {
           validation.warnings.push("Consider adding a priority value for rule ordering");
         }
-      } else if (systemType === "ensemble") {
+      } else if (sourceFormat === "ensemble") {
         // Ensemble syntax validation
         if (!content.includes("rule ")) {
           validation.isValid = false;
@@ -2191,7 +4148,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
         if (!content.match(/Person\(\?[\w]+\)/)) {
           validation.warnings.push("Ensemble rules typically use Person(?variable) pattern");
         }
-      } else if (systemType === "kismet") {
+      } else if (sourceFormat === "kismet") {
         // Kismet syntax validation (Prolog-based)
         if (!content.includes("trait ") && !content.includes(":-")) {
           validation.warnings.push("Kismet rules typically define traits or use Prolog syntax (:-) for predicates");
@@ -2207,7 +4164,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
         if (content.includes("+++") || content.includes("---")) {
           validation.suggestions.push("Good use of Kismet relationship modifiers (+++ or ---)");
         }
-      } else if (systemType === "tott") {
+      } else if (sourceFormat === "tott") {
         // Talk of the Town syntax validation
         if (!content.includes("rule ") && !content.includes("def ")) {
           validation.warnings.push("TotT rules typically use 'rule' or 'def' keywords");
@@ -2262,20 +4219,22 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/tts", async (req, res) => {
     try {
-      const { textToSpeech } = await import("./tts-stt.js");
-      const { transcript, text, voice = "Kore", gender = "neutral" } = req.body;
+      const { textToSpeech } = await import("./services/tts-stt.js");
+      const { transcript, text, voice = "Kore", gender = "neutral", encoding = "MP3" } = req.body;
       const textToConvert = transcript || text;
 
-      console.log("TTS request received:", { text: textToConvert?.substring(0, 50), voice, gender, bodyKeys: Object.keys(req.body) });
+      console.log("TTS request received:", { text: textToConvert?.substring(0, 50), voice, gender, encoding, bodyKeys: Object.keys(req.body) });
 
       if (!textToConvert || textToConvert.trim() === '') {
         console.error("TTS error: No text provided. Body:", req.body);
         return res.status(400).json({ error: "No text provided" });
       }
 
-      const audioBuffer = await textToSpeech(textToConvert, voice, gender);
+      const audioBuffer = await textToSpeech(textToConvert, voice, gender, encoding);
 
-      res.setHeader('Content-Type', 'audio/mpeg');
+      // Set appropriate content type based on encoding
+      const contentType = encoding === "WAV" ? 'audio/wav' : 'audio/mpeg';
+      res.setHeader('Content-Type', contentType);
       res.send(audioBuffer);
     } catch (error) {
       console.error("TTS error:", error);
@@ -2289,7 +4248,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/stt", upload.single('audio'), async (req, res) => {
     try {
-      const { speechToText } = await import("./tts-stt.js");
+      const { speechToText } = await import("./services/tts-stt.js");
 
       let audioBuffer: Buffer;
       let mimeType = 'audio/wav';
@@ -2386,7 +4345,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.get("/api/tts/get_available_voices", async (req, res) => {
     try {
-      const { getAvailableVoices } = await import("./tts-stt.js");
+      const { getAvailableVoices } = await import("./services/tts-stt.js");
       const voices = getAvailableVoices();
       res.json(voices);
     } catch (error) {
@@ -2400,7 +4359,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/character/getResponse", async (req, res) => {
     try {
-      const { getCharacterResponse } = await import("./character-interaction.js");
+      const { getCharacterResponse } = await import("./services/character-interaction.js");
       const { userQuery, charID } = req.body;
 
       if (!userQuery || !charID) {
@@ -2498,7 +4457,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/character/getActions", async (req, res) => {
     try {
-      const { getCharacterActions } = await import("./character-interaction.js");
+      const { getCharacterActions } = await import("./services/character-interaction.js");
       const { charID } = req.body;
 
       if (!charID) {
@@ -2514,7 +4473,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/character/getActionResponse", async (req, res) => {
     try {
-      const { getActionResponse } = await import("./character-interaction.js");
+      const { getActionResponse } = await import("./services/character-interaction.js");
       const { charID, action, context } = req.body;
 
       if (!charID || !action) {
@@ -2530,7 +4489,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/character/narrative/list-sections", async (req, res) => {
     try {
-      const { listNarrativeSections } = await import("./character-interaction.js");
+      const { listNarrativeSections } = await import("./services/character-interaction.js");
       const sections = listNarrativeSections();
       res.json(sections);
     } catch (error) {
@@ -2540,7 +4499,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/character/narrative/list-triggers", async (req, res) => {
     try {
-      const { listNarrativeTriggers } = await import("./character-interaction.js");
+      const { listNarrativeTriggers } = await import("./services/character-interaction.js");
       const triggers = listNarrativeTriggers();
       res.json(triggers);
     } catch (error) {
@@ -2578,7 +4537,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.get("/api/prolog/facts", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const worldId = req.query.worldId as string | undefined;
 
       // Create manager instance for this world (or use default)
@@ -2604,7 +4563,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/facts", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { fact, worldId } = req.body;
 
       if (!fact) {
@@ -2655,7 +4614,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/rules", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { rule, worldId } = req.body;
 
       if (!rule) {
@@ -2706,7 +4665,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/query", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { query, worldId } = req.body;
 
       if (!query) {
@@ -2752,7 +4711,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/clear", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { worldId } = req.body;
 
       // Create manager instance for this world (or use default)
@@ -2778,7 +4737,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/save", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { worldId } = req.body;
 
       // Create manager instance for this world (or use default)
@@ -2804,7 +4763,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/load", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { worldId } = req.body;
 
       // Create manager instance for this world (or use default)
@@ -2830,7 +4789,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.get("/api/prolog/export", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const worldId = req.query.worldId as string | undefined;
 
       // Create manager instance for this world (or use default)
@@ -2855,8 +4814,8 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/sync", async (req, res) => {
     try {
-      const { createPrologSyncService } = await import("./prolog-sync.js");
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { createPrologSyncService } = await import("./engines/prolog/prolog-sync.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { worldId } = req.body;
 
       if (!worldId) {
@@ -2900,7 +4859,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/prolog/import", async (req, res) => {
     try {
-      const { PrologManager } = await import("./prolog-manager.js");
+      const { PrologManager } = await import("./engines/prolog/prolog-manager.js");
       const { content, worldId } = req.body;
 
       if (!content) {
@@ -2950,6 +4909,38 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
     }
   });
 
+  // Get all base actions - MUST come before /api/actions/:id
+  app.get("/api/actions/base", async (req, res) => {
+    try {
+      console.log('Fetching base actions...');
+      const actions = await storage.getBaseActions();
+      console.log(`Found ${actions.length} base actions`);
+      if (actions.length > 0) {
+        console.log('First base action:', {
+          id: actions[0].id,
+          name: actions[0].name,
+          isBase: actions[0].isBase,
+          worldId: actions[0].worldId,
+          worldIdType: typeof actions[0].worldId
+        });
+      }
+      res.json(actions);
+    } catch (error) {
+      console.error('Error fetching base actions:', error);
+      res.status(500).json({ error: "Failed to fetch base actions" });
+    }
+  });
+
+  // Get actions by type (base actions)
+  app.get("/api/actions/type/:actionType", async (req, res) => {
+    try {
+      const actions = await storage.getBaseActionsByType(req.params.actionType);
+      res.json(actions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch actions by type" });
+    }
+  });
+
   app.get("/api/actions/:id", async (req, res) => {
     try {
       const action = await storage.getAction(req.params.id);
@@ -2964,15 +4955,57 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/actions", async (req, res) => {
     try {
-      const validatedData = insertActionSchema.parse(req.body);
+      // If isBase is true, set worldId to null and ensure isBase flag
+      const data = req.body.isBase ? { ...req.body, worldId: null, isBase: true } : req.body;
+      
+      // Log incoming data for debugging
+      console.log('Creating action:', {
+        name: data.name,
+        isBase: data.isBase,
+        worldId: data.worldId,
+        actionType: data.actionType,
+        sourceFormat: data.sourceFormat
+      });
+      
+      const validatedData = insertActionSchema.parse(data);
+      console.log('After validation:', {
+        name: validatedData.name,
+        isBase: validatedData.isBase,
+        worldId: validatedData.worldId,
+        worldIdType: typeof validatedData.worldId
+      });
+      
       const action = await storage.createAction(validatedData);
+      console.log('Created action in DB:', {
+        id: action.id,
+        name: action.name,
+        isBase: action.isBase,
+        worldId: action.worldId,
+        worldIdType: typeof action.worldId
+      });
+      
       res.status(201).json(action);
     } catch (error) {
       console.error("Failed to create action:", error);
+      console.error("Request body:", JSON.stringify(req.body, null, 2));
+      
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid action data", details: error.errors });
+        return res.status(400).json({ 
+          error: "Invalid action data", 
+          details: error.errors,
+          receivedData: {
+            name: req.body.name,
+            actionType: req.body.actionType,
+            isBase: req.body.isBase
+          }
+        });
       }
-      res.status(500).json({ error: "Failed to create action" });
+      
+      res.status(500).json({ 
+        error: "Failed to create action",
+        message: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.stack : undefined
+      });
     }
   });
 
@@ -3016,6 +5049,73 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Failed to delete action" });
+    }
+  });
+
+
+  // Per-World Base Resource Configuration
+  app.get("/api/worlds/:worldId/base-resources/config", async (req, res) => {
+    try {
+      const world = await storage.getWorld(req.params.worldId);
+      if (!world) {
+        return res.status(404).json({ error: "World not found" });
+      }
+      
+      // Return configuration from world.config or default to all enabled
+      const config = {
+        enabledBaseRules: world.config?.enabledBaseRules || [],
+        disabledBaseRules: world.config?.disabledBaseRules || [],
+        enabledBaseActions: world.config?.enabledBaseActions || [],
+        disabledBaseActions: world.config?.disabledBaseActions || []
+      };
+      
+      res.json(config);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch base resource config" });
+    }
+  });
+
+  app.post("/api/worlds/:worldId/base-resources/toggle", async (req, res) => {
+    try {
+      const { resourceId, resourceType, enabled } = req.body;
+      const world = await storage.getWorld(req.params.worldId);
+      
+      if (!world) {
+        return res.status(404).json({ error: "World not found" });
+      }
+
+      const config = world.config || {};
+      
+      if (resourceType === 'rule') {
+        if (!config.enabledBaseRules) config.enabledBaseRules = [];
+        if (!config.disabledBaseRules) config.disabledBaseRules = [];
+        
+        if (enabled) {
+          config.enabledBaseRules = [...config.enabledBaseRules.filter((id: string) => id !== resourceId), resourceId];
+          config.disabledBaseRules = config.disabledBaseRules.filter((id: string) => id !== resourceId);
+        } else {
+          config.disabledBaseRules = [...config.disabledBaseRules.filter((id: string) => id !== resourceId), resourceId];
+          config.enabledBaseRules = config.enabledBaseRules.filter((id: string) => id !== resourceId);
+        }
+      } else if (resourceType === 'action') {
+        if (!config.enabledBaseActions) config.enabledBaseActions = [];
+        if (!config.disabledBaseActions) config.disabledBaseActions = [];
+        
+        if (enabled) {
+          config.enabledBaseActions = [...config.enabledBaseActions.filter((id: string) => id !== resourceId), resourceId];
+          config.disabledBaseActions = config.disabledBaseActions.filter((id: string) => id !== resourceId);
+        } else {
+          config.disabledBaseActions = [...config.disabledBaseActions.filter((id: string) => id !== resourceId), resourceId];
+          config.enabledBaseActions = config.enabledBaseActions.filter((id: string) => id !== resourceId);
+        }
+      }
+
+      await storage.updateWorld(req.params.worldId, { config });
+      
+      res.json({ message: "Base resource toggle updated", config });
+    } catch (error) {
+      console.error("Failed to toggle base resource:", error);
+      res.status(500).json({ error: "Failed to toggle base resource" });
     }
   });
 
@@ -3400,6 +5500,411 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
     } catch (error) {
       console.error("Failed to import Ensemble truth:", error);
       res.status(500).json({ error: "Failed to import truth" });
+    }
+  });
+
+  // ============================================================================
+  // PREDICATE SCHEMA API (Phase 1: Core Schema Loading)
+  // ============================================================================
+  
+  const { predicateDiscovery } = await import("./services/predicate-discovery.js");
+
+  // Get all predicates (for autocomplete and documentation)
+  app.get("/api/predicates", async (req, res) => {
+    try {
+      const predicates = await predicateDiscovery.getAllPredicates();
+      
+      res.json({
+        count: predicates.length,
+        predicates: predicates.map(p => ({
+          name: p.name,
+          arity: p.arity,
+          description: p.description,
+          category: p.category,
+          examples: p.examples,
+          source: p.source,
+          builtIn: p.builtIn || false,
+          usageCount: p.usageCount,
+          confidence: p.confidence,
+          args: p.args
+        }))
+      });
+    } catch (error) {
+      console.error("Failed to fetch predicates:", error);
+      res.status(500).json({ error: "Failed to fetch predicates" });
+    }
+  });
+
+  // Get predicates by name (all arities)
+  app.get("/api/predicates/name/:name", async (req, res) => {
+    try {
+      const predicates = await predicateDiscovery.getPredicatesByName(req.params.name);
+      
+      if (predicates.length === 0) {
+        return res.status(404).json({ error: `Predicate '${req.params.name}' not found` });
+      }
+      
+      res.json({
+        name: req.params.name,
+        variants: predicates.map(p => ({
+          arity: p.arity,
+          description: p.description,
+          examples: p.examples,
+          source: p.source,
+          usageCount: p.usageCount,
+          args: p.args
+        }))
+      });
+    } catch (error) {
+      console.error("Failed to fetch predicate info:", error);
+      res.status(500).json({ error: "Failed to fetch predicate info" });
+    }
+  });
+
+  // Get predicate by exact name and arity
+  app.get("/api/predicates/:name/:arity", async (req, res) => {
+    try {
+      const arity = parseInt(req.params.arity);
+      if (isNaN(arity)) {
+        return res.status(400).json({ error: "Arity must be a number" });
+      }
+      
+      const predicate = await predicateDiscovery.getPredicate(req.params.name, arity);
+      
+      if (!predicate) {
+        // Try to find similar predicates for helpful error message
+        const similar = await predicateDiscovery.findSimilar(req.params.name);
+        return res.status(404).json({ 
+          error: `Predicate '${req.params.name}/${arity}' not found`,
+          suggestions: similar.length > 0 ? similar : undefined
+        });
+      }
+      
+      res.json(predicate);
+    } catch (error) {
+      console.error("Failed to fetch predicate:", error);
+      res.status(500).json({ error: "Failed to fetch predicate" });
+    }
+  });
+
+  // Get all predicate names
+  app.get("/api/predicates/names", async (req, res) => {
+    try {
+      const names = await predicateDiscovery.getAllPredicateNames();
+      res.json({ names });
+    } catch (error) {
+      console.error("Failed to fetch predicate names:", error);
+      res.status(500).json({ error: "Failed to fetch predicate names" });
+    }
+  });
+
+  // Get all categories
+  app.get("/api/predicates/categories", async (req, res) => {
+    try {
+      const categories = await predicateDiscovery.getCategories();
+      res.json({ categories });
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  // Get predicates by category
+  app.get("/api/predicates/category/:category", async (req, res) => {
+    try {
+      const predicates = await predicateDiscovery.getPredicatesByCategory(req.params.category);
+      res.json({
+        category: req.params.category,
+        count: predicates.length,
+        predicates
+      });
+    } catch (error) {
+      console.error("Failed to fetch predicates by category:", error);
+      res.status(500).json({ error: "Failed to fetch predicates by category" });
+    }
+  });
+
+  // Find similar predicates (spell check)
+  app.get("/api/predicates/similar/:name", async (req, res) => {
+    try {
+      const maxDistance = req.query.maxDistance ? parseInt(req.query.maxDistance as string) : 2;
+      const similar = await predicateDiscovery.findSimilar(req.params.name, maxDistance);
+      
+      res.json({
+        query: req.params.name,
+        suggestions: similar
+      });
+    } catch (error) {
+      console.error("Failed to find similar predicates:", error);
+      res.status(500).json({ error: "Failed to find similar predicates" });
+    }
+  });
+
+  // Reload schemas (useful for development)
+  app.post("/api/predicates/reload", async (req, res) => {
+    try {
+      await predicateDiscovery.reload();
+      const predicates = await predicateDiscovery.getAllPredicates();
+      
+      res.json({ 
+        message: "Schemas reloaded successfully",
+        count: predicates.length
+      });
+    } catch (error) {
+      console.error("Failed to reload schemas:", error);
+      res.status(500).json({ error: "Failed to reload schemas" });
+    }
+  });
+
+  // ============================================================================
+  // PREDICATE VALIDATION API (Phase 3: Non-Blocking Validation)
+  // ============================================================================
+  
+  const { PredicateValidator } = await import("./services/predicate-validator.js");
+  const validator = new PredicateValidator(predicateDiscovery);
+
+  // Validate rule content (non-blocking, returns warnings)
+  app.post("/api/rules/validate", async (req, res) => {
+    try {
+      const { content } = req.body;
+      
+      if (!content || typeof content !== 'string') {
+        return res.status(400).json({ error: "Rule content is required" });
+      }
+      
+      const result = await validator.validateRule(content);
+      
+      res.json({
+        valid: true,  // Always true - never blocks
+        warnings: result.warnings,
+        predicatesFound: result.predicatesFound,
+        unknownPredicates: result.unknownPredicates
+      });
+    } catch (error) {
+      console.error("Validation failed:", error);
+      res.status(500).json({ error: "Validation failed" });
+    }
+  });
+
+  // Get autocomplete suggestions for partial predicate name
+  app.get("/api/predicates/autocomplete/:partial", async (req, res) => {
+    try {
+      const maxResults = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const suggestions = await validator.getAutocompleteSuggestions(req.params.partial, maxResults);
+      
+      res.json({
+        query: req.params.partial,
+        suggestions
+      });
+    } catch (error) {
+      console.error("Failed to get autocomplete suggestions:", error);
+      res.status(500).json({ error: "Failed to get autocomplete suggestions" });
+    }
+  });
+
+  // Get detailed help for a predicate
+  app.get("/api/predicates/help/:name", async (req, res) => {
+    try {
+      const help = await validator.getPredicateHelp(req.params.name);
+      
+      if (!help) {
+        return res.status(404).json({ error: `No help available for predicate '${req.params.name}'` });
+      }
+      
+      res.json(help);
+    } catch (error) {
+      console.error("Failed to get predicate help:", error);
+      res.status(500).json({ error: "Failed to get predicate help" });
+    }
+  });
+
+  // Validate multiple rules at once
+  app.post("/api/rules/validate-batch", async (req, res) => {
+    try {
+      const { rules } = req.body;
+      
+      if (!Array.isArray(rules)) {
+        return res.status(400).json({ error: "Rules array is required" });
+      }
+      
+      const results = await validator.validateRules(rules);
+      
+      res.json({
+        totalRules: rules.length,
+        results: Object.fromEntries(results.entries())
+      });
+    } catch (error) {
+      console.error("Batch validation failed:", error);
+      res.status(500).json({ error: "Batch validation failed" });
+    }
+  });
+
+  // ============================================================================
+  // PREDICATE DISCOVERY API (Phase 2: Auto-Discovery)
+  // ============================================================================
+
+  // Trigger predicate discovery for a specific world
+  app.post("/api/worlds/:id/discover-predicates", async (req, res) => {
+    try {
+      const result = await predicateDiscovery.discoverPredicatesInWorld(req.params.id);
+      
+      res.json({
+        message: "Predicate discovery complete",
+        worldId: req.params.id,
+        newPredicates: result.newPredicates,
+        updatedPredicates: result.updatedPredicates,
+        totalPredicates: result.totalPredicates
+      });
+    } catch (error) {
+      console.error("Failed to discover predicates:", error);
+      res.status(500).json({ error: "Failed to discover predicates" });
+    }
+  });
+
+  // Trigger global predicate discovery (all worlds)
+  app.post("/api/predicates/discover-global", async (req, res) => {
+    try {
+      const result = await predicateDiscovery.discoverPredicatesGlobally();
+      
+      res.json({
+        message: "Global predicate discovery complete",
+        worldsScanned: result.worldsScanned,
+        totalPredicates: result.totalPredicates
+      });
+    } catch (error) {
+      console.error("Failed to discover predicates globally:", error);
+      res.status(500).json({ error: "Failed to discover predicates globally" });
+    }
+  });
+
+  // ============================================================================
+  // PREDICATE ENHANCEMENTS API (Phase 5: Annotations, Strict Mode, Export)
+  // ============================================================================
+
+  const { PredicateDocumentationExporter } = await import("./services/predicate-documentation.js");
+  const docExporter = new PredicateDocumentationExporter(predicateDiscovery);
+
+  // Add or update world-specific annotation
+  app.post("/api/worlds/:worldId/predicates/:name/:arity/annotate", async (req, res) => {
+    try {
+      const { worldId, name, arity } = req.params;
+      const { description, category, examples, addedBy } = req.body;
+      
+      await predicateDiscovery.annotate({
+        predicateName: name,
+        arity: parseInt(arity),
+        worldId,
+        description,
+        category,
+        examples,
+        addedBy
+      });
+      
+      res.json({
+        message: "Annotation added successfully",
+        predicate: `${name}/${arity}`,
+        worldId
+      });
+    } catch (error) {
+      console.error("Failed to add annotation:", error);
+      res.status(500).json({ error: "Failed to add annotation" });
+    }
+  });
+
+  // Get annotation for a predicate in a world
+  app.get("/api/worlds/:worldId/predicates/:name/:arity/annotation", async (req, res) => {
+    try {
+      const { worldId, name, arity } = req.params;
+      const annotation = predicateDiscovery.getAnnotation(worldId, name, parseInt(arity));
+      
+      if (!annotation) {
+        return res.status(404).json({ error: "Annotation not found" });
+      }
+      
+      res.json(annotation);
+    } catch (error) {
+      console.error("Failed to get annotation:", error);
+      res.status(500).json({ error: "Failed to get annotation" });
+    }
+  });
+
+  // Get all annotations for a world
+  app.get("/api/worlds/:worldId/annotations", async (req, res) => {
+    try {
+      const annotations = predicateDiscovery.getWorldAnnotations(req.params.worldId);
+      res.json({ annotations });
+    } catch (error) {
+      console.error("Failed to get annotations:", error);
+      res.status(500).json({ error: "Failed to get annotations" });
+    }
+  });
+
+  // Delete annotation
+  app.delete("/api/worlds/:worldId/predicates/:name/:arity/annotation", async (req, res) => {
+    try {
+      const { worldId, name, arity } = req.params;
+      const deleted = predicateDiscovery.deleteAnnotation(worldId, name, parseInt(arity));
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Annotation not found" });
+      }
+      
+      res.json({ message: "Annotation deleted successfully" });
+    } catch (error) {
+      console.error("Failed to delete annotation:", error);
+      res.status(500).json({ error: "Failed to delete annotation" });
+    }
+  });
+
+  // Update validation configuration
+  app.post("/api/validation/config", async (req, res) => {
+    try {
+      validator.setConfig(req.body);
+      res.json({
+        message: "Validation configuration updated",
+        config: validator.getConfig()
+      });
+    } catch (error) {
+      console.error("Failed to update config:", error);
+      res.status(500).json({ error: "Failed to update validation config" });
+    }
+  });
+
+  // Get validation configuration
+  app.get("/api/validation/config", async (req, res) => {
+    try {
+      res.json({ config: validator.getConfig() });
+    } catch (error) {
+      console.error("Failed to get config:", error);
+      res.status(500).json({ error: "Failed to get validation config" });
+    }
+  });
+
+  // Export documentation
+  app.get("/api/predicates/export/:format", async (req, res) => {
+    try {
+      const format = req.params.format as 'markdown' | 'html' | 'json';
+      const worldId = req.query.worldId as string | undefined;
+      
+      if (!['markdown', 'html', 'json'].includes(format)) {
+        return res.status(400).json({ error: "Invalid format. Use: markdown, html, or json" });
+      }
+      
+      const documentation = await docExporter.exportDocumentation(format, worldId);
+      
+      // Set appropriate content type
+      const contentType = {
+        markdown: 'text/markdown',
+        html: 'text/html',
+        json: 'application/json'
+      }[format];
+      
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Disposition', `attachment; filename="predicates.${format}"`);
+      res.send(documentation);
+    } catch (error) {
+      console.error("Failed to export documentation:", error);
+      res.status(500).json({ error: "Failed to export documentation" });
     }
   });
 

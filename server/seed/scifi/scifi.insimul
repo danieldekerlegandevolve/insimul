@@ -1,0 +1,103 @@
+{
+  "world": {
+    "name": "New Earth Colony",
+    "description": "A futuristic space colony on a terraformed planet, dealing with advanced AI, alien contact, and interstellar politics",
+    "sourceFormats": ["insimul"],
+    "config": {
+      "era": "scifi",
+      "year": 2340,
+      "technology": "advanced",
+      "ftl_travel": true,
+      "ai_sentience": true
+    }
+  },
+  "countries": [
+    {
+      "id": "earth_alliance",
+      "name": "Earth Alliance",
+      "governmentType": "federal_republic",
+      "economicSystem": "post_scarcity"
+    },
+    {
+      "id": "mars_collective",
+      "name": "Mars Collective",
+      "governmentType": "technocracy",
+      "economicSystem": "socialist"
+    }
+  ],
+  "settlements": [
+    {
+      "id": "nova_city",
+      "countryRef": "earth_alliance",
+      "name": "Nova City",
+      "settlementType": "city",
+      "population": 5000000,
+      "terrain": "plains"
+    },
+    {
+      "id": "olympus_station",
+      "countryRef": "mars_collective",
+      "name": "Olympus Station",
+      "settlementType": "city",
+      "population": 2000000,
+      "terrain": "mountains"
+    }
+  ],
+  "characters": [
+    {
+      "id": "admiral_shepard",
+      "firstName": "Jane",
+      "lastName": "Shepard",
+      "gender": "female",
+      "birthYear": 2300,
+      "occupation": "admiral",
+      "locationRef": "nova_city"
+    },
+    {
+      "id": "scientist_freeman",
+      "firstName": "Gordon",
+      "lastName": "Freeman",
+      "gender": "male",
+      "birthYear": 2305,
+      "occupation": "scientist",
+      "locationRef": "nova_city"
+    },
+    {
+      "id": "ai_cortana",
+      "firstName": "Cortana",
+      "lastName": "AI-7",
+      "gender": "female",
+      "birthYear": 2335,
+      "occupation": "AI_researcher",
+      "locationRef": "nova_city"
+    },
+    {
+      "id": "pilot_mccall",
+      "firstName": "Sarah",
+      "lastName": "McCall",
+      "gender": "female",
+      "birthYear": 2310,
+      "occupation": "pilot",
+      "locationRef": "olympus_station"
+    },
+    {
+      "id": "engineer_patel",
+      "firstName": "Raj",
+      "lastName": "Patel",
+      "gender": "male",
+      "birthYear": 2308,
+      "occupation": "engineer",
+      "locationRef": "olympus_station"
+    }
+  ],
+  "relationships": [
+    {
+      "characterRef": "admiral_shepard",
+      "friendRefs": ["scientist_freeman", "ai_cortana"]
+    },
+    {
+      "characterRef": "pilot_mccall",
+      "friendRefs": ["engineer_patel"]
+    }
+  ]
+}

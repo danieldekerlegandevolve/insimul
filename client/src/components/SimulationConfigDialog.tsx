@@ -21,33 +21,22 @@ interface SimulationConfigDialogProps {
 export function SimulationConfigDialog({ onRunSimulation, isLoading = false, children, worlds = [] }: SimulationConfigDialogProps) {
   const [open, setOpen] = useState(false);
   const [config, setConfig] = useState<{
-    systemTypes: string[];
     maxRules: number;
     maxEvents: number;
     maxCharacters: number;
     timeRange: { start: number; end: number; step: number };
     contentFocus: string;
     executionSpeed: string;
-    executionEngine: string;
     worldId: string | null;
   }>({
-    systemTypes: ['insimul'],
     maxRules: 8,
     maxEvents: 5,
     maxCharacters: 4,
     timeRange: { start: 0, end: 100, step: 1 },
     contentFocus: 'all',
     executionSpeed: 'normal',
-    executionEngine: 'default',
     worldId: null
   });
-
-  const systemTypeOptions = [
-    { id: 'insimul', label: 'Insimul', description: 'Combined system using all approaches' },
-    { id: 'ensemble', label: 'Ensemble', description: 'JavaScript predicate logic system' },
-    { id: 'kismet', label: 'Kismet', description: 'Prolog-style rules with Tracery' },
-    { id: 'tott', label: 'Talk of the Town', description: 'Procedural genealogy generation' }
-  ];
 
   const contentFocusOptions = [
     { id: 'all', label: 'All Content', description: 'Include all types of events and rules' },
@@ -63,22 +52,6 @@ export function SimulationConfigDialog({ onRunSimulation, isLoading = false, chi
     { id: 'normal', label: 'Normal', description: 'Balanced speed and detail' },
     { id: 'detailed', label: 'Detailed', description: 'Slower but more comprehensive results' }
   ];
-
-  const executionEngineOptions = [
-    { id: 'default', label: 'Default Engine', description: 'JavaScript-based rule execution with comprehensive features' },
-    { id: 'prolog', label: 'SWI Prolog', description: 'Prolog-based logical inference engine (experimental)' }
-  ];
-
-  const handleSystemTypeToggle = (systemType: string) => {
-    const newSystemTypes = config.systemTypes.includes(systemType)
-      ? config.systemTypes.filter(t => t !== systemType)
-      : [...config.systemTypes, systemType];
-    
-    // Ensure at least one system is selected
-    if (newSystemTypes.length > 0) {
-      setConfig(prev => ({ ...prev, systemTypes: newSystemTypes }));
-    }
-  };
 
   const handleRunClick = () => {
     onRunSimulation(config);
@@ -106,52 +79,12 @@ export function SimulationConfigDialog({ onRunSimulation, isLoading = false, chi
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="systems" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="systems">Systems</TabsTrigger>
+        <Tabs defaultValue="scope" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="scope">Scope</TabsTrigger>
             <TabsTrigger value="content">Content</TabsTrigger>
             <TabsTrigger value="execution">Execution</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="systems" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Target className="w-4 h-4" />
-                  System Types
-                </CardTitle>
-                <CardDescription>
-                  Select which simulation systems to use. You can combine multiple systems.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {systemTypeOptions.map((system) => (
-                  <div key={system.id} className="flex items-center space-x-3 p-3 border rounded-lg">
-                    <Checkbox
-                      id={system.id}
-                      checked={config.systemTypes.includes(system.id)}
-                      onCheckedChange={() => handleSystemTypeToggle(system.id)}
-                    />
-                    <div className="flex-1">
-                      <Label htmlFor={system.id} className="font-medium cursor-pointer">
-                        {system.label}
-                      </Label>
-                      <p className="text-xs text-slate-500 mt-1">{system.description}</p>
-                    </div>
-                  </div>
-                ))}
-                <div className="flex gap-2 mt-3">
-                  <span className="text-sm text-slate-600">Selected:</span>
-                  {config.systemTypes.map((type) => (
-                    <Badge key={type} variant="default">
-                      {systemTypeOptions.find(s => s.id === type)?.label}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="scope" className="space-y-4">
             <Card>
@@ -269,25 +202,6 @@ export function SimulationConfigDialog({ onRunSimulation, isLoading = false, chi
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Execution Engine</Label>
-                  <Select value={config.executionEngine} onValueChange={(value) => setConfig(prev => ({ ...prev, executionEngine: value }))}>
-                    <SelectTrigger data-testid="select-execution-engine">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {executionEngineOptions.map((option) => (
-                        <SelectItem key={option.id} value={option.id} data-testid={`engine-option-${option.id}`}>
-                          <div>
-                            <div className="font-medium">{option.label}</div>
-                            <div className="text-xs text-slate-500">{option.description}</div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="space-y-2">
                   <Label>Execution Speed</Label>
                   <Select value={config.executionSpeed} onValueChange={(value) => setConfig(prev => ({ ...prev, executionSpeed: value }))}>

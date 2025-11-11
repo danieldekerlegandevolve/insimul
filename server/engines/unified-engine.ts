@@ -1,6 +1,6 @@
 import { type Rule, type Grammar, type Character, type World, type InsertTruth } from "@shared/schema";
-import { type IStorage } from "../storage";
-import { TraceryService } from "../tracery-service";
+import { type IStorage } from "../db/storage";
+import { TraceryService } from "../services/tracery-service";
 
 /**
  * Effect types that can be generated from rule execution
@@ -124,8 +124,8 @@ export class InsimulSimulationEngine {
 
     try {
       console.log(`🔄 Syncing world ${worldId} to Prolog...`);
-      const { createPrologSyncService } = await import('../prolog-sync.js');
-      const { PrologManager } = await import('../prolog-manager.js');
+      const { createPrologSyncService } = await import('./prolog/prolog-sync.js');
+      const { PrologManager } = await import('./prolog/prolog-manager.js');
       
       const kbFile = `knowledge_base_${worldId}.pl`;
       const prologManager = new PrologManager(kbFile, worldId);
@@ -247,7 +247,7 @@ export class InsimulSimulationEngine {
     }
 
     try {
-      const { PrologManager } = await import('../prolog-manager.js');
+      const { PrologManager } = await import('./prolog/prolog-manager.js');
       const { InsimulRuleCompiler } = await import('../../client/src/lib/unified-syntax.js');
       
       const kbFile = `knowledge_base_${this.context.worldId}.pl`;

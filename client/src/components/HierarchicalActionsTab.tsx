@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Zap, ArrowLeft, ChevronRight, Plus, Target, Clock, Battery, TrendingUp, Tag } from 'lucide-react';
+import { Zap, ArrowLeft, ChevronRight, Plus, Target, Clock, Battery, TrendingUp, Tag, Globe, Sword } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ActionCreateDialog } from './ActionCreateDialog';
 import { ActionEditDialog } from './ActionEditDialog';
@@ -38,7 +39,7 @@ interface Action {
   verbPast: string | null;
   verbPresent: string | null;
   narrativeTemplates: string[];
-  systemType: string | null;
+  sourceFormat: string | null;
   customData: Record<string, any>;
   tags: string[];
   createdAt: Date | null;
@@ -55,6 +56,8 @@ export function HierarchicalActionsTab({ worldId }: HierarchicalActionsTabProps)
   
   // Data state
   const [actions, setActions] = useState<Action[]>([]);
+  const [baseActions, setBaseActions] = useState<Action[]>([]);
+  const [enabledBaseActionIds, setEnabledBaseActionIds] = useState<string[]>([]);
   
   // Dialog states
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -69,10 +72,30 @@ export function HierarchicalActionsTab({ worldId }: HierarchicalActionsTabProps)
   // Fetch actions
   const fetchActions = async () => {
     try {
-      const res = await fetch(`/api/worlds/${worldId}/actions`);
-      if (res.ok) {
-        const data = await res.json();
-        setActions(data);
+      // Fetch world-specific actions
+      const actionsRes = await fetch(`/api/worlds/${worldId}/actions`);
+      if (actionsRes.ok) {
+        const actionsData = await actionsRes.json();
+        setActions(actionsData);
+      }
+
+      // Fetch base actions
+      const baseActionsRes = await fetch('/api/actions/base');
+      let baseActionsData: Action[] = [];
+      if (baseActionsRes.ok) {
+        baseActionsData = await baseActionsRes.json();
+        setBaseActions(baseActionsData);
+      }
+
+      // Fetch world's base resource config
+      const configRes = await fetch(`/api/worlds/${worldId}/base-resources/config`);
+      if (configRes.ok) {
+        const config = await configRes.json();
+        // If no explicit config, all base actions are enabled by default
+        const enabled = config.disabledBaseActions && config.disabledBaseActions.length > 0
+          ? baseActionsData.filter((a: Action) => !config.disabledBaseActions.includes(a.id)).map((a: Action) => a.id)
+          : baseActionsData.map((a: Action) => a.id);
+        setEnabledBaseActionIds(enabled);
       }
     } catch (error) {
       console.error('Failed to fetch actions:', error);
@@ -184,78 +207,161 @@ export function HierarchicalActionsTab({ worldId }: HierarchicalActionsTabProps)
           </div>
           
           <ScrollArea className="h-[600px]">
-            <div className="grid gap-4">
-              {actions.map((action) => (
-                <Card 
-                  key={action.id} 
-                  className="cursor-pointer hover:border-primary hover:shadow-lg transition-all duration-200 hover:scale-[1.02]" 
-                  onClick={() => viewActionDetail(action)}
-                >
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                          <Zap className="w-5 h-5 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <CardTitle className="text-xl">{action.name}</CardTitle>
-                            <Badge className={getActionTypeColor(action.actionType)}>
-                              {action.actionType}
-                            </Badge>
+            <Tabs defaultValue="world" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-4">
+                <TabsTrigger value="world">
+                  <Sword className="w-4 h-4 mr-2" />
+                  World Actions ({actions.length})
+                </TabsTrigger>
+                <TabsTrigger value="base">
+                  <Globe className="w-4 h-4 mr-2" />
+                  Base Actions ({baseActions.filter(a => enabledBaseActionIds.includes(a.id)).length})
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="world" className="mt-0">
+                <div className="grid gap-4">
+                  {actions.length > 0 ? (
+                    <div className="space-y-2">
+                      {actions.map((action) => (
+                        <Card 
+                          key={action.id} 
+                          className="cursor-pointer hover:border-primary hover:shadow-lg transition-all duration-200 hover:scale-[1.02]" 
+                          onClick={() => viewActionDetail(action)}
+                        >
+                          <CardHeader>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3 flex-1">
+                                <div className="p-2 bg-primary/10 rounded-lg">
+                                  <Zap className="w-5 h-5 text-primary" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <CardTitle className="text-xl">{action.name}</CardTitle>
+                                    <Badge className={getActionTypeColor(action.actionType)}>
+                                      {action.actionType}
+                                    </Badge>
+                                  </div>
+                                  <CardDescription className="mt-1">
+                                    {action.description || 'No description provided'}
+                                  </CardDescription>
+                                </div>
+                              </div>
+                              <ChevronRight className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                              {action.category && (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-muted-foreground">Category:</span>
+                                  <span className="font-medium">{action.category}</span>
+                                </div>
+                              )}
+                              {action.duration && (
+                                <div className="flex items-center gap-2">
+                                  <Clock className="w-4 h-4 text-muted-foreground" />
+                                  <span className="font-medium">{action.duration} steps</span>
+                                </div>
+                              )}
+                              {action.energyCost && (
+                                <div className="flex items-center gap-2">
+                                  <Battery className="w-4 h-4 text-muted-foreground" />
+                                  <span className="font-medium">{action.energyCost} energy</span>
+                                </div>
+                              )}
+                              {action.difficulty !== null && (
+                                <div className="flex items-center gap-2">
+                                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                                  <span className="font-medium">{Math.round((action.difficulty || 0) * 100)}% difficulty</span>
+                                </div>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <Card className="border-dashed">
+                      <CardContent className="pt-12 pb-12">
+                        <div className="text-center space-y-3">
+                          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <Zap className="w-6 h-6 text-primary" />
                           </div>
-                          <CardDescription className="mt-1">
-                            {action.description || 'No description provided'}
-                          </CardDescription>
+                          <h3 className="font-semibold">No World-Specific Actions</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Click "Add Action" to create your first world-specific action
+                          </p>
                         </div>
-                      </div>
-                      <ChevronRight className="w-6 h-6 text-muted-foreground" />
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="base" className="mt-0">
+                <div className="grid gap-4">
+                  {baseActions.filter(a => enabledBaseActionIds.includes(a.id)).length > 0 ? (
+                    <div className="space-y-2">
+                      {baseActions.filter(a => enabledBaseActionIds.includes(a.id)).map((action) => (
+                        <Card 
+                          key={action.id} 
+                          className="cursor-pointer hover:border-primary hover:shadow-lg transition-all duration-200 hover:scale-[1.02] border-l-4 border-l-pink-500" 
+                          onClick={() => viewActionDetail(action)}
+                        >
+                          <CardHeader>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3 flex-1">
+                                <div className="p-2 bg-pink-500/10 rounded-lg">
+                                  <Zap className="w-5 h-5 text-pink-500" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <CardTitle className="text-xl">{action.name}</CardTitle>
+                                    <Badge variant="outline" className="bg-pink-500/10 text-pink-500">
+                                      🌐 Base
+                                    </Badge>
+                                    <Badge className={getActionTypeColor(action.actionType)}>
+                                      {action.actionType}
+                                    </Badge>
+                                  </div>
+                                  <CardDescription className="mt-1">
+                                    {action.description || 'Global action available across all worlds'}
+                                  </CardDescription>
+                                </div>
+                              </div>
+                              <ChevronRight className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                          </CardHeader>
+                          {action.category && (
+                            <CardContent>
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="text-muted-foreground">Category:</span>
+                                <span className="font-medium">{action.category}</span>
+                              </div>
+                            </CardContent>
+                          )}
+                        </Card>
+                      ))}
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                      {action.category && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground">Category:</span>
-                          <span className="font-medium">{action.category}</span>
+                  ) : (
+                    <Card className="border-dashed">
+                      <CardContent className="pt-12 pb-12">
+                        <div className="text-center space-y-3">
+                          <div className="mx-auto w-12 h-12 bg-pink-500/10 rounded-full flex items-center justify-center">
+                            <Globe className="w-6 h-6 text-pink-500" />
+                          </div>
+                          <h3 className="font-semibold">No Base Actions Enabled</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Enable base actions in the Base Resources Configuration
+                          </p>
                         </div>
-                      )}
-                      {action.duration && (
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-muted-foreground" />
-                          <span className="font-medium">{action.duration} steps</span>
-                        </div>
-                      )}
-                      {action.energyCost && (
-                        <div className="flex items-center gap-2">
-                          <Battery className="w-4 h-4 text-muted-foreground" />
-                          <span className="font-medium">{action.energyCost} energy</span>
-                        </div>
-                      )}
-                      {action.difficulty !== null && (
-                        <div className="flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                          <span className="font-medium">{Math.round((action.difficulty || 0) * 100)}% difficulty</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              
-              {actions.length === 0 && (
-                <Card className="border-dashed">
-                  <CardContent className="pt-12 pb-12">
-                    <div className="text-center space-y-3">
-                      <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Zap className="w-6 h-6 text-primary" />
-                      </div>
-                      <p className="text-muted-foreground">No actions yet. Click "Add Action" to create one!</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
           </ScrollArea>
         </div>
       )}
@@ -439,10 +545,10 @@ export function HierarchicalActionsTab({ worldId }: HierarchicalActionsTabProps)
                   <span className="text-sm text-muted-foreground">Available</span>
                   <p className="font-semibold">{selectedAction.isAvailable ? 'Yes' : 'No'}</p>
                 </div>
-                {selectedAction.systemType && (
+                {selectedAction.sourceFormat && (
                   <div className="space-y-1">
                     <span className="text-sm text-muted-foreground">System Type</span>
-                    <p className="font-semibold">{selectedAction.systemType}</p>
+                    <p className="font-semibold">{selectedAction.sourceFormat}</p>
                   </div>
                 )}
               </div>

@@ -338,8 +338,8 @@ export function WorldDetailsDialog({
                 <div className="space-y-2">
                   <Label>System Types</Label>
                   <div className="flex flex-wrap gap-2">
-                    {world.systemTypes && Array.isArray(world.systemTypes) ? (
-                      world.systemTypes.map((type: string) => (
+                    {world.sourceFormats && Array.isArray(world.sourceFormats) ? (
+                      world.sourceFormats.map((type: string) => (
                         <span key={type} className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs font-medium">
                           {type}
                         </span>

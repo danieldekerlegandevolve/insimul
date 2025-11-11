@@ -1,0 +1,92 @@
+{
+  "world": {
+    "name": "Kingdom of Camelot",
+    "description": "A medieval kingdom of knights, castles, and chivalry in the age of feudalism",
+    "sourceFormats": ["insimul"],
+    "config": {
+      "era": "medieval",
+      "period": "1200s",
+      "governmentType": "feudal_monarchy"
+    }
+  },
+  "countries": [
+    {
+      "id": "camelot",
+      "name": "Kingdom of Camelot",
+      "governmentType": "monarchy",
+      "economicSystem": "feudal"
+    }
+  ],
+  "settlements": [
+    {
+      "id": "camelot_castle",
+      "countryRef": "camelot",
+      "name": "Camelot Castle",
+      "settlementType": "city",
+      "population": 25000,
+      "terrain": "plains"
+    },
+    {
+      "id": "village_sherwood",
+      "countryRef": "camelot",
+      "name": "Sherwood Village",
+      "settlementType": "village",
+      "population": 500,
+      "terrain": "forest"
+    }
+  ],
+  "characters": [
+    {
+      "id": "king_arthur",
+      "firstName": "Arthur",
+      "lastName": "Pendragon",
+      "gender": "male",
+      "birthYear": 1170,
+      "occupation": "king",
+      "locationRef": "camelot_castle"
+    },
+    {
+      "id": "queen_guinevere",
+      "firstName": "Guinevere",
+      "lastName": "Pendragon",
+      "gender": "female",
+      "birthYear": 1175,
+      "occupation": "queen",
+      "locationRef": "camelot_castle",
+      "spouseRef": "king_arthur"
+    },
+    {
+      "id": "knight_lancelot",
+      "firstName": "Lancelot",
+      "lastName": "du Lac",
+      "gender": "male",
+      "birthYear": 1175,
+      "occupation": "knight",
+      "locationRef": "camelot_castle"
+    },
+    {
+      "id": "wizard_merlin",
+      "firstName": "Merlin",
+      "lastName": "Emrys",
+      "gender": "male",
+      "birthYear": 1150,
+      "occupation": "wizard",
+      "locationRef": "camelot_castle"
+    },
+    {
+      "id": "outlaw_robin",
+      "firstName": "Robin",
+      "lastName": "Hood",
+      "gender": "male",
+      "birthYear": 1180,
+      "occupation": "outlaw",
+      "locationRef": "village_sherwood"
+    }
+  ],
+  "relationships": [
+    {
+      "characterRef": "king_arthur",
+      "friendRefs": ["knight_lancelot", "wizard_merlin"]
+    }
+  ]
+}

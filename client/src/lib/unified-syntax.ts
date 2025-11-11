@@ -5,12 +5,12 @@
 
 
 // Base types for the insimul syntax
-export type SystemType = 'ensemble' | 'kismet' | 'tott' | 'insimul';
+export type SourceFormat = 'ensemble' | 'kismet' | 'tott' | 'insimul';
 
 export interface InsimulRule {
   id: string;
   name: string;
-  systemType: SystemType;
+  sourceFormat: SourceFormat; // Format for authoring/display only - all rules execute as Insimul
   ruleType: 'trigger' | 'volition' | 'trait' | 'default' | 'pattern' | 'genealogy';
   priority: number;
   likelihood?: number;
@@ -139,11 +139,11 @@ export const SYNTAX_PATTERNS = {
 // Rule compilation and validation
 export class InsimulRuleCompiler {
   
-  compile(source: string, systemType?: SystemType): InsimulRule[] {
+  compile(source: string, sourceFormat?: SourceFormat): InsimulRule[] {
     const rules: InsimulRule[] = [];
     
-    // Parse different syntax types based on systemType
-    switch (systemType) {
+    // Parse different syntax types based on sourceFormat
+    switch (sourceFormat) {
       case 'ensemble':
         return this.compileEnsemble(source);
       case 'kismet':
@@ -153,7 +153,8 @@ export class InsimulRuleCompiler {
       case 'insimul':
         return this.compileInsimul(source);
       default:
-        throw new Error(`Unsupported system type: ${systemType}`);
+        // Try to auto-detect format and compile
+        return this.compileInsimul(source); // Default to Insimul
     }
   }
 
@@ -173,7 +174,7 @@ export class InsimulRuleCompiler {
           rules.push({
             id: `${ruleType}_${index}`,
             name: rule.name || `${ruleType} Rule ${index + 1}`,
-            systemType: 'ensemble',
+            sourceFormat: 'ensemble',
             ruleType: ruleType,
             priority: rule.weight || 5,
             conditions: this.parseEnsembleJsonConditions(rule.conditions || []),
@@ -194,7 +195,7 @@ export class InsimulRuleCompiler {
             rules.push({
               id: `trigger_${index}`,
               name: rule.name || `Trigger Rule ${index + 1}`,
-              systemType: 'ensemble',
+              sourceFormat: 'ensemble',
               ruleType: rule.originalType || 'trigger',  // Preserve original type for round-trip
               priority: 5,
               likelihood: rule.likelihood,  // Preserve likelihood metadata
@@ -213,7 +214,7 @@ export class InsimulRuleCompiler {
             rules.push({
               id: `volition_${index}`,
               name: rule.name || `Volition Rule ${index + 1}`,
-              systemType: 'ensemble',
+              sourceFormat: 'ensemble',
               ruleType: 'volition',
               priority: rule.weight || 5,
               weight: rule.weight,  // Preserve weight metadata
@@ -232,7 +233,7 @@ export class InsimulRuleCompiler {
             rules.push({
               id: `action_${index}`,
               name: action.name || `Action ${index + 1}`,
-              systemType: 'ensemble',
+              sourceFormat: 'ensemble',
               ruleType: 'default',
               priority: 3,
               conditions: this.parseEnsembleJsonConditions(action.conditions || []),
@@ -257,7 +258,7 @@ export class InsimulRuleCompiler {
           rules.push({
             id: `action_${index}`,
             name: action.name || `Action ${index + 1}`,
-            systemType: 'ensemble',
+            sourceFormat: 'ensemble',
             ruleType: 'default',
             priority: 3,
             conditions: this.parseEnsembleJsonConditions(action.conditions || []),
@@ -290,7 +291,7 @@ export class InsimulRuleCompiler {
           rules.push({
             id: `${ruleType}_${index}`,
             name: rule.name || `${ruleType} Rule ${index + 1}`,
-            systemType: 'ensemble',
+            sourceFormat: 'ensemble',
             ruleType: ruleType,
             priority: rule.weight || 5,
             conditions: this.parseEnsembleJsonConditions(rule.conditions || []),
@@ -328,7 +329,7 @@ export class InsimulRuleCompiler {
       rules.push({
         id: `kismet_trait_${name}_${rules.length}`,
         name: name,
-        systemType: 'kismet',
+        sourceFormat: 'kismet',
         ruleType: 'trait',
         priority: 5,
         likelihood: likelihood ? parseFloat(likelihood) : 0.5,
@@ -349,7 +350,7 @@ export class InsimulRuleCompiler {
       rules.push({
         id: `kismet_pattern_${name}_${rules.length}`,
         name: name,
-        systemType: 'kismet',
+        sourceFormat: 'kismet',
         ruleType: 'pattern',
         priority: 6,
         conditions: this.parseKismetConditions(conditionsStr),
@@ -369,7 +370,7 @@ export class InsimulRuleCompiler {
       rules.push({
         id: `kismet_volition_${name}_${rules.length}`,
         name: name,
-        systemType: 'kismet',
+        sourceFormat: 'kismet',
         ruleType: 'volition',
         priority: weight ? parseInt(weight) : 7,
         conditions: this.parseKismetConditions(argsStr),
@@ -390,7 +391,7 @@ export class InsimulRuleCompiler {
             rules.push({
               id: `trait_${index}`,
               name: nameMatch[1],
-              systemType: 'kismet',
+              sourceFormat: 'kismet',
               ruleType: 'trait',
               priority: 5,
               likelihood: this.extractLikelihood(traitMatch),
@@ -424,7 +425,7 @@ export class InsimulRuleCompiler {
             rules.push({
               id: `tott_${rule.type}_${index}`,
               name: rule.name,
-              systemType: 'tott',
+              sourceFormat: 'tott',
               ruleType: this.mapTottRuleType(rule.type),
               priority: rule.priority || 5,
               conditions: this.parseTottConditions(rule.conditions || rule.triggers || []),
@@ -444,7 +445,7 @@ export class InsimulRuleCompiler {
               rules.push({
                 id: `tott_${category}_${index}`,
                 name: rule.name || `${category}_rule_${index}`,
-                systemType: 'tott',
+                sourceFormat: 'tott',
                 ruleType: this.mapTottCategory(category),
                 priority: rule.priority || 5,
                 conditions: this.parseTottConditions(rule.conditions || []),
@@ -472,7 +473,7 @@ export class InsimulRuleCompiler {
           rules.push({
             id: `tott_genealogy_${className}`,
             name: className,
-            systemType: 'tott',
+            sourceFormat: 'tott',
             ruleType: 'genealogy',
             priority: 8,
             conditions: this.parseTottPythonConditions(classBody),
@@ -488,7 +489,7 @@ export class InsimulRuleCompiler {
           rules.push({
             id: `tott_trigger_${className}`,
             name: className,
-            systemType: 'tott',
+            sourceFormat: 'tott',
             ruleType: 'trigger',
             priority: 7,
             conditions: this.parseTottPythonConditions(classBody),
@@ -513,7 +514,7 @@ export class InsimulRuleCompiler {
           rules.push({
             id: `tott_function_${functionName}`,
             name: functionName,
-            systemType: 'tott',
+            sourceFormat: 'tott',
             ruleType: ruleType as any,
             priority: 6,
             conditions: this.parseTottPythonConditions(functionBody),
@@ -561,7 +562,7 @@ export class InsimulRuleCompiler {
         rules.push({
           id: `insimul_${rules.length}`,
           name: ruleName,
-          systemType: 'insimul',
+          sourceFormat: 'insimul',
           ruleType: mappedRuleType,
           priority: this.extractPriority(ruleContent),
           likelihood: this.extractLikelihood(ruleContent),
@@ -612,7 +613,7 @@ export class InsimulRuleCompiler {
           rules.push({
             id: `rule_${index}`,
             name: nameMatch[1],
-            systemType: 'ensemble',
+            sourceFormat: 'ensemble',
             ruleType: 'trigger',
             priority: 5,
             conditions: this.parseEnsembleTextConditions(ruleMatch),
@@ -1255,7 +1256,7 @@ export class InsimulRuleCompiler {
     ).join('\n\n');
   }
 
-  validate(rules: InsimulRule[]): { isValid: boolean; errors: string[]; warnings: string[] } {
+  exportToFormat(rules: InsimulRule[], targetFormat: SourceFormat, includeComments: boolean = true, characters?: any[]): string {
     const errors: string[] = [];
     const warnings: string[] = [];
     

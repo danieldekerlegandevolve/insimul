@@ -3,19 +3,156 @@ import { pgTable, text, varchar, integer, jsonb, timestamp, boolean, real, bigin
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Rules - single rule entities (no more rule files)
+// ============= TALK OF THE TOWN TYPE DEFINITIONS =============
+
+// Occupation types (integrated from tott-types.ts)
+export type OccupationVocation = 
+  | 'Owner' | 'Manager' | 'Worker' | 'Doctor' | 'Lawyer' | 'Apprentice'
+  | 'Secretary' | 'Cashier' | 'Janitor' | 'Builder' | 'HotelMaid' | 'Waiter'
+  | 'Laborer' | 'Groundskeeper' | 'Bottler' | 'Cook' | 'Dishwasher' | 'Stocker'
+  | 'Seamstress' | 'Farmhand' | 'Miner' | 'Painter' | 'BankTeller' | 'Grocer'
+  | 'Bartender' | 'Concierge' | 'DaycareProvider' | 'Landlord' | 'Baker'
+  | 'Plasterer' | 'Barber' | 'Butcher' | 'Firefighter' | 'PoliceOfficer'
+  | 'Carpenter' | 'TaxiDriver' | 'BusDriver' | 'Blacksmith' | 'Woodworker'
+  | 'Stonecutter' | 'Dressmaker' | 'Distiller' | 'Plumber' | 'Joiner'
+  | 'Innkeeper' | 'Nurse' | 'Farmer' | 'Shoemaker' | 'Brewer' | 'TattooArtist'
+  | 'Puddler' | 'Clothier' | 'Teacher' | 'Principal' | 'Tailor' | 'Druggist'
+  | 'InsuranceAgent' | 'Jeweler' | 'FireChief' | 'PoliceChief' | 'Realtor'
+  | 'Mortician' | 'Engineer' | 'Pharmacist' | 'Architect' | 'Optometrist'
+  | 'Dentist' | 'PlasticSurgeon' | 'Professor' | 'Mayor';
+
+export type BusinessType = 
+  | 'Generic' | 'LawFirm' | 'ApartmentComplex' | 'Bakery' | 'Hospital' | 'Bank'
+  | 'Hotel' | 'Restaurant' | 'GroceryStore' | 'Bar' | 'Daycare' | 'School'
+  | 'PoliceStation' | 'FireStation' | 'TownHall' | 'Church' | 'Farm' | 'Factory'
+  | 'Shop' | 'Mortuary' | 'RealEstateOffice' | 'InsuranceOffice' | 'JewelryStore'
+  | 'TattoParlor' | 'Brewery' | 'Pharmacy' | 'DentalOffice' | 'OptometryOffice'
+  | 'University';
+
+export type ShiftType = 'day' | 'night';
+
+export type TerminationReason = 
+  | 'retirement' | 'firing' | 'quit' | 'death' | 'business_closure' | 'promotion' | 'relocation';
+
+export type EventType = 
+  | 'birth' | 'death' | 'marriage' | 'divorce' | 'move' | 'departure'
+  | 'hiring' | 'retirement' | 'home_purchase' | 'business_founding' | 'business_closure'
+  | 'promotion' | 'graduation' | 'accident' | 'crime' | 'festival' | 'election';
+
+export type TimeOfDay = 'day' | 'night';
+
+export type ActivityOccasion = 
+  | 'working' | 'relaxing' | 'studying' | 'shopping' | 'socializing'
+  | 'sleeping' | 'eating' | 'exercising' | 'commuting';
+
+export type LocationType = 'home' | 'work' | 'leisure' | 'school';
+
+export type BuildingType = 'residence' | 'business' | 'vacant';
+
+export type ResidenceType = 
+  | 'house' | 'apartment' | 'mansion' | 'cottage' | 'townhouse' | 'mobile_home';
+
+export type PersonalityStrength = 
+  | 'very_high' | 'high' | 'somewhat_high' | 'neutral'
+  | 'somewhat_low' | 'low' | 'very_low';
+
+// Personality and character types
+export interface BigFivePersonality {
+  openness: number; // -1 to 1
+  conscientiousness: number; // -1 to 1
+  extroversion: number; // -1 to 1
+  agreeableness: number; // -1 to 1
+  neuroticism: number; // -1 to 1
+}
+
+export interface DerivedTraits {
+  gregarious: boolean; // E > 0.4 && A > 0.4 && N < -0.2
+  cold: boolean; // E < -0.4 && A < 0 && C > 0.4
+  creative: boolean; // O > 0.5
+  organized: boolean; // C > 0.5
+  anxious: boolean; // N > 0.5
+  friendly: boolean; // A > 0.5 && E > 0
+}
+
+// Business and occupation structures
+export interface BusinessVacancy {
+  occupation: OccupationVocation;
+  shift: ShiftType;
+  isSupplemental: boolean;
+}
+
+export interface ApartmentUnit {
+  unitNumber: number;
+  residentIds: string[];
+  rentAmount: number;
+  isVacant: boolean;
+}
+
+// Mental models and cognition
+export interface MentalModel {
+  characterId: string;
+  beliefs: Record<string, any>;
+  lastUpdated: number;
+  confidence: number; // 0.0 - 1.0
+}
+
+export interface Thought {
+  content: string;
+  timestep: number;
+  emotion?: string;
+  related_to?: string[];
+}
+
+// Helper functions for TotT
+export function getPersonalityStrength(value: number): PersonalityStrength {
+  if (value > 0.7) return 'very_high';
+  if (value > 0.4) return 'high';
+  if (value > 0.1) return 'somewhat_high';
+  if (value > -0.1) return 'neutral';
+  if (value > -0.4) return 'somewhat_low';
+  if (value > -0.7) return 'low';
+  return 'very_low';
+}
+
+export function calculateDerivedTraits(personality: BigFivePersonality): DerivedTraits {
+  return {
+    gregarious: personality.extroversion > 0.4 && 
+                personality.agreeableness > 0.4 && 
+                personality.neuroticism < -0.2,
+    cold: personality.extroversion < -0.4 && 
+          personality.agreeableness < 0 && 
+          personality.conscientiousness > 0.4,
+    creative: personality.openness > 0.5,
+    organized: personality.conscientiousness > 0.5,
+    anxious: personality.neuroticism > 0.5,
+    friendly: personality.agreeableness > 0.5 && personality.extroversion > 0
+  };
+}
+
+// ============= END TOTT TYPE DEFINITIONS =============
+
+// Rules - single rule entities (can be base rules or world-specific)
+// All rules are stored in Insimul format internally for execution
 export const rules = pgTable("rules", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  worldId: varchar("world_id").notNull(),
+  worldId: varchar("world_id"), // Nullable for base rules
   name: text("name").notNull(),
-  content: text("content").notNull(),
-  systemType: text("system_type").notNull(), // ensemble, kismet, tott, insimul
+  description: text("description"),
+  content: text("content").notNull(), // Always stored in Insimul format for execution
+  
+  // Base rule indicator
+  isBase: boolean("is_base").default(false), // true for global rules, false for world-specific
+  
+  // Authoring format (for display/editing only, not execution)
+  sourceFormat: text("source_format").notNull().default("insimul"), // ensemble, kismet, tott, insimul
+  
   ruleType: text("rule_type").notNull(), // trigger, volition, trait, default, pattern
+  category: text("category"), // psychological, physical, social, economic, etc.
   priority: integer("priority").default(5),
   likelihood: real("likelihood").default(1.0),
   conditions: jsonb("conditions").$type<any[]>().default([]),
   effects: jsonb("effects").$type<any[]>().default([]),
-  tags: jsonb("tags").$type<string[]>(). default([]),
+  tags: jsonb("tags").$type<string[]>().default([]),
   dependencies: jsonb("dependencies").$type<string[]>().default([]),
   isActive: boolean("is_active").default(true),
   isCompiled: boolean("is_compiled").default(false),
@@ -32,6 +169,8 @@ export const grammars = pgTable("grammars", {
   description: text("description"),
   grammar: jsonb("grammar").$type<Record<string, string | string[]>>().notNull(), // Tracery grammar object
   tags: jsonb("tags").$type<string[]>().default([]),
+  worldType: text("world_type"), // e.g., "cyberpunk", "medieval-fantasy", "custom_pirate_world"
+  gameType: text("game_type"), // e.g., "rpg", "language-learning", "simulation"
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -104,13 +243,14 @@ export const characters = pgTable("characters", {
 
 // Enhanced worlds with procedural generation capabilities (now primary container)
 // A world is an abstract universe/reality that can contain multiple countries, states, and settlements
+// All worlds execute using Insimul engine; rules/actions can be authored in different formats
 export const worlds = pgTable("worlds", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description"),
-  
-  // System configuration
-  systemTypes: jsonb("system_types").$type<string[]>().default(["insimul"]), // ensemble, kismet, tott, insimul
+  targetLanguage: text("target_language"), // For language-learning game type
+
+  // Configuration
   config: jsonb("config").$type<Record<string, any>>().default({}),
   
   // World state and history (abstract, meta-level)
@@ -235,7 +375,7 @@ export const settlements = pgTable("settlements", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Enhanced simulations with multi-system execution
+// Enhanced simulations - all execute using Insimul engine
 export const simulations = pgTable("simulations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   worldId: varchar("world_id").notNull(),
@@ -243,7 +383,6 @@ export const simulations = pgTable("simulations", {
   description: text("description"),
   
   // Simulation configuration
-  systemTypes: jsonb("system_types").$type<string[]>().default(["insimul"]),
   config: jsonb("config").$type<Record<string, any>>().default({}),
   
   // Execution parameters
@@ -254,7 +393,7 @@ export const simulations = pgTable("simulations", {
   
   // Results and state
   results: jsonb("results").$type<Record<string, any>>().default({}),
-  socialRecord: jsonb("social_record").$type<any[]>().default([]), // Ensemble-style social record
+  socialRecord: jsonb("social_record").$type<any[]>().default([]), // Track social interactions
   narrativeOutput: jsonb("narrative_output").$type<string[]>().default([]),
   
   // Execution status
@@ -271,12 +410,19 @@ export const simulations = pgTable("simulations", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Actions table - stores discrete actions that can be performed in simulations
+// Actions table - stores discrete actions (can be base actions or world-specific)
+// All actions are stored in Insimul format internally for execution
 export const actions = pgTable("actions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  worldId: varchar("world_id").notNull(),
+  worldId: varchar("world_id"), // Nullable for base actions
   name: text("name").notNull(),
   description: text("description"),
+
+  // Base action indicator
+  isBase: boolean("is_base").default(false), // true for global actions, false for world-specific
+
+  // Authoring format (for display/editing only, not execution)
+  sourceFormat: text("source_format").notNull().default("insimul"), // ensemble, kismet, tott, insimul
 
   // Action categorization
   actionType: text("action_type").notNull(), // social, physical, mental, economic, etc.
@@ -307,8 +453,7 @@ export const actions = pgTable("actions", {
   verbPresent: text("verb_present"), // e.g., "talks", "fights"
   narrativeTemplates: jsonb("narrative_templates").$type<string[]>().default([]),
 
-  // System integration
-  systemType: text("system_type"), // ensemble, kismet, tott, insimul
+  // Custom data for extensibility
   customData: jsonb("custom_data").$type<Record<string, any>>().default({}),
 
   // Tags and metadata
@@ -535,9 +680,12 @@ export const whereabouts = pgTable("whereabouts", {
 export const insertRuleSchema = createInsertSchema(rules).pick({
   worldId: true,
   name: true,
+  description: true,
   content: true,
-  systemType: true,
+  isBase: true,
+  sourceFormat: true,
   ruleType: true,
+  category: true,
   priority: true,
   likelihood: true,
   conditions: true,
@@ -555,6 +703,8 @@ export const insertGrammarSchema = createInsertSchema(grammars).pick({
   description: true,
   grammar: true,
   tags: true,
+  worldType: true,
+  gameType: true,
   isActive: true,
 });
 
@@ -592,7 +742,6 @@ export const insertSimulationSchema = createInsertSchema(simulations).pick({
   worldId: true,
   name: true,
   description: true,
-  systemTypes: true,
   config: true,
   startTime: true,
   endTime: true,
@@ -610,6 +759,8 @@ export const insertActionSchema = createInsertSchema(actions).pick({
   worldId: true,
   name: true,
   description: true,
+  isBase: true,
+  sourceFormat: true,
   actionType: true,
   category: true,
   duration: true,
@@ -627,7 +778,6 @@ export const insertActionSchema = createInsertSchema(actions).pick({
   verbPast: true,
   verbPresent: true,
   narrativeTemplates: true,
-  systemType: true,
   customData: true,
   tags: true,
   isActive: true,

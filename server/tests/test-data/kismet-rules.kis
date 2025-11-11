@@ -1,0 +1,28 @@
+% Kismet-style Prolog rules for testing
+
+% Friendly greeting rule
+social_rule(greeting, friendly_greeting, [
+    mood(Character, happy),
+    relationship(Character, Target, R),
+    R > 0.5
+], [
+    say(Character, Target, "Hello, friend!"),
+    increase_relationship(Character, Target, 0.1)
+]).
+
+% Angry confrontation rule
+social_rule(confrontation, angry_confrontation, [
+    mood(Character, angry),
+    relationship(Character, Target, R),
+    R < -0.3
+], [
+    say(Character, Target, "I have a problem with you!"),
+    decrease_relationship(Character, Target, 0.2)
+]).
+
+% Priority and metadata
+rule_priority(friendly_greeting, 5).
+rule_priority(angry_confrontation, 7).
+
+rule_type(friendly_greeting, social).
+rule_type(angry_confrontation, social).

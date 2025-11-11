@@ -1,0 +1,42 @@
+{
+  "actions": [
+    {
+      "name": "Wave",
+      "displayName": "Wave at someone",
+      "type": "social",
+      "category": "greeting",
+      "energyCost": 5,
+      "cooldown": 0,
+      "targetType": "character",
+      "conditions": [],
+      "effects": [
+        {
+          "type": "relationship_change",
+          "value": 0.05
+        }
+      ]
+    },
+    {
+      "name": "Insult",
+      "displayName": "Insult someone",
+      "type": "social",
+      "category": "hostile",
+      "energyCost": 10,
+      "cooldown": 5,
+      "targetType": "character",
+      "conditions": [
+        {
+          "type": "relationship",
+          "operator": "less_than",
+          "value": 0
+        }
+      ],
+      "effects": [
+        {
+          "type": "relationship_change",
+          "value": -0.2
+        }
+      ]
+    }
+  ]
+}

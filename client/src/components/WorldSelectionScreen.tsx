@@ -47,24 +47,28 @@ export function WorldSelectionScreen({ onWorldSelected }: WorldSelectionScreenPr
     data: InsertWorld,
     generateContent?: boolean,
     worldType?: string,
-    customPrompt?: string
+    customPrompt?: string,
+    gameType?: string,
+    customLabel?: string
   ) => {
     try {
       setIsCreatingWorld(true);
-      
+
       // First, create the world
       const response = await apiRequest('POST', '/api/worlds', data);
       const newWorld = await response.json();
-      
+
       setShowCreateDialog(false);
       setIsCreatingWorld(false);
-      
+
       // If procedural generation is requested, trigger it with progress tracking
       if (generateContent) {
         const genResponse = await apiRequest('POST', '/api/generate/complete-world', {
           worldId: newWorld.id,
           worldType,
           customPrompt,
+          customLabel,
+          gameType,
           worldName: data.name,
           worldDescription: data.description,
         });

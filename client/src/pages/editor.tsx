@@ -26,7 +26,6 @@ import { CharacterEditDialog } from "@/components/CharacterEditDialog";
 import { CharacterChatDialog } from "@/components/CharacterChatDialog";
 import { TruthTab } from "@/components/TruthTab";
 import { QuestsTab } from "@/components/QuestsTab";
-import { GenerateTab } from "@/components/GenerateTab";
 import { HierarchicalLocationsTab } from "@/components/HierarchicalLocationsTab";
 import { InsimulRuleCompiler } from "@/lib/unified-syntax";
 import { RuleExporter } from "@/lib/rule-exporter";
@@ -86,7 +85,7 @@ interface World {
   id: string;
   name: string;
   description: string | null;
-  systemTypes: string[] | null;
+  sourceFormats: string[] | null;
   config: Record<string, any> | null;
   population: number | null;
   currentYear: number | null;
@@ -108,7 +107,7 @@ interface Rule {
   name: string;
   path: string;
   content: string;
-  systemType: string;
+  sourceFormat: string;
   worldId: string;
 }
 
@@ -159,7 +158,7 @@ export default function UnifiedEditor() {
   const [showAiEditor, setShowAiEditor] = useState<boolean>(false);
   const [activeRule, setActiveRule] = useState<Rule | null>(null);
   const [ruleContent, setRuleContent] = useState('');
-  const [systemType, setSystemType] = useState<string>('insimul');
+  const [sourceFormat, setSystemType] = useState<string>('insimul');
   const [activeTab, setActiveTab] = useState('editor');
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
@@ -178,7 +177,7 @@ export default function UnifiedEditor() {
   
   // Refs to track whether we're loading a file vs user changing system type
   const isLoadingFileRef = useRef(false);
-  const previousSystemTypeRef = useRef<string>(systemType);
+  const previousSystemTypeRef = useRef<string>(sourceFormat);
 
   // Queries - now world-centric
   const { data: worlds = [] } = useQuery<World[]>({
@@ -216,7 +215,7 @@ export default function UnifiedEditor() {
       name: string; 
       path: string; 
       content: string; 
-      systemType: string; 
+      sourceFormat: string; 
       worldId: string;
       ruleType: string;
       priority: number;
@@ -255,7 +254,7 @@ export default function UnifiedEditor() {
   });
 
   const updateRuleMutation = useMutation({
-    mutationFn: async (data: { id: string; content?: string; name?: string; systemType?: string }) => {
+    mutationFn: async (data: { id: string; content?: string; name?: string; sourceFormat?: string }) => {
       const response = await fetch(`/api/rules/${data.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -270,7 +269,7 @@ export default function UnifiedEditor() {
           ...activeRule,
           content: variables.content || activeRule.content,
           name: variables.name || activeRule.name,
-          systemType: variables.systemType || activeRule.systemType,
+          sourceFormat: variables.sourceFormat || activeRule.sourceFormat,
         });
       }
       queryClient.invalidateQueries({ queryKey: ['/api/worlds', selectedWorld, 'rules'] });
@@ -303,7 +302,7 @@ export default function UnifiedEditor() {
   });
 
   const generateRuleMutation = useMutation({
-    mutationFn: async (data: { prompt: string; systemType: string; bulkCreate?: boolean; worldId?: string }) => {
+    mutationFn: async (data: { prompt: string; sourceFormat: string; bulkCreate?: boolean; worldId?: string }) => {
       const response = await fetch('/api/generate-rule', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -318,12 +317,12 @@ export default function UnifiedEditor() {
       
       // If worldId is passed, create a new rule file (for dialog-based creation)
       if (variables.worldId) {
-        const fileName = `ai_generated_${Date.now()}.${variables.systemType === 'insimul' ? 'insimul' : variables.systemType}`;
+        const fileName = `ai_generated_${Date.now()}.${variables.sourceFormat === 'insimul' ? 'insimul' : variables.sourceFormat}`;
         createRuleMutation.mutate({
           name: fileName,
           path: `Rules/${fileName}`,
           content: generatedRule,
-          systemType: variables.systemType,
+          sourceFormat: variables.sourceFormat,
           worldId: variables.worldId,
           ruleType: 'trigger',
           priority: 5,
@@ -434,7 +433,7 @@ export default function UnifiedEditor() {
   });
 
   const validateRulesMutation = useMutation({
-    mutationFn: async (data: { content: string; systemType: string }) => {
+    mutationFn: async (data: { content: string; sourceFormat: string }) => {
       const response = await fetch('/api/rules/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -629,8 +628,8 @@ export default function UnifiedEditor() {
     if (activeRule) {
       isLoadingFileRef.current = true;
       setRuleContent(activeRule.content);
-      setSystemType(activeRule.systemType);
-      previousSystemTypeRef.current = activeRule.systemType;
+      setSystemType(activeRule.sourceFormat);
+      previousSystemTypeRef.current = activeRule.sourceFormat;
       // Reset loading flag after a short delay to allow state updates to complete
       setTimeout(() => {
         isLoadingFileRef.current = false;
@@ -638,11 +637,11 @@ export default function UnifiedEditor() {
     }
   }, [activeRule]);
 
-  // Handle systemType changes and convert rule content
+  // Handle sourceFormat changes and convert rule content
   useEffect(() => {
-    // Don't convert if we're loading a file or no active file or systemType hasn't really changed
-    if (isLoadingFileRef.current || !activeRule || !ruleContent.trim() || systemType === previousSystemTypeRef.current) {
-      previousSystemTypeRef.current = systemType;
+    // Don't convert if we're loading a file or no active file or sourceFormat hasn't really changed
+    if (isLoadingFileRef.current || !activeRule || !ruleContent.trim() || sourceFormat === previousSystemTypeRef.current) {
+      previousSystemTypeRef.current = sourceFormat;
       return;
     }
 
@@ -658,14 +657,14 @@ export default function UnifiedEditor() {
             description: `Could not parse existing rules as ${previousSystemTypeRef.current} format. You may need to manually convert the content.`,
             variant: "destructive",
           });
-          previousSystemTypeRef.current = systemType;
+          previousSystemTypeRef.current = sourceFormat;
           return;
         }
 
         // Convert to new format
         const convertedContent = ruleExporter.exportToFormat(
           parsedRules, 
-          systemType as any, 
+          sourceFormat as any, 
           false, 
           characters
         );
@@ -676,27 +675,27 @@ export default function UnifiedEditor() {
         // Show success notification
         toast({
           title: "Rules converted",
-          description: `Successfully converted from ${previousSystemTypeRef.current} to ${systemType} format.`,
+          description: `Successfully converted from ${previousSystemTypeRef.current} to ${sourceFormat} format.`,
         });
 
-        previousSystemTypeRef.current = systemType;
+        previousSystemTypeRef.current = sourceFormat;
       } catch (error) {
         console.error('Rule conversion failed:', error);
         
-        // Revert systemType to previous value
+        // Revert sourceFormat to previous value
         setSystemType(previousSystemTypeRef.current);
         
         // Show error notification
         toast({
           title: "Conversion failed",
-          description: `Could not convert rules from ${previousSystemTypeRef.current} to ${systemType}. ${error instanceof Error ? error.message : 'Unknown error'}`,
+          description: `Could not convert rules from ${previousSystemTypeRef.current} to ${sourceFormat}. ${error instanceof Error ? error.message : 'Unknown error'}`,
           variant: "destructive",
         });
       }
     };
 
     convertRuleContent();
-  }, [systemType, activeRule, ruleContent, ruleCompiler, ruleExporter, characters, toast]);
+  }, [sourceFormat, activeRule, ruleContent, ruleCompiler, ruleExporter, characters, toast]);
 
   const handleCreateBlankFile = (selectedSystemType: string) => {
     if (!selectedWorld) return;
@@ -708,7 +707,7 @@ export default function UnifiedEditor() {
       name: fileName,
       path: `Rules/${fileName}`,
       content: defaultContent,
-      systemType: selectedSystemType,
+      sourceFormat: selectedSystemType,
       worldId: selectedWorld,
       ruleType: 'trigger',
       priority: 5,
@@ -729,7 +728,7 @@ export default function UnifiedEditor() {
     setSystemType(selectedSystemType);
     generateRuleMutation.mutate({
       prompt: prompt,
-      systemType: selectedSystemType,
+      sourceFormat: selectedSystemType,
       bulkCreate: bulkCreate,
       worldId: selectedWorld,
     });
@@ -741,7 +740,7 @@ export default function UnifiedEditor() {
     updateRuleMutation.mutate({
       id: activeRule.id,
       content: ruleContent,
-      systemType: systemType,
+      sourceFormat: sourceFormat,
     });
   };
 
@@ -784,7 +783,7 @@ export default function UnifiedEditor() {
   };
 
   const editRuleMutation = useMutation({
-    mutationFn: async (data: { currentContent: string; editInstructions: string; systemType: string }) => {
+    mutationFn: async (data: { currentContent: string; editInstructions: string; sourceFormat: string }) => {
       const response = await fetch('/api/edit-rule', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -814,14 +813,14 @@ export default function UnifiedEditor() {
     editRuleMutation.mutate({
       currentContent: ruleContent,
       editInstructions: aiEditInstructions,
-      systemType: systemType,
+      sourceFormat: sourceFormat,
     });
   };
 
   const handleValidateRules = () => {
     validateRulesMutation.mutate({
       content: ruleContent,
-      systemType,
+      sourceFormat,
     });
   };
 
@@ -943,7 +942,7 @@ export default function UnifiedEditor() {
                           )}
                           <div className="flex items-center gap-2 mt-1">
                             <Badge variant="secondary" className="text-xs">
-                              {file.systemType}
+                              {file.sourceFormat}
                             </Badge>
                           </div>
                         </div>
@@ -1037,10 +1036,9 @@ export default function UnifiedEditor() {
           {/* Main Content */}
           <div className="col-span-9">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-              <TabsList className="grid w-full grid-cols-8">
+              <TabsList className="grid w-full grid-cols-7">
                 <TabsTrigger value="editor">Rules</TabsTrigger>
                 <TabsTrigger value="characters">Characters</TabsTrigger>
-                <TabsTrigger value="generate">Generate</TabsTrigger>
                 <TabsTrigger value="locations">Locations</TabsTrigger>
                 <TabsTrigger value="actions">Actions</TabsTrigger>
                 <TabsTrigger value="truth">Truth</TabsTrigger>
@@ -1058,7 +1056,7 @@ export default function UnifiedEditor() {
                         </CardTitle>
                         {activeRule && (
                           <CardDescription className="flex items-center gap-2 mt-2">
-                            <Badge>{activeRule.systemType}</Badge>
+                            <Badge>{activeRule.sourceFormat}</Badge>
                             <span>{activeRule.path}</span>
                           </CardDescription>
                         )}
@@ -1167,8 +1165,8 @@ export default function UnifiedEditor() {
 
                       <div className="flex gap-4">
                         <div className="flex-1">
-                          <Label htmlFor="systemType">System Type</Label>
-                          <Select value={systemType} onValueChange={setSystemType}>
+                          <Label htmlFor="sourceFormat">System Type</Label>
+                          <Select value={sourceFormat} onValueChange={setSystemType}>
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
@@ -1236,7 +1234,7 @@ export default function UnifiedEditor() {
                               </Button>
                             </div>
                             <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                              The AI will modify your current {systemType} rule based on your instructions.
+                              The AI will modify your current {sourceFormat} rule based on your instructions.
                             </p>
                           </div>
                         )}
@@ -1345,12 +1343,6 @@ export default function UnifiedEditor() {
                     </div>
                   </CardContent>
                 </Card>
-              </TabsContent>
-
-              <TabsContent value="generate" className="space-y-4">
-                {selectedWorld && (
-                  <GenerateTab worldId={selectedWorld} />
-                )}
               </TabsContent>
 
               <TabsContent value="locations" className="space-y-4">
@@ -1561,7 +1553,7 @@ export default function UnifiedEditor() {
           onOpenChange={setExportDialogOpen}
           rules={rules.flatMap(file => {
             try {
-              return ruleCompiler.compile(file.content, file.systemType as any);
+              return ruleCompiler.compile(file.content, file.sourceFormat as any);
             } catch (error) {
               console.warn(`Failed to compile rules from ${file.name}:`, error);
               return [];

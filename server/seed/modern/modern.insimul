@@ -1,0 +1,83 @@
+{
+  "world": {
+    "name": "Modern Metropolitan",
+    "description": "A contemporary urban setting with diverse careers, technology, and modern social dynamics",
+    "sourceFormats": ["insimul"],
+    "config": {
+      "era": "modern",
+      "year": 2024,
+      "technology": "high"
+    }
+  },
+  "countries": [
+    {
+      "id": "usa",
+      "name": "United States",
+      "governmentType": "democracy",
+      "economicSystem": "capitalist"
+    }
+  ],
+  "settlements": [
+    {
+      "id": "metro_city",
+      "countryRef": "usa",
+      "name": "Metro City",
+      "settlementType": "city",
+      "population": 2000000,
+      "terrain": "coast"
+    }
+  ],
+  "characters": [
+    {
+      "id": "mayor_johnson",
+      "firstName": "Sarah",
+      "lastName": "Johnson",
+      "gender": "female",
+      "birthYear": 1975,
+      "occupation": "mayor",
+      "locationRef": "metro_city"
+    },
+    {
+      "id": "tech_ceo",
+      "firstName": "David",
+      "lastName": "Chen",
+      "gender": "male",
+      "birthYear": 1985,
+      "occupation": "CEO",
+      "locationRef": "metro_city"
+    },
+    {
+      "id": "doctor_patel",
+      "firstName": "Priya",
+      "lastName": "Patel",
+      "gender": "female",
+      "birthYear": 1988,
+      "occupation": "doctor",
+      "locationRef": "metro_city"
+    },
+    {
+      "id": "teacher_smith",
+      "firstName": "Michael",
+      "lastName": "Smith",
+      "gender": "male",
+      "birthYear": 1990,
+      "occupation": "teacher",
+      "locationRef": "metro_city"
+    },
+    {
+      "id": "artist_rodriguez",
+      "firstName": "Maria",
+      "lastName": "Rodriguez",
+      "gender": "female",
+      "birthYear": 1995,
+      "occupation": "artist",
+      "locationRef": "metro_city"
+    }
+  ],
+  "relationships": [
+    {
+      "characterRef": "doctor_patel",
+      "friendRefs": ["teacher_smith"]
+    }
+  ]
+}

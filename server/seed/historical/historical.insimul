@@ -1,0 +1,93 @@
+{
+  "world": {
+    "name": "Victorian England",
+    "description": "19th century England during the Industrial Revolution - an era of social change, innovation, and empire",
+    "sourceFormats": ["insimul"],
+    "config": {
+      "era": "historical",
+      "period": "victorian",
+      "year": 1880,
+      "technology": "industrial_revolution"
+    }
+  },
+  "countries": [
+    {
+      "id": "england",
+      "name": "Kingdom of Great Britain",
+      "governmentType": "constitutional_monarchy",
+      "economicSystem": "capitalist"
+    }
+  ],
+  "settlements": [
+    {
+      "id": "london",
+      "countryRef": "england",
+      "name": "London",
+      "settlementType": "city",
+      "population": 4500000,
+      "terrain": "river"
+    },
+    {
+      "id": "manchester",
+      "countryRef": "england",
+      "name": "Manchester",
+      "settlementType": "city",
+      "population": 500000,
+      "terrain": "plains"
+    }
+  ],
+  "characters": [
+    {
+      "id": "lord_ashford",
+      "firstName": "William",
+      "lastName": "Ashford",
+      "gender": "male",
+      "birthYear": 1840,
+      "occupation": "aristocrat",
+      "locationRef": "london"
+    },
+    {
+      "id": "lady_ashford",
+      "firstName": "Victoria",
+      "lastName": "Ashford",
+      "gender": "female",
+      "birthYear": 1845,
+      "occupation": "aristocrat",
+      "locationRef": "london",
+      "spouseRef": "lord_ashford"
+    },
+    {
+      "id": "inventor_edison",
+      "firstName": "Thomas",
+      "lastName": "Edison",
+      "gender": "male",
+      "birthYear": 1850,
+      "occupation": "inventor",
+      "locationRef": "manchester"
+    },
+    {
+      "id": "factory_owner",
+      "firstName": "Charles",
+      "lastName": "Dickens",
+      "gender": "male",
+      "birthYear": 1848,
+      "occupation": "businessman",
+      "locationRef": "manchester"
+    },
+    {
+      "id": "governess_bronte",
+      "firstName": "Charlotte",
+      "lastName": "Bronte",
+      "gender": "female",
+      "birthYear": 1858,
+      "occupation": "governess",
+      "locationRef": "london"
+    }
+  ],
+  "relationships": [
+    {
+      "characterRef": "inventor_edison",
+      "friendRefs": ["factory_owner"]
+    }
+  ]
+}

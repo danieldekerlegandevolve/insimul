@@ -5,19 +5,17 @@ import { ModernNavbar } from '@/components/ModernNavbar';
 import { HierarchicalRulesTab } from '@/components/HierarchicalRulesTab';
 import { UnifiedWorldExplorerTab } from '@/components/UnifiedWorldExplorerTab';
 import { HierarchicalActionsTab } from '@/components/HierarchicalActionsTab';
-import { ProceduralGenerateTab } from '@/components/ProceduralGenerateTab';
-import { GenerateRulesTab } from '@/components/GenerateRulesTab';
-import { GenerateActionsTab } from '@/components/GenerateActionsTab';
-import { GenerateQuestsTab } from '@/components/GenerateQuestsTab';
 import { WorldManagementTab } from '@/components/WorldManagementTab';
 import { TruthTab } from '@/components/TruthTab';
 import { QuestsTab } from '@/components/QuestsTab';
 import { PrologKnowledgeBase } from '@/components/PrologKnowledgeBase';
+import { GrammarsTab } from '@/components/GrammarsTab';
 import { ExportDialog } from '@/components/ExportDialog';
 import { ImportDialog } from '@/components/ImportDialog';
 import { SimulationCreateDialog } from '@/components/SimulationCreateDialog';
 import { SimulationConfigDialog } from '@/components/SimulationConfigDialog';
 import { SimulationTimelineView } from '@/components/SimulationTimelineView';
+import { PhaserRPGGame } from '@/components/PhaserRPGGame';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -166,26 +164,6 @@ export default function ModernEditor() {
           <UnifiedWorldExplorerTab worldId={selectedWorld} />
         )}
 
-        {/* Generate Society Tab - Using ProceduralGenerateTab */}
-        {activeTab === 'generate-society' && selectedWorld && (
-          <ProceduralGenerateTab worldId={selectedWorld} />
-        )}
-
-        {/* Generate Rules Tab */}
-        {activeTab === 'generate-rules' && selectedWorld && (
-          <GenerateRulesTab worldId={selectedWorld} />
-        )}
-
-        {/* Generate Actions Tab */}
-        {activeTab === 'generate-actions' && selectedWorld && (
-          <GenerateActionsTab worldId={selectedWorld} />
-        )}
-
-        {/* Generate Quests Tab */}
-        {activeTab === 'generate-quests' && selectedWorld && (
-          <GenerateQuestsTab worldId={selectedWorld} />
-        )}
-
         {/* Actions Tab - Using HierarchicalActionsTab */}
         {activeTab === 'actions' && selectedWorld && (
           <HierarchicalActionsTab worldId={selectedWorld} />
@@ -204,6 +182,11 @@ export default function ModernEditor() {
         {/* Quests Tab */}
         {activeTab === 'quests' && selectedWorld && (
           <QuestsTab worldId={selectedWorld} />
+        )}
+
+        {/* Grammars Tab */}
+        {activeTab === 'grammars' && selectedWorld && (
+          <GrammarsTab worldId={selectedWorld} />
         )}
 
         {/* Simulations Tab */}
@@ -333,6 +316,15 @@ export default function ModernEditor() {
           </Card>
         )}
 
+        {/* RPG Game Tab */}
+        {activeTab === 'rpg-game' && selectedWorld && (
+          <PhaserRPGGame
+            worldId={selectedWorld}
+            worldName={currentWorld?.name || 'Unknown World'}
+            onBack={() => setActiveTab('simulations')}
+          />
+        )}
+
         {/* World Home Tab */}
         {activeTab === 'home' && selectedWorld && (
           <WorldManagementTab 
@@ -359,7 +351,7 @@ export default function ModernEditor() {
           onOpenChange={setExportDialogOpen}
           rules={rules.flatMap(file => {
             try {
-              return ruleCompiler.compile(file.content, file.systemType as any);
+              return ruleCompiler.compile(file.content, file.sourceFormat as any);
             } catch (error) {
               console.warn(`Failed to compile rules from ${file.name}:`, error);
               return [];
