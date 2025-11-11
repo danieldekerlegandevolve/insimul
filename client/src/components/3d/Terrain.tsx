@@ -11,12 +11,11 @@ export function Terrain({ worldData }: TerrainProps) {
   const terrainFeatures = useMemo(() => {
     const features: any[] = [];
     const settlements = worldData.settlements || [];
+    const spacing = 100;
+    const gridSize = Math.ceil(Math.sqrt(settlements.length));
 
     // Create paths between settlements
     for (let i = 0; i < settlements.length - 1; i++) {
-      const spacing = 100;
-      const gridSize = Math.ceil(Math.sqrt(settlements.length));
-
       const row1 = Math.floor(i / gridSize);
       const col1 = i % gridSize;
       const x1 = (col1 - gridSize / 2) * spacing;
@@ -37,7 +36,6 @@ export function Terrain({ worldData }: TerrainProps) {
 
     // Add natural features (trees, rocks) based on terrain type
     settlements.forEach((settlement: any, index: number) => {
-      const gridSize = Math.ceil(Math.sqrt(settlements.length));
       const row = Math.floor(index / gridSize);
       const col = index % gridSize;
 
@@ -76,8 +74,6 @@ export function Terrain({ worldData }: TerrainProps) {
 
     return features;
   }, [worldData]);
-
-  const spacing = 100;
 
   return (
     <group>
