@@ -1,3 +1,4 @@
 dist
 node_modules
-*.enveditor-repo/
+*.env
+editor-repo/
