@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { Entity, useApplication } from '@playcanvas/react';
+import { useEffect, useRef } from 'react';
+import { Entity } from '@playcanvas/react';
+import { useApp, useFrame } from '@playcanvas/react/hooks';
 import { Camera, Render } from '@playcanvas/react/components';
 import { CameraMode } from './PlayCanvasGame';
 import * as pc from 'playcanvas';
@@ -15,7 +16,7 @@ export function PlayerController({
   onPositionChange,
   cameraMode
 }: PlayerControllerProps) {
-  const app = useApplication();
+  const app = useApp();
   const playerRef = useRef<pc.Entity | null>(null);
   const cameraRef = useRef<pc.Entity | null>(null);
   const keysPressed = useRef<Set<string>>(new Set());
@@ -83,91 +84,81 @@ export function PlayerController({
     };
   }, [app]);
 
-  // Update loop
-  useEffect(() => {
-    if (!app) return;
+  // Update loop using useFrame hook
+  useFrame((dt: number) => {
+    if (!playerRef.current || !cameraRef.current) return;
 
-    const updatePlayer = (dt: number) => {
-      if (!playerRef.current || !cameraRef.current) return;
+    const moveSpeed = 5;
+    let moveX = 0;
+    let moveZ = 0;
 
-      const moveSpeed = 5;
-      let moveX = 0;
-      let moveZ = 0;
+    // Calculate movement direction
+    if (keysPressed.current.has('w') || keysPressed.current.has('arrowup')) {
+      moveZ -= 1;
+    }
+    if (keysPressed.current.has('s') || keysPressed.current.has('arrowdown')) {
+      moveZ += 1;
+    }
+    if (keysPressed.current.has('a') || keysPressed.current.has('arrowleft')) {
+      moveX -= 1;
+    }
+    if (keysPressed.current.has('d') || keysPressed.current.has('arrowright')) {
+      moveX += 1;
+    }
 
-      // Calculate movement direction
-      if (keysPressed.current.has('w') || keysPressed.current.has('arrowup')) {
-        moveZ -= 1;
-      }
-      if (keysPressed.current.has('s') || keysPressed.current.has('arrowdown')) {
-        moveZ += 1;
-      }
-      if (keysPressed.current.has('a') || keysPressed.current.has('arrowleft')) {
-        moveX -= 1;
-      }
-      if (keysPressed.current.has('d') || keysPressed.current.has('arrowright')) {
-        moveX += 1;
-      }
+    // Normalize diagonal movement
+    if (moveX !== 0 || moveZ !== 0) {
+      const length = Math.sqrt(moveX * moveX + moveZ * moveZ);
+      moveX /= length;
+      moveZ /= length;
+    }
 
-      // Normalize diagonal movement
-      if (moveX !== 0 || moveZ !== 0) {
-        const length = Math.sqrt(moveX * moveX + moveZ * moveZ);
-        moveX /= length;
-        moveZ /= length;
-      }
+    // Apply movement relative to camera direction
+    if (moveX !== 0 || moveZ !== 0) {
+      const yawRad = yaw.current * (Math.PI / 180);
+      const forward = new pc.Vec3(-Math.sin(yawRad), 0, -Math.cos(yawRad));
+      const right = new pc.Vec3(Math.cos(yawRad), 0, -Math.sin(yawRad));
 
-      // Apply movement relative to camera direction
-      if (moveX !== 0 || moveZ !== 0) {
-        const yawRad = yaw.current * (Math.PI / 180);
-        const forward = new pc.Vec3(-Math.sin(yawRad), 0, -Math.cos(yawRad));
-        const right = new pc.Vec3(Math.cos(yawRad), 0, -Math.sin(yawRad));
+      const movement = new pc.Vec3();
+      movement.add2(forward.mulScalar(moveZ), right.mulScalar(moveX));
+      movement.mulScalar(moveSpeed * dt);
 
-        const movement = new pc.Vec3();
-        movement.add2(forward.mulScalar(moveZ), right.mulScalar(moveX));
-        movement.mulScalar(moveSpeed * dt);
+      const currentPos = playerRef.current.getPosition();
+      playerRef.current.setPosition(
+        currentPos.x + movement.x,
+        currentPos.y,
+        currentPos.z + movement.z
+      );
 
-        const currentPos = playerRef.current.getPosition();
-        playerRef.current.setPosition(
-          currentPos.x + movement.x,
-          currentPos.y,
-          currentPos.z + movement.z
-        );
+      onPositionChange({
+        x: currentPos.x + movement.x,
+        y: currentPos.y,
+        z: currentPos.z + movement.z
+      });
+    }
 
-        onPositionChange({
-          x: currentPos.x + movement.x,
-          y: currentPos.y,
-          z: currentPos.z + movement.z
-        });
-      }
+    // Update camera based on mode
+    const playerPos = playerRef.current.getPosition();
 
-      // Update camera based on mode
-      const playerPos = playerRef.current.getPosition();
+    if (cameraMode === 'first-person') {
+      // First person: camera at player eye level
+      cameraRef.current.setPosition(playerPos.x, playerPos.y + 1.6, playerPos.z);
+      cameraRef.current.setEulerAngles(pitch.current, yaw.current, 0);
+    } else {
+      // Third person: camera behind and above player
+      const distance = 5;
+      const height = 2;
+      const yawRad = yaw.current * (Math.PI / 180);
+      const pitchRad = pitch.current * (Math.PI / 180);
 
-      if (cameraMode === 'first-person') {
-        // First person: camera at player eye level
-        cameraRef.current.setPosition(playerPos.x, playerPos.y + 1.6, playerPos.z);
-        cameraRef.current.setEulerAngles(pitch.current, yaw.current, 0);
-      } else {
-        // Third person: camera behind and above player
-        const distance = 5;
-        const height = 2;
-        const yawRad = yaw.current * (Math.PI / 180);
-        const pitchRad = pitch.current * (Math.PI / 180);
+      const camX = playerPos.x + distance * Math.sin(yawRad) * Math.cos(pitchRad);
+      const camY = playerPos.y + height + distance * Math.sin(pitchRad);
+      const camZ = playerPos.z + distance * Math.cos(yawRad) * Math.cos(pitchRad);
 
-        const camX = playerPos.x + distance * Math.sin(yawRad) * Math.cos(pitchRad);
-        const camY = playerPos.y + height + distance * Math.sin(pitchRad);
-        const camZ = playerPos.z + distance * Math.cos(yawRad) * Math.cos(pitchRad);
-
-        cameraRef.current.setPosition(camX, camY, camZ);
-        cameraRef.current.lookAt(playerPos.x, playerPos.y + 1, playerPos.z);
-      }
-    };
-
-    app.on('update', updatePlayer);
-
-    return () => {
-      app.off('update', updatePlayer);
-    };
-  }, [app, cameraMode, onPositionChange]);
+      cameraRef.current.setPosition(camX, camY, camZ);
+      cameraRef.current.lookAt(playerPos.x, playerPos.y + 1, playerPos.z);
+    }
+  }, [cameraMode, onPositionChange]);
 
   return (
     <>
