@@ -13,7 +13,8 @@
     "db:seed": "tsx server/index.ts --seed",
     "db:verify": "tsx server/db/verify-db.ts",
     "test": "tsx server/tests/run-tests.ts",
-    "test:import": "tsx server/tests/test-import-formats.ts"
+    "test:import": "tsx server/tests/test-import-formats.ts",
+    "editor": "cd editor-repo && npm run develop"
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^5.8.0",
@@ -22,6 +23,7 @@
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.30",
     "@neondatabase/serverless": "^0.10.4",
+    "@playcanvas/react": "^0.11.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
@@ -75,6 +77,7 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "phaser": "^3.90.0",
+    "playcanvas": "^2.11.8",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
