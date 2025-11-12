@@ -1,5 +1,6 @@
 import { Entity } from '@playcanvas/react';
 import { Render } from '@playcanvas/react/components';
+import { useMaterial } from '@playcanvas/react/hooks';
 
 interface Character {
   id: string;
@@ -35,6 +36,10 @@ export function NPCManager({
   settlements,
   onCharacterClick
 }: NPCManagerProps) {
+  // Materials for NPCs
+  const npcBodyMaterial = useMaterial({ diffuse: '#9ca3af' }); // Gray
+  const npcHeadMaterial = useMaterial({ diffuse: '#ffd7a8' }); // Skin tone
+
   // Generate NPC positions based on their settlements
   const generateNPCPosition = (character: Character, index: number) => {
     // Find the settlement this character belongs to
@@ -81,12 +86,12 @@ export function NPCManager({
           >
             {/* Character Body */}
             <Entity name="npc-body" position={[0, 0, 0]}>
-              <Render type="cylinder" />
+              <Render type="cylinder" material={npcBodyMaterial} />
             </Entity>
 
             {/* Character Head */}
             <Entity name="npc-head" position={[0, 0.9, 0]}>
-              <Render type="sphere" />
+              <Render type="sphere" material={npcHeadMaterial} />
             </Entity>
           </Entity>
         );

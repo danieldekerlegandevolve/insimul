@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Application, Entity } from '@playcanvas/react';
 import { Camera, Light, Render } from '@playcanvas/react/components';
+import { useMaterial } from '@playcanvas/react/hooks';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { ArrowLeft, Map, Users, Eye } from 'lucide-react';
@@ -248,6 +249,18 @@ export function PlayCanvasGame({ worldId, worldName, onBack }: PlayCanvasGamePro
     setCameraMode(prev => prev === 'first-person' ? 'third-person' : 'first-person');
   };
 
+  // Add V key listener for camera toggle
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'v') {
+        toggleCameraMode();
+      }
+    };
+
+    window.addEventListener('keypress', handleKeyPress);
+    return () => window.removeEventListener('keypress', handleKeyPress);
+  }, []);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-b from-sky-400 to-green-600">
@@ -260,13 +273,15 @@ export function PlayCanvasGame({ worldId, worldName, onBack }: PlayCanvasGamePro
     );
   }
 
+  const groundMaterial = useMaterial({ diffuse: '#4a7c0f' });
+
   return (
     <div className="h-screen w-screen bg-black overflow-hidden relative">
       {/* PlayCanvas Application */}
       <Application className="w-full h-full">
         {/* Lighting */}
         <Entity name="ambient-light">
-          <Light type="directional" color="#ffffff" intensity={0.5} />
+          <Light type="directional" color="#ffffff" intensity={0.8} />
         </Entity>
 
         <Entity name="sun" position={[50, 50, 25]} rotation={[45, 45, 0]}>
@@ -286,8 +301,8 @@ export function PlayCanvasGame({ worldId, worldName, onBack }: PlayCanvasGamePro
         />
 
         {/* Ground */}
-        <Entity name="ground" position={[0, 0, 0]} rotation={[-90, 0, 0]}>
-          <Render type="plane" />
+        <Entity name="ground" position={[0, -0.5, 0]} scale={[1000, 1, 1000]}>
+          <Render type="box" material={groundMaterial} />
         </Entity>
 
         {/* Settlements */}

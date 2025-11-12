@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Entity } from '@playcanvas/react';
-import { useApp, useFrame } from '@playcanvas/react/hooks';
+import { useApp, useFrame, useMaterial } from '@playcanvas/react/hooks';
 import { Camera, Render } from '@playcanvas/react/components';
 import { CameraMode } from './PlayCanvasGame';
 import * as pc from 'playcanvas';
@@ -17,45 +17,37 @@ export function PlayerController({
   cameraMode
 }: PlayerControllerProps) {
   const app = useApp();
-  const playerRef = useRef<pc.Entity | null>(null);
-  const cameraRef = useRef<pc.Entity | null>(null);
-  const keysPressed = useRef<Set<string>>(new Set());
+  const playerRef = useRef<pc.Entity>(null);
+  const cameraRef = useRef<pc.Entity>(null);
   const yaw = useRef(0);
   const pitch = useRef(0);
   const isPointerLocked = useRef(false);
 
-  // Keyboard input handling
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase();
-      keysPressed.current.add(key);
-      if (key === 'v') {
-        // Camera toggle handled in parent
-      }
-    };
+  // Materials for player
+  const bodyMaterial = useMaterial({ diffuse: '#3b82f6' });
+  const headMaterial = useMaterial({ diffuse: '#ffd7a8' });
 
-    const handleKeyUp = (e: KeyboardEvent) => {
-      keysPressed.current.delete(e.key.toLowerCase());
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
-
-  // Mouse input handling
-  useEffect(() => {
+  // Mouse look controls
+  useFrame(() => {
     const canvas = app?.graphicsDevice?.canvas;
     if (!canvas) return;
 
-    const handlePointerLockChange = () => {
-      isPointerLocked.current = document.pointerLockElement === canvas;
+    if (!isPointerLocked.current && document.pointerLockElement === canvas) {
+      isPointerLocked.current = true;
+    } else if (isPointerLocked.current && document.pointerLockElement !== canvas) {
+      isPointerLocked.current = false;
+    }
+
+    // Request pointer lock on click
+    const handleClick = () => {
+      if (document.pointerLockElement !== canvas) {
+        canvas.requestPointerLock();
+      }
     };
 
+    canvas.onclick = handleClick;
+
+    // Mouse move handler
     const handleMouseMove = (e: MouseEvent) => {
       if (!isPointerLocked.current) return;
 
@@ -67,42 +59,29 @@ export function PlayerController({
       pitch.current = Math.max(-85, Math.min(85, pitch.current));
     };
 
-    const handleClick = () => {
-      if (document.pointerLockElement !== canvas) {
-        canvas.requestPointerLock();
-      }
-    };
+    window.onmousemove = handleMouseMove;
+  });
 
-    document.addEventListener('pointerlockchange', handlePointerLockChange);
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('click', handleClick);
-
-    return () => {
-      document.removeEventListener('pointerlockchange', handlePointerLockChange);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('click', handleClick);
-    };
-  }, [app]);
-
-  // Update loop using useFrame hook
+  // Update loop
   useFrame((dt: number) => {
-    if (!playerRef.current || !cameraRef.current) return;
+    if (!playerRef.current || !cameraRef.current || !app) return;
 
+    const keyboard = app.keyboard;
     const moveSpeed = 5;
     let moveX = 0;
     let moveZ = 0;
 
-    // Calculate movement direction
-    if (keysPressed.current.has('w') || keysPressed.current.has('arrowup')) {
+    // Calculate movement direction using PlayCanvas keyboard API
+    if (keyboard.isPressed(pc.KEY_W) || keyboard.isPressed(pc.KEY_UP)) {
       moveZ -= 1;
     }
-    if (keysPressed.current.has('s') || keysPressed.current.has('arrowdown')) {
+    if (keyboard.isPressed(pc.KEY_S) || keyboard.isPressed(pc.KEY_DOWN)) {
       moveZ += 1;
     }
-    if (keysPressed.current.has('a') || keysPressed.current.has('arrowleft')) {
+    if (keyboard.isPressed(pc.KEY_A) || keyboard.isPressed(pc.KEY_LEFT)) {
       moveX -= 1;
     }
-    if (keysPressed.current.has('d') || keysPressed.current.has('arrowright')) {
+    if (keyboard.isPressed(pc.KEY_D) || keyboard.isPressed(pc.KEY_RIGHT)) {
       moveX += 1;
     }
 
@@ -158,35 +137,32 @@ export function PlayerController({
       cameraRef.current.setPosition(camX, camY, camZ);
       cameraRef.current.lookAt(playerPos.x, playerPos.y + 1, playerPos.z);
     }
-  }, [cameraMode, onPositionChange]);
+  });
 
   return (
     <>
       {/* Player Entity */}
       <Entity
         name="player"
+        ref={playerRef}
         position={[position.x, position.y + 1, position.z]}
-        onCreate={(entity) => {
-          playerRef.current = entity;
-        }}
       >
         {/* Player Body */}
         <Entity name="player-body" position={[0, 0, 0]}>
-          <Render type="cylinder" />
+          <Render type="cylinder" material={bodyMaterial} />
         </Entity>
 
         {/* Player Head */}
         <Entity name="player-head" position={[0, 0.9, 0]}>
-          <Render type="sphere" />
+          <Render type="sphere" material={headMaterial} />
         </Entity>
       </Entity>
 
       {/* Camera Entity */}
       <Entity
         name="camera"
-        onCreate={(entity) => {
-          cameraRef.current = entity;
-        }}
+        ref={cameraRef}
+        position={[0, 5, 10]}
       >
         <Camera clearColor="#87CEEB" fov={60} />
       </Entity>

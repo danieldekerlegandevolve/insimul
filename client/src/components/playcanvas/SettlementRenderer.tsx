@@ -1,5 +1,6 @@
 import { Entity } from '@playcanvas/react';
 import { Render } from '@playcanvas/react/components';
+import { useMaterial } from '@playcanvas/react/hooks';
 
 interface Settlement {
   id: string;
@@ -74,6 +75,11 @@ export function SettlementRenderer({
   const settlements = worldData.settlements || [];
   const lots = worldData.lots || [];
 
+  // Materials for settlements
+  const settlementMarkerMaterial = useMaterial({ diffuse: '#fbbf24', emissive: '#fbbf24', emissiveIntensity: 0.3 });
+  const settlementGroundMaterial = useMaterial({ diffuse: '#78716c' });
+  const buildingMaterial = useMaterial({ diffuse: '#8b7355' });
+
   // Generate settlement layout
   const generateSettlementLayout = () => {
     const spacing = 100;
@@ -108,13 +114,13 @@ export function SettlementRenderer({
           position={[position.x, position.y, position.z]}
         >
           {/* Settlement Center Marker */}
-          <Entity name="settlement-marker" position={[0, 2, 0]}>
-            <Render type="sphere" />
+          <Entity name="settlement-marker" position={[0, 2, 0]} scale={[2, 2, 2]}>
+            <Render type="sphere" material={settlementMarkerMaterial} />
           </Entity>
 
           {/* Settlement Ground Plane */}
-          <Entity name="settlement-ground" position={[0, 0.1, 0]} rotation={[-90, 0, 0]}>
-            <Render type="plane" />
+          <Entity name="settlement-ground" position={[0, 0.05, 0]} scale={[50, 1, 50]}>
+            <Render type="box" material={settlementGroundMaterial} />
           </Entity>
 
           {/* Render Lots/Buildings */}
@@ -135,8 +141,9 @@ export function SettlementRenderer({
                 key={lot.id}
                 name={`lot-${lot.address}`}
                 position={[lotX, buildingHeight / 2, lotZ]}
+                scale={[2, buildingHeight, 2]}
               >
-                <Render type="box" />
+                <Render type="box" material={buildingMaterial} />
               </Entity>
             );
           })}
