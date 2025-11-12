@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Application, Entity } from '@playcanvas/react';
-import { Camera, Light, Render } from '@playcanvas/react/components';
-import { useMaterial } from '@playcanvas/react/hooks';
+import { Application } from '@playcanvas/react';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { ArrowLeft, Map, Users, Eye } from 'lucide-react';
 import { CharacterChatDialog } from '../CharacterChatDialog';
 import { LocationInfo } from '../3d/LocationInfo';
 import { FastTravelMap } from '../3d/FastTravelMap';
-import { PlayerController } from './PlayerController';
-import { NPCManager } from './NPCManager';
-import { SettlementRenderer } from './SettlementRenderer';
+import { GameScene } from './GameScene';
 
 interface PlayCanvasGameProps {
   worldId: string;
@@ -273,49 +269,17 @@ export function PlayCanvasGame({ worldId, worldName, onBack }: PlayCanvasGamePro
     );
   }
 
-  const groundMaterial = useMaterial({ diffuse: '#4a7c0f' });
-
   return (
     <div className="h-screen w-screen bg-black overflow-hidden relative">
       {/* PlayCanvas Application */}
       <Application className="w-full h-full">
-        {/* Lighting */}
-        <Entity name="ambient-light">
-          <Light type="directional" color="#ffffff" intensity={0.8} />
-        </Entity>
-
-        <Entity name="sun" position={[50, 50, 25]} rotation={[45, 45, 0]}>
-          <Light
-            type="directional"
-            color="#ffffff"
-            intensity={1}
-            castShadows={true}
-          />
-        </Entity>
-
-        {/* Player with Camera */}
-        <PlayerController
-          position={playerPosition}
-          onPositionChange={setPlayerPosition}
-          cameraMode={cameraMode}
-        />
-
-        {/* Ground */}
-        <Entity name="ground" position={[0, -0.5, 0]} scale={[1000, 1, 1000]}>
-          <Render type="box" material={groundMaterial} />
-        </Entity>
-
-        {/* Settlements */}
-        <SettlementRenderer
+        <GameScene
           worldData={worldData}
+          playerPosition={playerPosition}
+          onPlayerMove={setPlayerPosition}
+          onCharacterInteraction={handleCharacterInteraction}
           currentLocation={currentLocation}
-        />
-
-        {/* NPCs */}
-        <NPCManager
-          characters={worldData.characters}
-          settlements={worldData.settlements}
-          onCharacterClick={handleCharacterInteraction}
+          cameraMode={cameraMode}
         />
       </Application>
 
