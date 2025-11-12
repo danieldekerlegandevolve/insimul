@@ -64,7 +64,7 @@ export function PlayerController({
 
   // Update loop
   useFrame((dt: number) => {
-    if (!playerRef.current || !cameraRef.current || !app) return;
+    if (!playerRef.current || !cameraRef.current || !app || !app.keyboard) return;
 
     const keyboard = app.keyboard;
     const moveSpeed = 5;
