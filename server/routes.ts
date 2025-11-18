@@ -5908,6 +5908,271 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
     }
   });
 
+  // ============= VISUAL ASSETS & IMAGE GENERATION =============
+
+  // Import visual asset generator
+  const { visualAssetGenerator } = await import('./services/visual-asset-generator.js');
+  const { imageGenerator } = await import('./services/image-generation.js');
+
+  // Get available image generation providers
+  app.get("/api/assets/providers", async (req, res) => {
+    try {
+      const providers = await imageGenerator.getAvailableProviders();
+      res.json({ providers });
+    } catch (error: any) {
+      console.error("Failed to get providers:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get all visual assets for a world
+  app.get("/api/worlds/:worldId/assets", async (req, res) => {
+    try {
+      const { worldId } = req.params;
+      const { assetType } = req.query;
+
+      let assets;
+      if (assetType) {
+        assets = await storage.getVisualAssetsByType(worldId, assetType as string);
+      } else {
+        assets = await storage.getVisualAssetsByWorld(worldId);
+      }
+
+      res.json(assets);
+    } catch (error: any) {
+      console.error("Failed to get visual assets:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get visual assets for a specific entity
+  app.get("/api/assets/:entityType/:entityId", async (req, res) => {
+    try {
+      const { entityType, entityId } = req.params;
+      const assets = await storage.getVisualAssetsByEntity(entityId, entityType);
+      res.json(assets);
+    } catch (error: any) {
+      console.error("Failed to get entity assets:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get a specific visual asset
+  app.get("/api/assets/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const asset = await storage.getVisualAsset(id);
+      if (!asset) {
+        return res.status(404).json({ error: "Asset not found" });
+      }
+      res.json(asset);
+    } catch (error: any) {
+      console.error("Failed to get visual asset:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Generate character portrait
+  app.post("/api/characters/:characterId/generate-portrait", async (req, res) => {
+    try {
+      const { characterId } = req.params;
+      const { provider = 'flux', params } = req.body;
+
+      const assetId = await visualAssetGenerator.generateCharacterPortrait(
+        characterId,
+        provider,
+        params
+      );
+
+      const asset = await storage.getVisualAsset(assetId);
+      res.json(asset);
+    } catch (error: any) {
+      console.error("Failed to generate character portrait:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Generate building exterior
+  app.post("/api/businesses/:businessId/generate-exterior", async (req, res) => {
+    try {
+      const { businessId } = req.params;
+      const { provider = 'flux', params } = req.body;
+
+      const assetId = await visualAssetGenerator.generateBuildingExterior(
+        businessId,
+        provider,
+        params
+      );
+
+      const asset = await storage.getVisualAsset(assetId);
+      res.json(asset);
+    } catch (error: any) {
+      console.error("Failed to generate building exterior:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Generate settlement map
+  app.post("/api/settlements/:settlementId/generate-map", async (req, res) => {
+    try {
+      const { settlementId } = req.params;
+      const { mapType = 'terrain', provider = 'flux', params } = req.body;
+
+      const assetId = await visualAssetGenerator.generateSettlementMap(
+        settlementId,
+        mapType,
+        provider,
+        params
+      );
+
+      const asset = await storage.getVisualAsset(assetId);
+      res.json(asset);
+    } catch (error: any) {
+      console.error("Failed to generate settlement map:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Generate texture
+  app.post("/api/worlds/:worldId/generate-texture", async (req, res) => {
+    try {
+      const { worldId } = req.params;
+      const { textureType, material, style, provider = 'flux', params } = req.body;
+
+      if (!textureType || !material) {
+        return res.status(400).json({ error: "textureType and material are required" });
+      }
+
+      const assetId = await visualAssetGenerator.generateTexture(
+        worldId,
+        textureType,
+        material,
+        provider,
+        style,
+        params
+      );
+
+      const asset = await storage.getVisualAsset(assetId);
+      res.json(asset);
+    } catch (error: any) {
+      console.error("Failed to generate texture:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Batch generate character portraits
+  app.post("/api/worlds/:worldId/batch-generate-portraits", async (req, res) => {
+    try {
+      const { worldId } = req.params;
+      const { provider = 'flux', params } = req.body;
+
+      const assetIds = await visualAssetGenerator.batchGenerateCharacterPortraits(
+        worldId,
+        provider,
+        params
+      );
+
+      res.json({ assetIds, count: assetIds.length });
+    } catch (error: any) {
+      console.error("Failed to batch generate portraits:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get generation jobs for a world
+  app.get("/api/worlds/:worldId/generation-jobs", async (req, res) => {
+    try {
+      const { worldId } = req.params;
+      const { status } = req.query;
+
+      let jobs;
+      if (status) {
+        jobs = await storage.getGenerationJobsByStatus(worldId, status as string);
+      } else {
+        jobs = await storage.getGenerationJobsByWorld(worldId);
+      }
+
+      res.json(jobs);
+    } catch (error: any) {
+      console.error("Failed to get generation jobs:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get generation job status
+  app.get("/api/generation-jobs/:jobId", async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      const job = await storage.getGenerationJob(jobId);
+
+      if (!job) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+
+      res.json(job);
+    } catch (error: any) {
+      console.error("Failed to get generation job:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Delete visual asset
+  app.delete("/api/assets/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const success = await storage.deleteVisualAsset(id);
+
+      if (!success) {
+        return res.status(404).json({ error: "Asset not found" });
+      }
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Failed to delete visual asset:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get asset collections for a world
+  app.get("/api/worlds/:worldId/asset-collections", async (req, res) => {
+    try {
+      const { worldId } = req.params;
+      const collections = await storage.getAssetCollectionsByWorld(worldId);
+      res.json(collections);
+    } catch (error: any) {
+      console.error("Failed to get asset collections:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Create asset collection
+  app.post("/api/asset-collections", async (req, res) => {
+    try {
+      const collection = await storage.createAssetCollection(req.body);
+      res.json(collection);
+    } catch (error: any) {
+      console.error("Failed to create asset collection:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update asset collection
+  app.patch("/api/asset-collections/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const collection = await storage.updateAssetCollection(id, req.body);
+
+      if (!collection) {
+        return res.status(404).json({ error: "Collection not found" });
+      }
+
+      res.json(collection);
+    } catch (error: any) {
+      console.error("Failed to update asset collection:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
