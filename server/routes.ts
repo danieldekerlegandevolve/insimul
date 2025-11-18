@@ -131,6 +131,7 @@ import {
 import { WorldGenerator } from "./generators/world-generator.js";
 import { registerAuthRoutes } from "./routes/auth-routes.js";
 import { registerPlaythroughRoutes } from "./routes/playthrough-routes.js";
+import { AuthService } from "./services/auth-service.js";
 
 // Helper function to generate narrative text from actual characters
 function generateNarrative(characters: any[]): string {
@@ -1024,6 +1025,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/worlds", async (req, res) => {
     try {
       const validatedData = insertWorldSchema.parse(req.body);
+
+      // Set owner if user is authenticated
+      const token = req.headers.authorization?.split(' ')[1];
+      if (token) {
+        const payload = AuthService.verifyToken(token);
+        if (payload) {
+          validatedData.ownerId = payload.userId;
+        }
+      }
+
       const world = await storage.createWorld(validatedData);
       res.status(201).json(world);
     } catch (error) {
@@ -1032,6 +1043,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid world data", details: error.errors });
       }
       res.status(500).json({ error: "Failed to create world" });
+    }
+  });
+
+  app.patch("/api/worlds/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Verify authentication
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+
+      // Check if user owns this world
+      const world = await storage.getWorld(id);
+      if (!world) {
+        return res.status(404).json({ error: "World not found" });
+      }
+
+      if (world.ownerId !== payload.userId) {
+        return res.status(403).json({ error: "Only the world owner can modify settings" });
+      }
+
+      // Update world settings
+      const updatedWorld = await storage.updateWorld(id, req.body);
+      if (!updatedWorld) {
+        return res.status(404).json({ error: "World not found" });
+      }
+
+      res.json(updatedWorld);
+    } catch (error) {
+      console.error("PATCH /api/worlds/:id error:", error);
+      res.status(500).json({ error: "Failed to update world" });
     }
   });
 

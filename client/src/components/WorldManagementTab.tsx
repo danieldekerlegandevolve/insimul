@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Globe, Users, Map, Info, Trash2, Settings, BarChart3 } from 'lucide-react';
+import { Globe, Users, Map, Info, Trash2, Settings, BarChart3, Lock } from 'lucide-react';
 import { GenealogyViewer } from './visualization/GenealogyViewer';
 import { GeographyMap } from './visualization/GeographyMap';
 import { BaseResourcesConfig } from './BaseResourcesConfig';
 import { PlaythroughAnalytics } from './PlaythroughAnalytics';
+import { WorldSettingsDialog } from './WorldSettingsDialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface WorldManagementTabProps {
@@ -22,6 +23,7 @@ export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: World
   const [countries, setCountries] = useState<any[]>([]);
   const [totalPopulation, setTotalPopulation] = useState(0);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
@@ -122,15 +124,26 @@ export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: World
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setShowDeleteDialog(true)}
-            className="gap-2"
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete World
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSettingsDialog(true)}
+              className="gap-2"
+            >
+              <Lock className="w-4 h-4" />
+              Permissions
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDeleteDialog(true)}
+              className="gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete World
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -283,6 +296,14 @@ export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: World
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* World Settings Dialog */}
+      <WorldSettingsDialog
+        worldId={worldId}
+        open={showSettingsDialog}
+        onOpenChange={setShowSettingsDialog}
+        onSettingsUpdated={loadWorldData}
+      />
     </div>
   );
 }
