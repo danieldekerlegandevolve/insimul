@@ -129,6 +129,10 @@ import {
   getBusinessStatistics 
 } from "./extensions/tott/business-system.js";
 import { WorldGenerator } from "./generators/world-generator.js";
+import { registerAuthRoutes } from "./routes/auth-routes.js";
+import { registerPlaythroughRoutes } from "./routes/playthrough-routes.js";
+import { AuthService } from "./services/auth-service.js";
+import { canEditWorld, canAccessWorld } from "./middleware/permissions.js";
 
 // Helper function to generate narrative text from actual characters
 function generateNarrative(characters: any[]): string {
@@ -218,12 +222,45 @@ async function generateDetailedResults(
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
+  // Register authentication routes
+  registerAuthRoutes(app);
+
+  // Register playthrough routes
+  registerPlaythroughRoutes(app);
+
   // Worlds (now the primary containers, replacing projects)
   app.get("/api/worlds", async (req, res) => {
     try {
-      const worlds = await storage.getWorlds();
-      res.json(worlds);
+      const { visibility } = req.query;
+      let worlds = await storage.getWorlds();
+
+      // Filter by visibility if specified
+      if (visibility) {
+        worlds = worlds.filter(w => w.visibility === visibility);
+      }
+
+      // Get current user if authenticated
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+      const currentUserId = payload?.userId;
+
+      // Enrich worlds with ownership info and player count
+      const enrichedWorlds = await Promise.all(
+        worlds.map(async (world) => {
+          // Get playthrough count for this world
+          const playthroughs = await storage.getPlaythroughsByWorld(world.id);
+          const playerCount = new Set(playthroughs.map(p => p.userId)).size;
+
+          return {
+            ...world,
+            isOwner: currentUserId === world.ownerId,
+            playerCount,
+          };
+        })
+      );
+
+      res.json(enrichedWorlds);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch worlds" });
     }
@@ -860,21 +897,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/worlds/:worldId/characters", async (req, res) => {
     try {
+      const { worldId } = req.params;
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
       console.log("=== CREATE CHARACTER REQUEST ===");
-      console.log("worldId from params:", req.params.worldId);
+      console.log("worldId from params:", worldId);
       console.log("Request body:", JSON.stringify(req.body, null, 2));
-      
+
       // Ensure worldId is included in the data
-      const characterData = { ...req.body, worldId: req.params.worldId };
+      const characterData = { ...req.body, worldId };
       console.log("Character data with worldId:", JSON.stringify(characterData, null, 2));
-      
+
       const validatedData = insertCharacterSchema.parse(characterData);
       console.log("Validated data:", JSON.stringify(validatedData, null, 2));
-      
+
       const character = await storage.createCharacter(validatedData);
       console.log("Character created successfully:", character);
       console.log("=== END CREATE CHARACTER ===");
-      
+
       res.status(201).json(character);
     } catch (error) {
       console.error("Failed to create character:", error);
@@ -901,8 +948,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/characters/:id", async (req, res) => {
     try {
+      const { id } = req.params;
+
+      // Get character to find its world
+      const existingCharacter = await storage.getCharacter(id);
+      if (!existingCharacter) {
+        return res.status(404).json({ error: "Character not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingCharacter.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
       const validatedData = insertCharacterSchema.partial().parse(req.body);
-      const character = await storage.updateCharacter(req.params.id, validatedData);
+      const character = await storage.updateCharacter(id, validatedData);
       if (!character) {
         return res.status(404).json({ error: "Character not found" });
       }
@@ -917,7 +980,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/characters/:id", async (req, res) => {
     try {
-      const deleted = await storage.deleteCharacter(req.params.id);
+      const { id } = req.params;
+
+      // Get character to find its world
+      const existingCharacter = await storage.getCharacter(id);
+      if (!existingCharacter) {
+        return res.status(404).json({ error: "Character not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingCharacter.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const deleted = await storage.deleteCharacter(id);
       if (!deleted) {
         return res.status(404).json({ error: "Character not found" });
       }
@@ -1016,6 +1095,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/worlds", async (req, res) => {
     try {
       const validatedData = insertWorldSchema.parse(req.body);
+
+      // Set owner if user is authenticated
+      const token = req.headers.authorization?.split(' ')[1];
+      if (token) {
+        const payload = AuthService.verifyToken(token);
+        if (payload) {
+          validatedData.ownerId = payload.userId;
+        }
+      }
+
       const world = await storage.createWorld(validatedData);
       res.status(201).json(world);
     } catch (error) {
@@ -1027,13 +1116,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/worlds/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Verify authentication
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+
+      // Check if user owns this world
+      const world = await storage.getWorld(id);
+      if (!world) {
+        return res.status(404).json({ error: "World not found" });
+      }
+
+      if (world.ownerId !== payload.userId) {
+        return res.status(403).json({ error: "Only the world owner can modify settings" });
+      }
+
+      // Update world settings
+      const updatedWorld = await storage.updateWorld(id, req.body);
+      if (!updatedWorld) {
+        return res.status(404).json({ error: "World not found" });
+      }
+
+      res.json(updatedWorld);
+    } catch (error) {
+      console.error("PATCH /api/worlds/:id error:", error);
+      res.status(500).json({ error: "Failed to update world" });
+    }
+  });
+
   app.delete("/api/worlds/:id", async (req, res) => {
     try {
       const { id } = req.params;
       console.log(`🗑️  API: Delete world request for ${id}`);
-      
+
+      // Check ownership - get world first
+      const world = await storage.getWorld(id);
+      if (!world) {
+        console.log(`❌ API: World ${id} not found`);
+        return res.status(404).json({ error: "World not found" });
+      }
+
+      // Verify authentication and ownership
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, id))) {
+        return res.status(403).json({ error: "Only the world owner can delete this world" });
+      }
+
       const success = await storage.deleteWorld(id);
-      
+
       if (success) {
         console.log(`✅ API: World ${id} deleted successfully`);
         res.status(200).json({ success: true, message: "World deleted successfully" });
@@ -1043,7 +1185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error("DELETE /api/worlds/:id error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Failed to delete world",
         message: error instanceof Error ? error.message : "Unknown error"
       });
@@ -1062,7 +1204,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/worlds/:worldId/countries", async (req, res) => {
     try {
-      const countryData = { ...req.body, worldId: req.params.worldId };
+      const { worldId } = req.params;
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const countryData = { ...req.body, worldId };
       const validatedData = insertCountrySchema.parse(countryData);
       const country = await storage.createCountry(validatedData);
       res.status(201).json(country);
@@ -1071,9 +1223,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid country data", details: error.errors });
       }
-      res.status(500).json({ 
-        error: "Failed to create country", 
-        message: error instanceof Error ? error.message : 'Unknown error' 
+      res.status(500).json({
+        error: "Failed to create country",
+        message: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   });
@@ -1092,7 +1244,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/countries/:id", async (req, res) => {
     try {
-      const country = await storage.updateCountry(req.params.id, req.body);
+      const { id } = req.params;
+
+      // Get country to find its world
+      const existingCountry = await storage.getCountry(id);
+      if (!existingCountry) {
+        return res.status(404).json({ error: "Country not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingCountry.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const country = await storage.updateCountry(id, req.body);
       if (!country) {
         return res.status(404).json({ error: "Country not found" });
       }
@@ -1104,7 +1272,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/countries/:id", async (req, res) => {
     try {
-      const success = await storage.deleteCountry(req.params.id);
+      const { id } = req.params;
+
+      // Get country to find its world
+      const existingCountry = await storage.getCountry(id);
+      if (!existingCountry) {
+        return res.status(404).json({ error: "Country not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingCountry.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const success = await storage.deleteCountry(id);
       if (!success) {
         return res.status(404).json({ error: "Country not found" });
       }
@@ -1180,7 +1364,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/worlds/:worldId/settlements", async (req, res) => {
     try {
-      const settlementData = { ...req.body, worldId: req.params.worldId };
+      const { worldId } = req.params;
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const settlementData = { ...req.body, worldId };
       const validatedData = insertSettlementSchema.parse(settlementData);
       const settlement = await storage.createSettlement(validatedData);
       res.status(201).json(settlement);
@@ -1206,7 +1400,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/settlements/:id", async (req, res) => {
     try {
-      const settlement = await storage.updateSettlement(req.params.id, req.body);
+      const { id } = req.params;
+
+      // Get settlement to find its world
+      const existingSettlement = await storage.getSettlement(id);
+      if (!existingSettlement) {
+        return res.status(404).json({ error: "Settlement not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingSettlement.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const settlement = await storage.updateSettlement(id, req.body);
       if (!settlement) {
         return res.status(404).json({ error: "Settlement not found" });
       }
@@ -1218,7 +1428,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/settlements/:id", async (req, res) => {
     try {
-      const success = await storage.deleteSettlement(req.params.id);
+      const { id } = req.params;
+
+      // Get settlement to find its world
+      const existingSettlement = await storage.getSettlement(id);
+      if (!existingSettlement) {
+        return res.status(404).json({ error: "Settlement not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingSettlement.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const success = await storage.deleteSettlement(id);
       if (!success) {
         return res.status(404).json({ error: "Settlement not found" });
       }
@@ -3789,8 +4015,18 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/worlds/:worldId/simulations", async (req, res) => {
     try {
+      const { worldId } = req.params;
+
+      // Check permissions - creating simulations requires edit access
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, worldId))) {
+        return res.status(403).json({ error: "You don't have permission to create simulations in this world" });
+      }
+
       // Ensure worldId is included in the data
-      const simulationData = { ...req.body, worldId: req.params.worldId };
+      const simulationData = { ...req.body, worldId };
       const validatedData = insertSimulationSchema.parse(simulationData);
       const simulation = await storage.createSimulation(validatedData);
       res.status(201).json(simulation);
@@ -5011,7 +5247,17 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.post("/api/worlds/:worldId/actions", async (req, res) => {
     try {
-      const actionData = { ...req.body, worldId: req.params.worldId };
+      const { worldId } = req.params;
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const actionData = { ...req.body, worldId };
       const validatedData = insertActionSchema.parse(actionData);
       const action = await storage.createAction(validatedData);
       res.status(201).json(action);
@@ -5026,8 +5272,24 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.put("/api/actions/:id", async (req, res) => {
     try {
+      const { id } = req.params;
+
+      // Get action to find its world
+      const existingAction = await storage.getAction(id);
+      if (!existingAction) {
+        return res.status(404).json({ error: "Action not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingAction.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
       const validatedData = insertActionSchema.partial().parse(req.body);
-      const action = await storage.updateAction(req.params.id, validatedData);
+      const action = await storage.updateAction(id, validatedData);
       if (!action) {
         return res.status(404).json({ error: "Action not found" });
       }
@@ -5042,7 +5304,23 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
 
   app.delete("/api/actions/:id", async (req, res) => {
     try {
-      const deleted = await storage.deleteAction(req.params.id);
+      const { id } = req.params;
+
+      // Get action to find its world
+      const existingAction = await storage.getAction(id);
+      if (!existingAction) {
+        return res.status(404).json({ error: "Action not found" });
+      }
+
+      // Check permissions
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, existingAction.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const deleted = await storage.deleteAction(id);
       if (!deleted) {
         return res.status(404).json({ error: "Action not found" });
       }

@@ -5,6 +5,7 @@ import {
   Color3,
   Color4,
   DirectionalLight,
+  DynamicTexture,
   Engine,
   HemisphericLight,
   Mesh,
@@ -29,15 +30,20 @@ import { CharacterController } from "@/components/3D/src/CharacterController";
 import { DialogueActions } from "@/components/rpg/actions/DialogueActions";
 import { Action, ActionContext, ActionResult } from "@/components/rpg/types/actions";
 import { ActionManager } from "@/components/rpg/actions/ActionManager";
+import { BabylonGUIManager } from "@/components/3DGame/BabylonGUIManager";
+import { BabylonChatPanel } from "@/components/3DGame/BabylonChatPanel";
+import { BabylonQuestTracker } from "@/components/3DGame/BabylonQuestTracker";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface BabylonWorldProps {
   worldId: string;
   worldName: string;
   worldType?: string;
+  userId?: string;
   onBack: () => void;
 }
 
@@ -75,7 +81,10 @@ interface WorldData {
   actions: Action[];
   baseActions: Action[];
   quests: QuestSummary[];
-   settlements: SettlementSummary[];
+  settlements: SettlementSummary[];
+  rules: any[];
+  baseRules: any[];
+  countries: any[];
 }
 
 interface ActionCategorySummary {
@@ -103,6 +112,7 @@ interface NPCDisplayInfo {
 interface NPCInstance {
   mesh: Mesh;
   controller?: CharacterController | null;
+  questMarker?: Mesh | null;
 }
 
 interface ActionFeedback {
@@ -230,6 +240,7 @@ const INITIAL_ENERGY = 100;
 
 export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonWorldProps) {
   const { toast } = useToast();
+  const { token } = useAuth();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<Engine | null>(null);
@@ -241,6 +252,9 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const npcMeshesRef = useRef<Map<string, NPCInstance>>(new Map());
   const settlementMeshesRef = useRef<Map<string, Mesh>>(new Map());
   const settlementRoadMeshesRef = useRef<Mesh[]>([]);
+  const guiManagerRef = useRef<BabylonGUIManager | null>(null);
+  const chatPanelRef = useRef<BabylonChatPanel | null>(null);
+  const questTrackerRef = useRef<BabylonQuestTracker | null>(null);
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -261,6 +275,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const [actionFeedback, setActionFeedback] = useState<ActionFeedback | null>(null);
   const [actionInProgress, setActionInProgress] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [playthroughId, setPlaythroughId] = useState<string | null>(null);
 
   const worldTheme = useMemo(() => getWorldVisualTheme(worldType), [worldType]);
 
@@ -294,18 +309,61 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         window.removeEventListener("resize", handleResize);
       });
 
+      // Initialize GUI manager
+      const guiManager = new BabylonGUIManager(scene, {
+        worldName,
+        worldId
+      });
+
+      // Set up GUI callbacks
+      guiManager.setOnBackPressed(() => onBack());
+      guiManager.setOnFullscreenPressed(() => handleToggleFullscreen());
+      guiManager.setOnDebugPressed(() => handleToggleDebug());
+      guiManager.setOnNPCSelected((npcId) => setSelectedNPCId(npcId));
+      guiManager.setOnActionSelected((actionId) => handlePerformAction(actionId));
+
+      guiManagerRef.current = guiManager;
+
+      // Initialize chat panel
+      const chatPanel = new BabylonChatPanel(guiManager.advancedTexture, scene);
+      chatPanel.setOnClose(() => {
+        console.log('Chat closed');
+      });
+      chatPanel.setOnQuestAssigned((questData) => {
+        // Refresh quest tracker when new quest is assigned
+        questTrackerRef.current?.updateQuests(worldId);
+        toast({
+          title: 'New Quest!',
+          description: questData.title || 'Quest assigned',
+        });
+      });
+      chatPanelRef.current = chatPanel;
+
+      // Initialize quest tracker
+      const questTracker = new BabylonQuestTracker(guiManager.advancedTexture, scene);
+      questTracker.setOnClose(() => {
+        console.log('Quest tracker closed');
+      });
+      questTrackerRef.current = questTracker;
+
       setSceneStatus("ready");
     } catch (error) {
       console.error("Failed to initialize Babylon scene", error);
       setSceneStatus("error");
       setSceneErrorMessage(error instanceof Error ? error.message : String(error));
     }
-  }, [worldTheme]);
+  }, [worldTheme, worldName, worldId, onBack]);
 
   useEffect(() => {
     initializeScene();
 
     return () => {
+      chatPanelRef.current?.dispose();
+      chatPanelRef.current = null;
+      questTrackerRef.current?.dispose();
+      questTrackerRef.current = null;
+      guiManagerRef.current?.dispose();
+      guiManagerRef.current = null;
       sceneRef.current?.dispose();
       engineRef.current?.dispose();
       sceneRef.current = null;
@@ -320,7 +378,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       setPlayerStatus("idle");
       setNPCStatus("idle");
     };
-  }, [initializeScene, worldId]);
+  }, [initializeScene, worldId, toast]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -341,12 +399,25 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       setWorldError("");
 
       try {
-        const [charactersRes, actionsRes, baseActionsRes, questsRes, settlementsRes, configRes] = await Promise.all([
+        const [
+          charactersRes,
+          actionsRes,
+          baseActionsRes,
+          questsRes,
+          settlementsRes,
+          rulesRes,
+          baseRulesRes,
+          countriesRes,
+          configRes
+        ] = await Promise.all([
           fetch(`/api/worlds/${worldId}/characters`),
           fetch(`/api/worlds/${worldId}/actions`),
           fetch(`/api/actions/base`),
           fetch(`/api/worlds/${worldId}/quests`),
           fetch(`/api/worlds/${worldId}/settlements`),
+          fetch(`/api/rules?worldId=${worldId}`),
+          fetch(`/api/rules/base`),
+          fetch(`/api/worlds/${worldId}/countries`),
           fetch(`/api/worlds/${worldId}/base-resources/config`)
         ]);
 
@@ -355,10 +426,17 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         let baseActions = baseActionsRes.ok ? await baseActionsRes.json() : [];
         const quests = questsRes.ok ? await questsRes.json() : [];
         const settlements = settlementsRes.ok ? await settlementsRes.json() : [];
+        let rules = rulesRes.ok ? await rulesRes.json() : [];
+        let baseRules = baseRulesRes.ok ? await baseRulesRes.json() : [];
+        const countries = countriesRes.ok ? await countriesRes.json() : [];
         const config = configRes.ok ? await configRes.json() : {};
 
         if (Array.isArray(config.disabledBaseActions) && config.disabledBaseActions.length > 0) {
           baseActions = baseActions.filter((action: Action) => !config.disabledBaseActions.includes(action.id));
+        }
+
+        if (Array.isArray(config.disabledBaseRules) && config.disabledBaseRules.length > 0) {
+          baseRules = baseRules.filter((rule: any) => !config.disabledBaseRules.includes(rule.id));
         }
 
         if (cancelled) return;
@@ -371,7 +449,10 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           actions,
           baseActions,
           quests,
-          settlements
+          settlements,
+          rules,
+          baseRules,
+          countries
         });
         setTerrainSize(computeTerrainSizeFromSettlements(settlements, worldType));
         setDataStatus("ready");
@@ -390,6 +471,37 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       actionManagerRef.current = null;
     };
   }, [worldId]);
+
+  // Start or resume playthrough
+  useEffect(() => {
+    if (!token || !worldId) return;
+
+    async function startPlaythrough() {
+      try {
+        const response = await fetch(`/api/worlds/${worldId}/playthroughs/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: `${worldName} - Playthrough`,
+          }),
+        });
+
+        if (response.ok) {
+          const playthrough = await response.json();
+          setPlaythroughId(playthrough.id);
+        } else {
+          console.error('Failed to start playthrough:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error starting playthrough:', error);
+      }
+    }
+
+    startPlaythrough();
+  }, [token, worldId, worldName]);
 
   useEffect(() => {
     if (sceneStatus !== "ready") {
@@ -655,6 +767,127 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     };
   }, []);
 
+  // Add keyboard shortcuts for chat, quests, and proximity interaction
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+
+    const handleKeyDown = async (event: KeyboardEvent) => {
+      // SPACE key - proximity interaction
+      if (event.code === 'Space' && !event.repeat) {
+        event.preventDefault();
+
+        // Find nearest NPC to player
+        const playerMesh = playerMeshRef.current;
+        if (!playerMesh) return;
+
+        const playerPos = playerMesh.position;
+        let nearestNPC: { id: string; distance: number } | null = null;
+        const maxInteractionDistance = 8; // units
+
+        npcMeshesRef.current.forEach((instance, npcId) => {
+          if (!instance.mesh) return;
+          const npcPos = instance.mesh.position;
+          const dx = playerPos.x - npcPos.x;
+          const dz = playerPos.z - npcPos.z;
+          const distance = Math.sqrt(dx * dx + dz * dz);
+
+          if (distance <= maxInteractionDistance) {
+            if (!nearestNPC || distance < nearestNPC.distance) {
+              nearestNPC = { id: npcId, distance };
+            }
+          }
+        });
+
+        if (nearestNPC) {
+          setSelectedNPCId(nearestNPC.id);
+
+          // Show a toast notification
+          const npc = npcInfos.find(n => n.id === nearestNPC.id);
+          if (npc) {
+            toast({
+              title: `Interacting with ${npc.name}`,
+              description: npc.occupation || "Character",
+              duration: 2000
+            });
+          }
+        } else {
+          toast({
+            title: "No one nearby",
+            description: "Move closer to an NPC to interact",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // C key - open chat with selected NPC
+      if (event.code === 'KeyC' && !event.repeat && selectedNPCId) {
+        event.preventDefault();
+
+        const npc = npcInfos.find(n => n.id === selectedNPCId);
+        if (npc && worldData && chatPanelRef.current) {
+          // Fetch character details and truths
+          try {
+            const [characterRes, truthsRes] = await Promise.all([
+              fetch(`/api/characters/${selectedNPCId}`),
+              fetch(`/api/truths?worldId=${worldId}`)
+            ]);
+
+            if (characterRes.ok && truthsRes.ok) {
+              const character = await characterRes.json();
+              const truths = await truthsRes.json();
+
+              chatPanelRef.current.show(character, truths);
+
+              toast({
+                title: `Chatting with ${npc.name}`,
+                description: "Press C again to close chat",
+                duration: 2000
+              });
+            }
+          } catch (error) {
+            console.error('Failed to open chat:', error);
+            toast({
+              title: "Chat Error",
+              description: "Failed to load character data",
+              variant: "destructive"
+            });
+          }
+        } else if (!selectedNPCId) {
+          toast({
+            title: "No NPC Selected",
+            description: "Select an NPC first (click or press SPACE near them)",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // Q key - toggle quest tracker
+      if (event.code === 'KeyQ' && !event.repeat) {
+        event.preventDefault();
+
+        if (questTrackerRef.current) {
+          questTrackerRef.current.toggle();
+          questTrackerRef.current.updateQuests(worldId);
+
+          toast({
+            title: "Quest Tracker",
+            description: "Press Q again to toggle",
+            duration: 1500
+          });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [npcInfos, selectedNPCId, worldData, worldId, toast]);
+
   useEffect(() => {
     npcMeshesRef.current.forEach((instance, npcId) => {
       if (!instance || !instance.mesh) return;
@@ -667,6 +900,85 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       }
     });
   }, [selectedNPCId]);
+
+  // Update GUI: Player status
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui) return;
+
+    const statusText = playerStatus === "ready" ? "Ready" :
+                      playerStatus === "loading" ? "Loading..." :
+                      playerStatus === "error" ? "Error" : "Initializing";
+
+    gui.updatePlayerStatus({
+      energy: playerEnergy,
+      maxEnergy: INITIAL_ENERGY,
+      status: statusText
+    });
+  }, [playerEnergy, playerStatus]);
+
+  // Update GUI: World stats
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui || !worldData) return;
+
+    gui.updateWorldStats({
+      countries: worldData.countries.length,
+      settlements: worldData.settlements.length,
+      characters: worldData.characters.length,
+      rules: worldData.rules.length,
+      baseRules: worldData.baseRules.length,
+      actions: worldData.actions.length,
+      baseActions: worldData.baseActions.length,
+      quests: worldData.quests.length
+    });
+  }, [worldData]);
+
+  // Update GUI: NPC list
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui) return;
+
+    const npcList = npcInfos.map(npc => ({
+      id: npc.id,
+      name: npc.name,
+      occupation: npc.occupation,
+      disposition: npc.disposition,
+      questGiver: npc.questGiver
+    }));
+
+    gui.updateNPCList(npcList);
+  }, [npcInfos]);
+
+  // Update GUI: Action list
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui) return;
+
+    const npc = selectedNPC ? {
+      id: selectedNPC.id,
+      name: selectedNPC.name,
+      occupation: selectedNPC.occupation,
+      disposition: selectedNPC.disposition,
+      questGiver: selectedNPC.questGiver
+    } : null;
+
+    gui.updateActionList(npc, availableActions, playerEnergy);
+  }, [selectedNPC, availableActions, playerEnergy]);
+
+  // Update GUI: Action feedback
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui || !actionFeedback) return;
+
+    gui.showActionFeedback({
+      actionName: actionFeedback.actionName,
+      targetName: actionFeedback.targetName,
+      narrativeText: actionFeedback.result.narrativeText || actionFeedback.result.message || "",
+      success: actionFeedback.result.success,
+      timestamp: actionFeedback.timestamp
+    });
+  }, [actionFeedback]);
 
   const actionCategories = useMemo(() => ["social", "mental", "combat", "movement", "economic"], []);
 
@@ -785,6 +1097,34 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           setPlayerEnergy((energy) => Math.max(0, energy - result.energyUsed));
         }
 
+        // Record play trace if we have a playthrough
+        if (playthroughId && token) {
+          try {
+            await fetch(`/api/playthroughs/${playthroughId}/traces`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                actionType: 'action_performed',
+                actionId,
+                targetCharacterId: selectedNPCId,
+                metadata: {
+                  actionName,
+                  targetName,
+                  success: result.success,
+                  energyUsed: result.energyUsed,
+                  narrativeText: result.narrativeText,
+                },
+              }),
+            });
+          } catch (traceError) {
+            // Don't fail the action if trace recording fails
+            console.error('Failed to record play trace:', traceError);
+          }
+        }
+
         toast({
           title: result.success ? `${actionName} succeeded` : `${actionName} failed`,
           description: result.narrativeText || result.message,
@@ -801,75 +1141,17 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         setActionInProgress(false);
       }
     },
-    [playerEnergy, selectedNPCId, selectedNPC, toast, worldData]
+    [playerEnergy, selectedNPCId, selectedNPC, toast, worldData, playthroughId, token]
   );
 
   return (
-    <Card className="w-full h-full">
-      <CardHeader className="flex flex-row items-center justify-between gap-4">
-        <div>
-          <CardTitle>Explore {worldName}</CardTitle>
-          <CardDescription className="text-xs text-muted-foreground">
-            BabylonJS scene prototype · World ID: {worldId}
-          </CardDescription>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleToggleFullscreen} disabled={!sceneRef.current}>
-            {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-          </Button>
-          <Button variant="outline" onClick={handleToggleDebug} disabled={!sceneRef.current}>
-            Toggle Debug
-          </Button>
-          <Button variant="secondary" onClick={onBack}>
-            Back
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="relative space-y-4">
-        <div className="relative">
-          <canvas
-            ref={canvasRef}
-            className={`w-full ${isFullscreen ? "h-screen" : "h-[600px]"} border border-border rounded-md`}
-          />
-
-          <StatusOverlay
-            sceneStatus={sceneStatus}
-            dataStatus={dataStatus}
-            playerStatus={playerStatus}
-            npcStatus={npcStatus}
-            errorMessage={combinedError}
-          />
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <PlayerStatusPanel status={playerStatus} errorMessage={playerError} energy={playerEnergy} />
-          <NPCPanel
-            status={npcStatus}
-            npcs={npcInfos}
-            selectedNPCId={selectedNPCId}
-            onSelectNPC={setSelectedNPCId}
-            focusedNPC={selectedNPC}
-          />
-        </div>
-
-        <ActionConsole
-          selectedNPC={selectedNPC}
-          actions={availableActions}
-          playerEnergy={playerEnergy}
-          onActionSelect={handlePerformAction}
-          actionFeedback={actionFeedback}
-          isPerforming={actionInProgress}
-        />
-
-        <WorldDataPanel
-          worldData={worldData}
-          dataStatus={dataStatus}
-          actionSummaries={actionSummaries}
-          sampleSocialActions={sampleSocialActions}
-          errorMessage={worldError}
-        />
-      </CardContent>
-    </Card>
+    <div className="w-full h-screen bg-black">
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full"
+        style={{ display: 'block', touchAction: 'none' }}
+      />
+    </div>
   );
 }
 
@@ -1484,11 +1766,67 @@ async function spawnNPCInstance({
 
     controller.start();
 
-    return { mesh: npcMesh, controller };
+    // Add quest marker if this NPC is a quest giver
+    let questMarker: Mesh | null = null;
+    if (questGiver) {
+      questMarker = createQuestMarker(scene, character.id);
+      questMarker.parent = npcMesh;
+      questMarker.position = new Vector3(0, 2.8, 0); // Above NPC head
+    }
+
+    return { mesh: npcMesh, controller, questMarker };
   } catch (error) {
     console.warn(`Failed to spawn NPC instance for ${character.id}`, error);
     return null;
   }
+}
+
+function createQuestMarker(scene: Scene, npcId: string): Mesh {
+  // Create a simple exclamation mark billboard
+  const plane = MeshBuilder.CreatePlane(
+    `quest-marker-${npcId}`,
+    { width: 0.8, height: 0.8, sideOrientation: Mesh.DOUBLESIDE },
+    scene
+  );
+
+  // Create dynamic texture for the exclamation mark
+  const texture = new DynamicTexture(`quest-marker-texture-${npcId}`, 128, scene, true);
+  const context = texture.getContext();
+
+  // Draw yellow background circle
+  context.fillStyle = '#FFD700';
+  context.beginPath();
+  context.arc(64, 64, 60, 0, 2 * Math.PI);
+  context.fill();
+
+  // Draw exclamation mark
+  context.fillStyle = '#FFFFFF';
+  context.font = 'bold 80px Arial';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText('!', 64, 64);
+
+  texture.update();
+
+  // Create material
+  const material = new StandardMaterial(`quest-marker-mat-${npcId}`, scene);
+  material.diffuseTexture = texture;
+  material.emissiveColor = new Color3(1, 0.84, 0); // Gold glow
+  material.opacityTexture = texture;
+  material.backFaceCulling = false;
+
+  plane.material = material;
+  plane.billboardMode = Mesh.BILLBOARDMODE_ALL; // Always face camera
+  plane.isPickable = false;
+
+  // Add gentle bobbing animation
+  let time = 0;
+  scene.onBeforeRenderObservable.add(() => {
+    time += 0.016;
+    plane.position.y = 2.8 + Math.sin(time * 3) * 0.1;
+  });
+
+  return plane;
 }
 
 function disposeNPCInstance(instance?: NPCInstance | null) {
@@ -1499,6 +1837,9 @@ function disposeNPCInstance(instance?: NPCInstance | null) {
     console.warn("Failed to stop NPC controller", error);
   }
   instance.controller = null;
+  if (instance.questMarker) {
+    instance.questMarker.dispose(false, true);
+  }
   if (instance.mesh) {
     instance.mesh.dispose(false, true);
   }
@@ -1539,275 +1880,4 @@ function buildActionContext({
 function findActionDefinition(worldData: WorldData | null, actionId: string) {
   if (!worldData) return undefined;
   return [...worldData.actions, ...worldData.baseActions].find((action) => action.id === actionId);
-}
-
-interface StatusOverlayProps {
-  sceneStatus: SceneStatus;
-  dataStatus: DataStatus;
-  playerStatus: PlayerStatus;
-  npcStatus: NPCStatus;
-  errorMessage: string;
-}
-
-function StatusOverlay({ sceneStatus, dataStatus, playerStatus, npcStatus, errorMessage }: StatusOverlayProps) {
-  const isReady = sceneStatus === "ready" && dataStatus === "ready" && playerStatus === "ready" && npcStatus === "ready";
-  if (isReady) return null;
-
-  const statusRows = [
-    { label: "Scene", value: sceneStatus },
-    { label: "World Data", value: dataStatus },
-    { label: "Player", value: playerStatus },
-    { label: "NPCs", value: npcStatus }
-  ];
-
-  return (
-    <div className="absolute inset-4 flex flex-col items-center justify-center rounded-md bg-background/80 backdrop-blur-sm border text-center gap-3">
-      <p className="font-medium text-lg">Preparing world...</p>
-      <div className="w-full max-w-xs space-y-2 text-sm">
-        {statusRows.map((row) => (
-          <div key={row.label} className="flex items-center justify-between">
-            <span className="text-muted-foreground">{row.label}</span>
-            <span className={row.value === "error" ? "text-destructive font-semibold" : "font-medium"}>
-              {row.value}
-            </span>
-          </div>
-        ))}
-      </div>
-      {errorMessage && <p className="text-sm text-destructive max-w-sm">{errorMessage}</p>}
-    </div>
-  );
-}
-
-interface PlayerStatusPanelProps {
-  status: PlayerStatus;
-  errorMessage: string;
-  energy: number;
-}
-
-function PlayerStatusPanel({ status, errorMessage, energy }: PlayerStatusPanelProps) {
-  const statusText: Record<PlayerStatus, string> = {
-    idle: "Waiting for scene...",
-    loading: "Loading avatar & animations",
-    ready: "Player controller ready",
-    error: "Failed to load player"
-  };
-
-  return (
-    <div className="p-4 border rounded-md bg-muted/15 text-sm flex flex-col gap-2">
-      <div className="flex items-center justify-between">
-        <p className="font-medium">Player status</p>
-        <span
-          className={`text-xs uppercase tracking-wide ${
-            status === "ready" ? "text-primary" : status === "error" ? "text-destructive" : "text-muted-foreground"
-          }`}
-        >
-          {status}
-        </span>
-      </div>
-      <p className="text-muted-foreground">{statusText[status]}</p>
-      <p className="text-xs text-muted-foreground">Energy: {energy}</p>
-      {errorMessage && <p className="text-xs text-destructive">{errorMessage}</p>}
-    </div>
-  );
-}
-
-interface NPCPanelProps {
-  status: NPCStatus;
-  npcs: NPCDisplayInfo[];
-  selectedNPCId: string | null;
-  onSelectNPC: (id: string) => void;
-  focusedNPC: NPCDisplayInfo | null;
-}
-
-function NPCPanel({ status, npcs, selectedNPCId, onSelectNPC, focusedNPC }: NPCPanelProps) {
-  if (status === "error") {
-    return (
-      <div className="p-4 border rounded-md bg-destructive/10 text-sm text-destructive">
-        Failed to place NPCs. Check console for details.
-      </div>
-    );
-  }
-
-  if (status === "loading") {
-    return (
-      <div className="p-4 border rounded-md bg-muted/15 text-sm text-muted-foreground">Spawning NPCs...</div>
-    );
-  }
-
-  if (status === "idle" && npcs.length === 0) {
-    return (
-      <div className="p-4 border rounded-md bg-muted/15 text-sm text-muted-foreground">
-        NPCs will appear once the scene finishes loading.
-      </div>
-    );
-  }
-
-  if (!npcs.length) {
-    return (
-      <div className="p-4 border rounded-md bg-muted/15 text-sm text-muted-foreground">No characters available.</div>
-    );
-  }
-
-  return (
-    <div className="p-4 border rounded-md bg-background space-y-3 text-sm">
-      <div className="flex items-center justify-between">
-        <p className="font-semibold">NPC overview</p>
-        <span className="text-xs text-muted-foreground">{npcs.length} placed</span>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {npcs.map((npc) => (
-          <button
-            key={npc.id}
-            type="button"
-            onClick={() => onSelectNPC(npc.id)}
-            className={`px-3 py-1 rounded-full border text-xs transition-colors ${
-              npc.id === selectedNPCId
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-muted/50 hover:bg-muted"
-            } ${npc.questGiver ? "border-amber-500" : "border-border"}`}
-          >
-            {npc.name}
-          </button>
-        ))}
-      </div>
-
-      {focusedNPC && (
-        <div className="rounded-md border bg-muted/20 p-3 space-y-1">
-          <div className="flex items-center justify-between">
-            <p className="font-medium">{focusedNPC.name}</p>
-            {focusedNPC.questGiver && <Badge className="text-[10px]">Quest giver</Badge>}
-          </div>
-          {focusedNPC.occupation && <p className="text-xs text-muted-foreground">{focusedNPC.occupation}</p>}
-          <p className="text-xs text-muted-foreground">Disposition: {focusedNPC.disposition || "Unknown"}</p>
-          <p className="text-xs text-muted-foreground">
-            Position: ({focusedNPC.position.x.toFixed(1)}, {focusedNPC.position.z.toFixed(1)})
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface ActionConsoleProps {
-  selectedNPC: NPCDisplayInfo | null;
-  actions: Action[];
-  playerEnergy: number;
-  onActionSelect: (actionId: string) => void;
-  actionFeedback: ActionFeedback | null;
-  isPerforming: boolean;
-}
-
-function ActionConsole({
-  selectedNPC,
-  actions,
-  playerEnergy,
-  onActionSelect,
-  actionFeedback,
-  isPerforming
-}: ActionConsoleProps) {
-  return (
-    <div className="p-4 border rounded-md bg-background space-y-3">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="font-semibold">Action console</p>
-          <p className="text-xs text-muted-foreground">
-            {selectedNPC ? `Interacting with ${selectedNPC.name}` : "Select an NPC in the scene to see actions"}
-          </p>
-        </div>
-        {isPerforming && <Badge variant="outline">Performing...</Badge>}
-      </div>
-
-      {selectedNPC ? (
-        <DialogueActions actions={actions} onActionSelect={onActionSelect} playerEnergy={playerEnergy} />
-      ) : (
-        <div className="text-sm text-muted-foreground">Tap an NPC to surface contextual actions.</div>
-      )}
-
-      {actionFeedback && (
-        <div className="rounded-md border bg-muted/20 p-3 space-y-1 text-sm">
-          <p className="font-medium">Last action: {actionFeedback.actionName}</p>
-          <p className="text-xs text-muted-foreground">
-            Target: {actionFeedback.targetName} · {new Date(actionFeedback.timestamp).toLocaleTimeString()}
-          </p>
-          <p>{actionFeedback.result.narrativeText || actionFeedback.result.message || "No narrative provided."}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface WorldDataPanelProps {
-  worldData: WorldData | null;
-  dataStatus: DataStatus;
-  actionSummaries: ActionCategorySummary[];
-  sampleSocialActions: SampleAction[];
-  errorMessage: string;
-}
-
-function WorldDataPanel({ worldData, dataStatus, actionSummaries, sampleSocialActions, errorMessage }: WorldDataPanelProps) {
-  if (dataStatus === "loading") {
-    return <div className="p-4 border rounded-md text-sm text-muted-foreground">Loading world data...</div>;
-  }
-
-  if (dataStatus === "error") {
-    return (
-      <div className="p-4 border rounded-md bg-destructive/10 text-sm text-destructive">
-        Failed to load world data: {errorMessage}
-      </div>
-    );
-  }
-
-  if (!worldData) {
-    return null;
-  }
-
-  return (
-    <div className="p-4 border rounded-md bg-background space-y-4 text-sm">
-      <div className="flex items-center justify-between">
-        <p className="font-semibold">World data</p>
-        <Badge variant="outline">{worldData.characters.length} characters</Badge>
-      </div>
-
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 text-xs">
-        <Stat label="Quests" value={worldData.quests.length} />
-        <Stat label="World actions" value={worldData.actions.length} />
-        <Stat label="Base actions" value={worldData.baseActions.length} />
-        <Stat label="NPCs shown" value={Math.min(worldData.characters.length, MAX_NPCS)} />
-      </div>
-
-      <div>
-        <p className="font-medium text-xs mb-1">Action categories</p>
-        <div className="flex flex-wrap gap-2">
-          {actionSummaries.map((summary) => (
-            <Badge key={summary.category} variant="secondary">
-              {summary.category}: {summary.count}
-            </Badge>
-          ))}
-        </div>
-      </div>
-
-      {sampleSocialActions.length > 0 && (
-        <div>
-          <p className="font-medium text-xs mb-1">Sample social actions</p>
-          <ul className="space-y-1">
-            {sampleSocialActions.map((action) => (
-              <li key={action.id} className="flex items-center justify-between text-xs border-b border-border/70 pb-1">
-                <span className="font-medium">{action.name}</span>
-                {action.energyCost && <span className="text-muted-foreground">⚡{action.energyCost}</span>}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: number | string }) {
-  return (
-    <div className="rounded-md bg-muted/30 p-3">
-      <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="text-lg font-semibold">{value}</p>
-    </div>
-  );
 }

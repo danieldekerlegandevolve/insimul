@@ -9,14 +9,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { 
-  Globe, 
-  ChevronDown, 
-  Menu, 
-  Scroll, 
-  Users, 
-  MapPin, 
-  Zap, 
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  Globe,
+  ChevronDown,
+  Menu,
+  Scroll,
+  Users,
+  MapPin,
+  Zap,
   Target,
   Sparkles,
   BookOpen,
@@ -27,7 +29,13 @@ import {
   X,
   Home,
   FileText,
-  Gamepad2
+  Gamepad2,
+  Compass,
+  History,
+  LogOut,
+  LogIn,
+  UserPlus,
+  User
 } from 'lucide-react';
 
 interface ModernNavbarProps {
@@ -35,10 +43,12 @@ interface ModernNavbarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   onChangeWorld: () => void;
+  onOpenAuth?: () => void;
 }
 
-export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWorld }: ModernNavbarProps) {
+export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWorld, onOpenAuth }: ModernNavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
 
   const contentItems = [
     { id: 'rules', label: 'Rules', icon: Scroll },
@@ -57,6 +67,11 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
     { id: 'simulations', label: 'Run Simulations', icon: Play },
     { id: 'rpg-game', label: 'Explore World (2D RPG)', icon: Gamepad2 },
     { id: '3d-game', label: 'Explore World (3D)', icon: Gamepad2 },
+    { id: 'my-playthroughs', label: 'My Playthroughs', icon: History },
+  ];
+
+  const browseItems = [
+    { id: 'browse-worlds', label: 'Browse Public Worlds', icon: Compass },
   ];
 
   const dataItems = [
@@ -153,9 +168,62 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
 
           <NavDropdown label="Content" items={contentItems} icon={FileText} />
           <NavDropdown label="Truth" items={truthItems} icon={BookOpen} />
-          <NavDropdown label="Simulations" items={simulationItems} icon={Play} />
+          <NavDropdown label="Play" items={simulationItems} icon={Play} />
+          <NavDropdown label="Browse" items={browseItems} icon={Compass} />
           <NavDropdown label="Data" items={dataItems} icon={Upload} />
         </nav>
+
+        {/* Auth Section - Desktop */}
+        <div className="hidden md:flex items-center gap-2 ml-4">
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="gap-2">
+                  <Avatar className="w-6 h-6">
+                    <AvatarFallback className="text-xs">
+                      {user?.username?.substring(0, 2).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden lg:inline">{user?.username}</span>
+                  <ChevronDown className="w-3 h-3 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col">
+                    <span className="font-semibold">{user?.displayName || user?.username}</span>
+                    <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => onTabChange('my-playthroughs')} className="cursor-pointer">
+                  <History className="w-4 h-4 mr-2" />
+                  My Playthroughs
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onTabChange('browse-worlds')} className="cursor-pointer">
+                  <Compass className="w-4 h-4 mr-2" />
+                  Browse Worlds
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Log Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={onOpenAuth} className="gap-2">
+                <LogIn className="w-4 h-4" />
+                Log In
+              </Button>
+              <Button onClick={onOpenAuth} className="gap-2">
+                <UserPlus className="w-4 h-4" />
+                Sign Up
+              </Button>
+            </>
+          )}
+        </div>
 
         {/* Mobile Menu */}
         <div className="md:hidden">
@@ -239,11 +307,21 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
                   </div>
                 </div>
 
-                {/* Simulations Section */}
+                {/* Play Section */}
                 <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">SIMULATIONS</h3>
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">PLAY</h3>
                   <div className="space-y-1">
                     {simulationItems.map(item => (
+                      <MobileNavItem key={item.id} item={item} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Browse Section */}
+                <div>
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">BROWSE</h3>
+                  <div className="space-y-1">
+                    {browseItems.map(item => (
                       <MobileNavItem key={item.id} item={item} />
                     ))}
                   </div>
@@ -257,6 +335,60 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
                       <MobileNavItem key={item.id} item={item} />
                     ))}
                   </div>
+                </div>
+
+                {/* Auth Section - Mobile */}
+                <div className="pt-4 border-t">
+                  {isAuthenticated ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3 px-3 py-2">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="text-xs">
+                            {user?.username?.substring(0, 2).toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col flex-1">
+                          <span className="font-semibold text-sm">{user?.displayName || user?.username}</span>
+                          <span className="text-xs text-muted-foreground">{user?.email}</span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          logout();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start gap-3 px-3 text-destructive hover:text-destructive"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        <span className="font-medium">Log Out</span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 px-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          onOpenAuth?.();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start gap-3"
+                      >
+                        <LogIn className="w-5 h-5" />
+                        <span className="font-medium">Log In</span>
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          onOpenAuth?.();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start gap-3"
+                      >
+                        <UserPlus className="w-5 h-5" />
+                        <span className="font-medium">Sign Up</span>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </SheetContent>

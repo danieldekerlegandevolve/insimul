@@ -250,16 +250,29 @@ export const worlds = pgTable("worlds", {
   description: text("description"),
   targetLanguage: text("target_language"), // For language-learning game type
 
+  // Ownership and permissions
+  ownerId: varchar("owner_id"), // User who owns/created this world (nullable for legacy/system worlds)
+  visibility: text("visibility").default("private"), // private, unlisted, public
+  isTemplate: boolean("is_template").default(false), // Allow others to clone this world
+
+  // Access control
+  allowedUserIds: jsonb("allowed_user_ids").$type<string[]>().default([]), // Users with explicit access
+  maxPlayers: integer("max_players"), // Optional player limit
+  requiresAuth: boolean("requires_auth").default(false), // Require authentication to play
+
   // Configuration
   config: jsonb("config").$type<Record<string, any>>().default({}),
-  
+
   // World state and history (abstract, meta-level)
   worldData: jsonb("world_data").$type<Record<string, any>>().default({}),
   historicalEvents: jsonb("historical_events").$type<any[]>().default([]),
-  
+
   // Generation settings
   generationConfig: jsonb("generation_config").$type<Record<string, any>>().default({}),
-  
+
+  // Version tracking for playthroughs
+  version: integer("version").default(1), // Increment when world structure changes
+
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -825,6 +838,214 @@ export const insertQuestSchema = createInsertSchema(quests).pick({
   tags: true,
 });
 
+// ============= USER AUTHENTICATION AND PLAYER PROGRESS =============
+
+// Users - authentication and account management
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+
+  // Profile
+  displayName: text("display_name"),
+  avatarUrl: text("avatar_url"),
+
+  // Account status
+  isActive: boolean("is_active").default(true),
+  isVerified: boolean("is_verified").default(false),
+  lastLoginAt: timestamp("last_login_at"),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Player Progress - tracks player progress across worlds and games
+export const playerProgress = pgTable("player_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  worldId: varchar("world_id").notNull(),
+
+  // Player character association
+  characterId: varchar("character_id"), // The character this player controls in the game
+
+  // Progress metrics
+  level: integer("level").default(1),
+  experience: integer("experience").default(0),
+  playtime: integer("playtime").default(0), // in seconds
+
+  // Game state
+  currentPosition: jsonb("current_position").$type<{ x: number; y: number; z: number }>().default({ x: 0, y: 0, z: 0 }),
+  currentLocation: text("current_location"), // Settlement or location name
+
+  // Progress tracking
+  questsCompleted: jsonb("quests_completed").$type<string[]>().default([]),
+  achievementsUnlocked: jsonb("achievements_unlocked").$type<string[]>().default([]),
+  stats: jsonb("stats").$type<Record<string, number>>().default({}),
+  inventory: jsonb("inventory").$type<any[]>().default([]),
+
+  // Checkpoints and saves
+  lastCheckpoint: jsonb("last_checkpoint").$type<Record<string, any>>().default({}),
+  saveData: jsonb("save_data").$type<Record<string, any>>().default({}),
+
+  // Session tracking
+  lastPlayedAt: timestamp("last_played_at").defaultNow(),
+  sessionsCount: integer("sessions_count").default(0),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Player Sessions - tracks individual play sessions
+export const playerSessions = pgTable("player_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  worldId: varchar("world_id").notNull(),
+  progressId: varchar("progress_id").notNull(),
+
+  // Session details
+  startedAt: timestamp("started_at").defaultNow(),
+  endedAt: timestamp("ended_at"),
+  duration: integer("duration").default(0), // in seconds
+
+  // Session metrics
+  experienceGained: integer("experience_gained").default(0),
+  questsCompletedInSession: integer("quests_completed_in_session").default(0),
+  achievementsEarnedInSession: integer("achievements_earned_in_session").default(0),
+
+  // Session data
+  sessionData: jsonb("session_data").$type<Record<string, any>>().default({}),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Achievements - defines available achievements
+export const achievements = pgTable("achievements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  worldId: varchar("world_id"), // null for global achievements
+
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  iconUrl: text("icon_url"),
+
+  // Achievement criteria
+  achievementType: text("achievement_type").notNull(), // quest_completion, level_reached, time_played, social_interaction
+  criteria: jsonb("criteria").$type<Record<string, any>>().default({}),
+
+  // Rewards
+  experienceReward: integer("experience_reward").default(0),
+  rewards: jsonb("rewards").$type<Record<string, any>>().default({}),
+
+  // Metadata
+  isHidden: boolean("is_hidden").default(false),
+  rarity: text("rarity").default("common"), // common, uncommon, rare, epic, legendary
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ============= PLAYTHROUGHS AND PLAYER ISOLATION =============
+
+// Playthroughs - player-specific instances of a world
+// Each player gets their own isolated playthrough where they can make changes
+// without affecting the base world or other players
+export const playthroughs = pgTable("playthroughs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  worldId: varchar("world_id").notNull(),
+
+  // Snapshot info - which version of the world this playthrough is based on
+  worldSnapshotVersion: integer("world_snapshot_version").notNull().default(1),
+
+  // Playthrough metadata
+  name: text("name"), // Player can name their playthrough (e.g., "My First Adventure")
+  description: text("description"),
+  notes: text("notes"), // Player notes
+
+  // Playthrough state
+  status: text("status").default("active"), // active, completed, abandoned, paused
+  currentTimestep: integer("current_timestep").default(0),
+
+  // Progress tracking
+  playtime: integer("playtime").default(0), // Total playtime in seconds
+  actionsCount: integer("actions_count").default(0), // Total actions taken
+  decisionsCount: integer("decisions_count").default(0), // Major decisions made
+
+  // Session tracking
+  startedAt: timestamp("started_at").defaultNow(),
+  lastPlayedAt: timestamp("last_played_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+
+  // Player character
+  playerCharacterId: varchar("player_character_id"), // Which character the player controls
+
+  // Save state
+  saveData: jsonb("save_data").$type<Record<string, any>>().default({}),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Playthrough Deltas - tracks changes made in a playthrough
+// Uses copy-on-write: only stores what changed from the base world
+export const playthroughDeltas = pgTable("playthrough_deltas", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  playthroughId: varchar("playthrough_id").notNull(),
+
+  // What entity changed
+  entityType: text("entity_type").notNull(), // character, settlement, rule, action, etc.
+  entityId: varchar("entity_id").notNull(), // ID of the base entity (if updating) or new ID (if creating)
+  operation: text("operation").notNull(), // create, update, delete
+
+  // The delta data
+  deltaData: jsonb("delta_data").$type<Record<string, any>>(), // Only changed fields for updates
+  fullData: jsonb("full_data").$type<Record<string, any>>(), // Full object for creates
+
+  // When this change occurred
+  timestep: integer("timestep").notNull(),
+  appliedAt: timestamp("applied_at").defaultNow(),
+
+  // Metadata
+  description: text("description"), // Optional description of the change
+  tags: jsonb("tags").$type<string[]>().default([]),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Play Traces - detailed log of player actions and decisions
+// This is the audit trail of everything a player does in their playthrough
+export const playTraces = pgTable("play_traces", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  playthroughId: varchar("playthrough_id").notNull(),
+  userId: varchar("user_id").notNull(),
+
+  // Action details
+  actionType: text("action_type").notNull(), // move, interact, dialogue, combat, quest_accept, etc.
+  actionName: text("action_name"), // Human-readable name
+  actionData: jsonb("action_data").$type<Record<string, any>>().default({}),
+
+  // Context
+  timestep: integer("timestep").notNull(),
+  characterId: varchar("character_id"), // Player's character
+  targetId: varchar("target_id"), // Target of the action (NPC, item, location, etc.)
+  targetType: text("target_type"), // character, item, location, etc.
+  locationId: varchar("location_id"), // Where the action took place
+
+  // Results and outcomes
+  outcome: text("outcome"), // success, failure, partial, etc.
+  outcomeData: jsonb("outcome_data").$type<Record<string, any>>().default({}),
+  stateChanges: jsonb("state_changes").$type<any[]>().default([]), // What changed as a result
+
+  // Narrative
+  narrativeText: text("narrative_text"), // Generated narrative description
+
+  // Timing
+  durationMs: integer("duration_ms"), // How long the action took (for analytics)
+  timestamp: timestamp("timestamp").defaultNow(),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Insert schemas for Talk of the Town tables
 export const insertOccupationSchema = createInsertSchema(occupations).pick({
   worldId: true,
@@ -943,3 +1164,67 @@ export type InsertResidence = z.infer<typeof insertResidenceSchema>;
 
 export type Whereabouts = typeof whereabouts.$inferSelect;
 export type InsertWhereabouts = z.infer<typeof insertWhereaboutsSchema>;
+
+// User and Player Progress insert schemas
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPlayerProgressSchema = createInsertSchema(playerProgress).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPlayerSessionSchema = createInsertSchema(playerSessions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAchievementSchema = createInsertSchema(achievements).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Playthrough insert schemas
+export const insertPlaythroughSchema = createInsertSchema(playthroughs).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPlaythroughDeltaSchema = createInsertSchema(playthroughDeltas).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPlayTraceSchema = createInsertSchema(playTraces).omit({
+  id: true,
+  createdAt: true,
+});
+
+// User and Player Progress types
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+
+export type PlayerProgress = typeof playerProgress.$inferSelect;
+export type InsertPlayerProgress = z.infer<typeof insertPlayerProgressSchema>;
+
+export type PlayerSession = typeof playerSessions.$inferSelect;
+export type InsertPlayerSession = z.infer<typeof insertPlayerSessionSchema>;
+
+export type Achievement = typeof achievements.$inferSelect;
+export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
+
+// Playthrough types
+export type Playthrough = typeof playthroughs.$inferSelect;
+export type InsertPlaythrough = z.infer<typeof insertPlaythroughSchema>;
+
+export type PlaythroughDelta = typeof playthroughDeltas.$inferSelect;
+export type InsertPlaythroughDelta = z.infer<typeof insertPlaythroughDeltaSchema>;
+
+export type PlayTrace = typeof playTraces.$inferSelect;
+export type InsertPlayTrace = z.infer<typeof insertPlayTraceSchema>;
