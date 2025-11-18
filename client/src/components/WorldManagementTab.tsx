@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Globe, Users, Map, Info, Trash2, Settings, BarChart3, Lock } from 'lucide-react';
 import { GenealogyViewer } from './visualization/GenealogyViewer';
 import { GeographyMap } from './visualization/GeographyMap';
@@ -10,6 +11,7 @@ import { BaseResourcesConfig } from './BaseResourcesConfig';
 import { PlaythroughAnalytics } from './PlaythroughAnalytics';
 import { WorldSettingsDialog } from './WorldSettingsDialog';
 import { useToast } from '@/hooks/use-toast';
+import { useWorldPermissions } from '@/hooks/use-world-permissions';
 
 interface WorldManagementTabProps {
   worldId: string;
@@ -26,6 +28,7 @@ export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: World
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+  const { canEdit, isOwner, loading } = useWorldPermissions(worldId);
 
   useEffect(() => {
     loadWorldData();
@@ -125,24 +128,57 @@ export function WorldManagementTab({ worldId, worldName, onWorldDeleted }: World
             </TabsList>
           </Tabs>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowSettingsDialog(true)}
-              className="gap-2"
-            >
-              <Lock className="w-4 h-4" />
-              Permissions
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDeleteDialog(true)}
-              className="gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete World
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowSettingsDialog(true)}
+                      className="gap-2"
+                      disabled={!canEdit || loading}
+                    >
+                      <Lock className="w-4 h-4" />
+                      Permissions
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!canEdit && (
+                  <TooltipContent>
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-3 h-3" />
+                      <span>Only the world owner can manage permissions</span>
+                    </div>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setShowDeleteDialog(true)}
+                      className="gap-2"
+                      disabled={!canEdit || loading}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete World
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!canEdit && (
+                  <TooltipContent>
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-3 h-3" />
+                      <span>Only the world owner can delete this world</span>
+                    </div>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>

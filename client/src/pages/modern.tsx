@@ -167,6 +167,7 @@ export default function ModernEditor() {
           setActiveTab(tab);
         }}
         onChangeWorld={() => setSelectedWorld('')}
+        onOpenAuth={() => setAuthDialogOpen(true)}
       />
 
       <div className="container mx-auto p-6">

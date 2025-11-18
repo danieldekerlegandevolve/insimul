@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Globe, Trash2, ArrowRight, Plus, Sparkles, Database } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Globe, Trash2, ArrowRight, Plus, Sparkles, Database, Lock, Users, Eye } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { WorldCreateDialog } from "./WorldCreateDialog";
 import { GenerationProgressDialog } from "./GenerationProgressDialog";
 import { AdminPanel } from "./AdminPanel";
@@ -24,14 +26,20 @@ export function WorldSelectionScreen({ onWorldSelected }: WorldSelectionScreenPr
   const [generationTaskId, setGenerationTaskId] = useState<string | null>(null);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const { toast } = useToast();
+  const { token } = useAuth();
 
   useEffect(() => {
     fetchWorlds();
-  }, []);
+  }, [token]); // Refetch when auth state changes
 
   const fetchWorlds = async () => {
     try {
-      const res = await fetch('/api/worlds');
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch('/api/worlds', { headers });
       if (res.ok) {
         const data = await res.json();
         setWorlds(data);
@@ -204,44 +212,138 @@ export function WorldSelectionScreen({ onWorldSelected }: WorldSelectionScreenPr
 
         {/* Worlds Grid */}
         <ScrollArea className="h-[500px] mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {worlds.map((world) => {
-              const totalPop = computePopulation(world) || world.population || 0;
-              return (
-                <Card 
-                  key={world.id}
-                  className="cursor-pointer hover:border-primary hover:shadow-xl transition-all duration-300 hover:scale-105 group"
-                  onClick={() => onWorldSelected(world.id)}
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
-                          <Globe className="w-5 h-5 text-primary" />
+          {/* Your Worlds Section */}
+          {worlds.filter(w => w.isOwner).length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4 px-2">Your Worlds</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {worlds.filter(w => w.isOwner).map((world) => {
+                  const totalPop = computePopulation(world) || world.population || 0;
+                  return (
+                    <Card
+                      key={world.id}
+                      className="cursor-pointer hover:border-primary hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                      onClick={() => onWorldSelected(world.id)}
+                    >
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                              <Globe className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="flex-1">
+                              <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                                {world.name}
+                              </CardTitle>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                <Badge variant="secondary" className="text-xs">Owner</Badge>
+                                {world.visibility && (
+                                  <Badge variant="outline" className="text-xs gap-1">
+                                    <Eye className="w-3 h-3" />
+                                    {world.visibility}
+                                  </Badge>
+                                )}
+                                {world.requiresAuth && (
+                                  <Badge variant="outline" className="text-xs gap-1">
+                                    <Lock className="w-3 h-3" />
+                                    Auth
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                         </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                            {world.name}
-                          </CardTitle>
+                        <CardDescription className="mt-2">{world.description || 'No description'}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex gap-4 text-sm">
+                          {totalPop > 0 && (
+                            <div>
+                              <span className="text-muted-foreground">Pop:</span>{' '}
+                              <span className="font-medium">{totalPop.toLocaleString()}</span>
+                            </div>
+                          )}
+                          {world.playerCount !== undefined && (
+                            <div>
+                              <span className="text-muted-foreground">Players:</span>{' '}
+                              <span className="font-medium">{world.playerCount}</span>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                    </div>
-                    <CardDescription className="mt-2">{world.description || 'No description'}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex gap-4 text-sm">
-                      {totalPop > 0 && (
-                        <div>
-                          <span className="text-muted-foreground">Pop:</span>{' '}
-                          <span className="font-medium">{totalPop.toLocaleString()}</span>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Other Worlds Section */}
+          {worlds.filter(w => !w.isOwner).length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4 px-2">Other Worlds</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {worlds.filter(w => !w.isOwner).map((world) => {
+                  const totalPop = computePopulation(world) || world.population || 0;
+                  return (
+                    <Card
+                      key={world.id}
+                      className="cursor-pointer hover:border-primary hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                      onClick={() => onWorldSelected(world.id)}
+                    >
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                              <Globe className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="flex-1">
+                              <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                                {world.name}
+                              </CardTitle>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {world.visibility && (
+                                  <Badge variant="outline" className="text-xs gap-1">
+                                    <Eye className="w-3 h-3" />
+                                    {world.visibility}
+                                  </Badge>
+                                )}
+                                {world.requiresAuth && (
+                                  <Badge variant="outline" className="text-xs gap-1">
+                                    <Lock className="w-3 h-3" />
+                                    Auth Required
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                        <CardDescription className="mt-2">{world.description || 'No description'}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex gap-4 text-sm">
+                          {totalPop > 0 && (
+                            <div>
+                              <span className="text-muted-foreground">Pop:</span>{' '}
+                              <span className="font-medium">{totalPop.toLocaleString()}</span>
+                            </div>
+                          )}
+                          {world.playerCount !== undefined && (
+                            <div>
+                              <span className="text-muted-foreground">Players:</span>{' '}
+                              <span className="font-medium">{world.playerCount}</span>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
             {/* Create New World Card - Only show when worlds exist */}
             {worlds.length > 0 && (

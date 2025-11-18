@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { Scroll, Plus, ArrowLeft, ChevronRight, Code, FileText, Edit, Save, X, RefreshCw, Globe } from 'lucide-react';
+import { useWorldPermissions } from '@/hooks/use-world-permissions';
+import { Scroll, Plus, ArrowLeft, ChevronRight, Code, FileText, Edit, Save, X, RefreshCw, Globe, Lock } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,24 +20,25 @@ type ViewLevel = 'list' | 'detail';
 
 export function HierarchicalRulesTab({ worldId }: HierarchicalRulesTabProps) {
   const { toast } = useToast();
-  
+  const { canEdit, loading: permissionsLoading } = useWorldPermissions(worldId);
+
   // Navigation state
   const [viewLevel, setViewLevel] = useState<ViewLevel>('list');
   const [selectedRule, setSelectedRule] = useState<any | null>(null);
-  
+
   // Data states
   const [rules, setRules] = useState<any[]>([]);
   const [baseRules, setBaseRules] = useState<any[]>([]);
   const [enabledBaseRuleIds, setEnabledBaseRuleIds] = useState<string[]>([]);
-  
+
   // Dialog state
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showConvertDialog, setShowConvertDialog] = useState(false);
-  
+
   // Editing state
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState('');
-  
+
   // Loading state
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -188,13 +191,30 @@ export function HierarchicalRulesTab({ worldId }: HierarchicalRulesTabProps) {
                 Define behavioral rules and logic for your simulation
               </p>
             </div>
-            <Button 
-              onClick={() => setShowCreateDialog(true)}
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Rule
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      onClick={() => setShowCreateDialog(true)}
+                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                      disabled={!canEdit || permissionsLoading}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Rule
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!canEdit && (
+                  <TooltipContent>
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-3 h-3" />
+                      <span>Only the world owner can add rules</span>
+                    </div>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
           
           <ScrollArea className="h-[600px]">
@@ -362,52 +382,101 @@ export function HierarchicalRulesTab({ worldId }: HierarchicalRulesTabProps) {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {!isEditing ? (
-                    <>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={startEditing}
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setShowConvertDialog(true)}
-                      >
-                        <RefreshCw className="w-4 h-4 mr-2" />
-                        Convert
-                      </Button>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={() => handleDeleteRule(selectedRule.id)}
-                      >
-                        Delete
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button 
-                        variant="default" 
-                        size="sm"
-                        onClick={saveEdit}
-                      >
-                        <Save className="w-4 h-4 mr-2" />
-                        Save
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={cancelEditing}
-                      >
-                        <X className="w-4 h-4 mr-2" />
-                        Cancel
-                      </Button>
-                    </>
-                  )}
+                  <TooltipProvider>
+                    {!isEditing ? (
+                      <>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={startEditing}
+                                disabled={!canEdit || permissionsLoading}
+                              >
+                                <Edit className="w-4 h-4 mr-2" />
+                                Edit
+                              </Button>
+                            </div>
+                          </TooltipTrigger>
+                          {!canEdit && (
+                            <TooltipContent>
+                              <div className="flex items-center gap-2">
+                                <Lock className="w-3 h-3" />
+                                <span>Only the world owner can edit rules</span>
+                              </div>
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setShowConvertDialog(true)}
+                                disabled={!canEdit || permissionsLoading}
+                              >
+                                <RefreshCw className="w-4 h-4 mr-2" />
+                                Convert
+                              </Button>
+                            </div>
+                          </TooltipTrigger>
+                          {!canEdit && (
+                            <TooltipContent>
+                              <div className="flex items-center gap-2">
+                                <Lock className="w-3 h-3" />
+                                <span>Only the world owner can convert rules</span>
+                              </div>
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleDeleteRule(selectedRule.id)}
+                                disabled={!canEdit || permissionsLoading}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </TooltipTrigger>
+                          {!canEdit && (
+                            <TooltipContent>
+                              <div className="flex items-center gap-2">
+                                <Lock className="w-3 h-3" />
+                                <span>Only the world owner can delete rules</span>
+                              </div>
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={saveEdit}
+                        >
+                          <Save className="w-4 h-4 mr-2" />
+                          Save
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={cancelEditing}
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </>
+                    )}
+                  </TooltipProvider>
                 </div>
               </div>
             </CardHeader>
