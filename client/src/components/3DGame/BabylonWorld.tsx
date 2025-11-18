@@ -31,6 +31,8 @@ import { DialogueActions } from "@/components/rpg/actions/DialogueActions";
 import { Action, ActionContext, ActionResult } from "@/components/rpg/types/actions";
 import { ActionManager } from "@/components/rpg/actions/ActionManager";
 import { BabylonGUIManager } from "@/components/3DGame/BabylonGUIManager";
+import { BabylonChatPanel } from "@/components/3DGame/BabylonChatPanel";
+import { BabylonQuestTracker } from "@/components/3DGame/BabylonQuestTracker";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -251,6 +253,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const settlementMeshesRef = useRef<Map<string, Mesh>>(new Map());
   const settlementRoadMeshesRef = useRef<Mesh[]>([]);
   const guiManagerRef = useRef<BabylonGUIManager | null>(null);
+  const chatPanelRef = useRef<BabylonChatPanel | null>(null);
+  const questTrackerRef = useRef<BabylonQuestTracker | null>(null);
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -320,6 +324,28 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
 
       guiManagerRef.current = guiManager;
 
+      // Initialize chat panel
+      const chatPanel = new BabylonChatPanel(guiManager.advancedTexture, scene);
+      chatPanel.setOnClose(() => {
+        console.log('Chat closed');
+      });
+      chatPanel.setOnQuestAssigned((questData) => {
+        // Refresh quest tracker when new quest is assigned
+        questTrackerRef.current?.updateQuests(worldId);
+        toast({
+          title: 'New Quest!',
+          description: questData.title || 'Quest assigned',
+        });
+      });
+      chatPanelRef.current = chatPanel;
+
+      // Initialize quest tracker
+      const questTracker = new BabylonQuestTracker(guiManager.advancedTexture, scene);
+      questTracker.setOnClose(() => {
+        console.log('Quest tracker closed');
+      });
+      questTrackerRef.current = questTracker;
+
       setSceneStatus("ready");
     } catch (error) {
       console.error("Failed to initialize Babylon scene", error);
@@ -332,6 +358,10 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     initializeScene();
 
     return () => {
+      chatPanelRef.current?.dispose();
+      chatPanelRef.current = null;
+      questTrackerRef.current?.dispose();
+      questTrackerRef.current = null;
       guiManagerRef.current?.dispose();
       guiManagerRef.current = null;
       sceneRef.current?.dispose();
@@ -348,7 +378,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       setPlayerStatus("idle");
       setNPCStatus("idle");
     };
-  }, [initializeScene, worldId]);
+  }, [initializeScene, worldId, toast]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -737,12 +767,13 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     };
   }, []);
 
-  // Add proximity-based interaction with SPACE key
+  // Add keyboard shortcuts for chat, quests, and proximity interaction
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = async (event: KeyboardEvent) => {
+      // SPACE key - proximity interaction
       if (event.code === 'Space' && !event.repeat) {
         event.preventDefault();
 
@@ -789,6 +820,65 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           });
         }
       }
+
+      // C key - open chat with selected NPC
+      if (event.code === 'KeyC' && !event.repeat && selectedNPCId) {
+        event.preventDefault();
+
+        const npc = npcInfos.find(n => n.id === selectedNPCId);
+        if (npc && worldData && chatPanelRef.current) {
+          // Fetch character details and truths
+          try {
+            const [characterRes, truthsRes] = await Promise.all([
+              fetch(`/api/characters/${selectedNPCId}`),
+              fetch(`/api/truths?worldId=${worldId}`)
+            ]);
+
+            if (characterRes.ok && truthsRes.ok) {
+              const character = await characterRes.json();
+              const truths = await truthsRes.json();
+
+              chatPanelRef.current.show(character, truths);
+
+              toast({
+                title: `Chatting with ${npc.name}`,
+                description: "Press C again to close chat",
+                duration: 2000
+              });
+            }
+          } catch (error) {
+            console.error('Failed to open chat:', error);
+            toast({
+              title: "Chat Error",
+              description: "Failed to load character data",
+              variant: "destructive"
+            });
+          }
+        } else if (!selectedNPCId) {
+          toast({
+            title: "No NPC Selected",
+            description: "Select an NPC first (click or press SPACE near them)",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // Q key - toggle quest tracker
+      if (event.code === 'KeyQ' && !event.repeat) {
+        event.preventDefault();
+
+        if (questTrackerRef.current) {
+          questTrackerRef.current.toggle();
+          questTrackerRef.current.updateQuests(worldId);
+
+          toast({
+            title: "Quest Tracker",
+            description: "Press Q again to toggle",
+            duration: 1500
+          });
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -796,7 +886,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [npcInfos, toast]);
+  }, [npcInfos, selectedNPCId, worldData, worldId, toast]);
 
   useEffect(() => {
     npcMeshesRef.current.forEach((instance, npcId) => {

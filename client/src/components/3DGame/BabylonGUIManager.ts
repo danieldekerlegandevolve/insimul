@@ -52,7 +52,7 @@ export interface ActionFeedbackData {
 }
 
 export class BabylonGUIManager {
-  private advancedTexture: AdvancedDynamicTexture;
+  public advancedTexture: AdvancedDynamicTexture;
   private scene: Scene;
   private config: GUIConfig;
 
