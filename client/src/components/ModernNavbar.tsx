@@ -9,14 +9,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { 
-  Globe, 
-  ChevronDown, 
-  Menu, 
-  Scroll, 
-  Users, 
-  MapPin, 
-  Zap, 
+import {
+  Globe,
+  ChevronDown,
+  Menu,
+  Scroll,
+  Users,
+  MapPin,
+  Zap,
   Target,
   Sparkles,
   BookOpen,
@@ -27,7 +27,9 @@ import {
   X,
   Home,
   FileText,
-  Gamepad2
+  Gamepad2,
+  Compass,
+  History
 } from 'lucide-react';
 
 interface ModernNavbarProps {
@@ -57,6 +59,11 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
     { id: 'simulations', label: 'Run Simulations', icon: Play },
     { id: 'rpg-game', label: 'Explore World (2D RPG)', icon: Gamepad2 },
     { id: '3d-game', label: 'Explore World (3D)', icon: Gamepad2 },
+    { id: 'my-playthroughs', label: 'My Playthroughs', icon: History },
+  ];
+
+  const browseItems = [
+    { id: 'browse-worlds', label: 'Browse Public Worlds', icon: Compass },
   ];
 
   const dataItems = [
@@ -153,7 +160,8 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
 
           <NavDropdown label="Content" items={contentItems} icon={FileText} />
           <NavDropdown label="Truth" items={truthItems} icon={BookOpen} />
-          <NavDropdown label="Simulations" items={simulationItems} icon={Play} />
+          <NavDropdown label="Play" items={simulationItems} icon={Play} />
+          <NavDropdown label="Browse" items={browseItems} icon={Compass} />
           <NavDropdown label="Data" items={dataItems} icon={Upload} />
         </nav>
 
@@ -239,11 +247,21 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
                   </div>
                 </div>
 
-                {/* Simulations Section */}
+                {/* Play Section */}
                 <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">SIMULATIONS</h3>
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">PLAY</h3>
                   <div className="space-y-1">
                     {simulationItems.map(item => (
+                      <MobileNavItem key={item.id} item={item} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Browse Section */}
+                <div>
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">BROWSE</h3>
+                  <div className="space-y-1">
+                    {browseItems.map(item => (
                       <MobileNavItem key={item.id} item={item} />
                     ))}
                   </div>

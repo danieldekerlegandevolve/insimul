@@ -232,8 +232,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Worlds (now the primary containers, replacing projects)
   app.get("/api/worlds", async (req, res) => {
     try {
-      const worlds = await storage.getWorlds();
-      res.json(worlds);
+      const { visibility } = req.query;
+      let worlds = await storage.getWorlds();
+
+      // Filter by visibility if specified
+      if (visibility) {
+        worlds = worlds.filter(w => w.visibility === visibility);
+      }
+
+      // Get current user if authenticated
+      const token = req.headers.authorization?.split(' ')[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+      const currentUserId = payload?.userId;
+
+      // Enrich worlds with ownership info and player count
+      const enrichedWorlds = await Promise.all(
+        worlds.map(async (world) => {
+          // Get playthrough count for this world
+          const playthroughs = await storage.getPlaythroughsByWorld(world.id);
+          const playerCount = new Set(playthroughs.map(p => p.userId)).size;
+
+          return {
+            ...world,
+            isOwner: currentUserId === world.ownerId,
+            playerCount,
+          };
+        })
+      );
+
+      res.json(enrichedWorlds);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch worlds" });
     }

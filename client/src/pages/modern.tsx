@@ -18,6 +18,8 @@ import { SimulationTimelineView } from '@/components/SimulationTimelineView';
 import { PhaserRPGGame } from '@/components/PhaserRPGGame';
 import { BabylonWorld } from '@/components/3DGame/BabylonWorld';
 import { AuthDialog } from '@/components/AuthDialog';
+import { PlaythroughsList } from '@/components/PlaythroughsList';
+import { WorldBrowser } from '@/components/WorldBrowser';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -347,6 +349,26 @@ export default function ModernEditor() {
             worldType={currentWorld?.config?.worldType}
             userId={user?.id}
             onBack={() => setActiveTab('simulations')}
+          />
+        )}
+
+        {/* My Playthroughs Tab */}
+        {activeTab === 'my-playthroughs' && (
+          <PlaythroughsList
+            onResumePlaythrough={(worldId, playthroughId) => {
+              setSelectedWorld(worldId);
+              setActiveTab('3d-game');
+            }}
+          />
+        )}
+
+        {/* Browse Worlds Tab */}
+        {activeTab === 'browse-worlds' && (
+          <WorldBrowser
+            onPlayWorld={(worldId) => {
+              setSelectedWorld(worldId);
+              setActiveTab('3d-game');
+            }}
           />
         )}
 

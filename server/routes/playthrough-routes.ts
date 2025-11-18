@@ -58,6 +58,40 @@ export function registerPlaythroughRoutes(app: Express) {
     }
   });
 
+  // Get all playthroughs for the current user (across all worlds)
+  app.get("/api/playthroughs/my", async (req, res) => {
+    try {
+      const token = AuthService.extractTokenFromHeader(req.headers.authorization);
+      if (!token) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const playthroughs = await storage.getPlaythroughsByUser(payload.userId);
+
+      // Enrich with world information
+      const enrichedPlaythroughs = await Promise.all(
+        playthroughs.map(async (playthrough) => {
+          const world = await storage.getWorld(playthrough.worldId);
+          return {
+            ...playthrough,
+            worldName: world?.name || 'Unknown World',
+            worldVisibility: world?.visibility,
+          };
+        })
+      );
+
+      res.json(enrichedPlaythroughs);
+    } catch (error) {
+      console.error("Get user playthroughs error:", error);
+      res.status(500).json({ message: "Failed to get playthroughs" });
+    }
+  });
+
   // Get user's playthroughs for a world
   app.get("/api/worlds/:worldId/playthroughs", async (req, res) => {
     try {
