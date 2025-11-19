@@ -9,11 +9,13 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, XCircle, Settings } from 'lucide-react';
+import { Sparkles, Image as ImageIcon, Loader2, CheckCircle2, XCircle, Settings, Palette } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { VariantComparisonDialog } from './VariantComparisonDialog';
+import { StylePresetSelector } from './StylePresetSelector';
+import { applyStylePreset, NEGATIVE_PROMPT_TEMPLATES } from '@shared/style-presets';
 import type { VisualAsset, GenerationJob, GenerationProvider } from '@shared/schema';
 
 interface VisualAssetGeneratorDialogProps {
@@ -38,6 +40,7 @@ export function VisualAssetGeneratorDialog({
   const [provider, setProvider] = useState<GenerationProvider>('flux');
   const [quality, setQuality] = useState<'standard' | 'high' | 'ultra'>('high');
   const [variantCount, setVariantCount] = useState<number>(1);
+  const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
   const [customPrompt, setCustomPrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState('');
   const [width, setWidth] = useState(1024);
@@ -79,12 +82,49 @@ export function VisualAssetGeneratorDialog({
   // Generate asset mutation
   const generateMutation = useMutation({
     mutationFn: async () => {
+      // Apply style preset if selected
+      let finalPrompt = useCustomPrompt ? customPrompt : '';
+      let finalNegativePrompt = negativePrompt;
+
+      if (selectedStyleId && useCustomPrompt && customPrompt) {
+        // Apply style preset to custom prompt
+        const { enhancedPrompt, negativePrompt: styleNegative } = applyStylePreset(customPrompt, selectedStyleId);
+        finalPrompt = enhancedPrompt;
+
+        // Merge negative prompts: user's manual + style preset + quality template
+        const negativePrompts = [
+          negativePrompt,
+          styleNegative,
+          NEGATIVE_PROMPT_TEMPLATES.quality
+        ].filter(Boolean);
+        finalNegativePrompt = negativePrompts.join(', ');
+      } else if (selectedStyleId && !useCustomPrompt) {
+        // If using auto-generated prompt, we'll add style modifiers on backend
+        // But we can still apply the negative prompts here
+        const preset = await import('@shared/style-presets').then(m => m.getStylePreset(selectedStyleId));
+        if (preset) {
+          const negativePrompts = [
+            negativePrompt,
+            preset.negativePrompts.join(', '),
+            NEGATIVE_PROMPT_TEMPLATES.quality
+          ].filter(Boolean);
+          finalNegativePrompt = negativePrompts.join(', ');
+        }
+      } else if (negativePrompt) {
+        // Just add quality template to user's negative prompt
+        finalNegativePrompt = `${negativePrompt}, ${NEGATIVE_PROMPT_TEMPLATES.quality}`;
+      } else {
+        // Use default quality negative prompt
+        finalNegativePrompt = NEGATIVE_PROMPT_TEMPLATES.default;
+      }
+
       const params = {
         quality,
         width,
         height,
-        ...(useCustomPrompt && customPrompt ? { prompt: customPrompt } : {}),
-        ...(negativePrompt ? { negativePrompt } : {})
+        ...(useCustomPrompt && finalPrompt ? { prompt: finalPrompt } : {}),
+        ...(finalNegativePrompt ? { negativePrompt: finalNegativePrompt } : {}),
+        ...(selectedStyleId ? { stylePresetId: selectedStyleId } : {})
       };
 
       let endpoint = '';
@@ -219,8 +259,15 @@ export function VisualAssetGeneratorDialog({
         </DialogHeader>
 
         <Tabs defaultValue="settings" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="settings">
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </TabsTrigger>
+            <TabsTrigger value="style">
+              <Palette className="h-4 w-4 mr-2" />
+              Style
+            </TabsTrigger>
             <TabsTrigger value="advanced">Advanced</TabsTrigger>
           </TabsList>
 
@@ -407,7 +454,17 @@ export function VisualAssetGeneratorDialog({
                 placeholder="Things to avoid in the generation..."
                 rows={2}
               />
+              <p className="text-xs text-muted-foreground">
+                Or select a style preset in the Style tab for automatic negative prompts
+              </p>
             </div>
+          </TabsContent>
+
+          <TabsContent value="style" className="space-y-4">
+            <StylePresetSelector
+              selectedStyleId={selectedStyleId}
+              onStyleSelect={setSelectedStyleId}
+            />
           </TabsContent>
         </Tabs>
 

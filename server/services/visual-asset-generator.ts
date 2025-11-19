@@ -8,6 +8,7 @@
 import { storage } from '../db/storage.js';
 import { imageGenerator, type ImageGenerationParams } from './image-generation.js';
 import { nanoid } from 'nanoid';
+import { applyStylePreset, getStylePreset } from '@shared/style-presets';
 import type {
   GenerationProvider,
   AssetType,
@@ -380,8 +381,23 @@ export class VisualAssetGeneratorService {
       }
     }
 
-    // Generate prompt
-    const prompt = generateCharacterPrompt(character, worldContext);
+    // Generate base prompt
+    let basePrompt = generateCharacterPrompt(character, worldContext);
+    let finalPrompt = basePrompt;
+    let negativePrompt = params?.negativePrompt || '';
+
+    // Apply style preset if provided
+    if (params?.stylePresetId) {
+      const stylePreset = getStylePreset(params.stylePresetId as string);
+      if (stylePreset) {
+        const { enhancedPrompt, negativePrompt: styleNegative } = applyStylePreset(basePrompt, params.stylePresetId as string);
+        finalPrompt = enhancedPrompt;
+        // Merge negative prompts if style preset provides them
+        if (styleNegative) {
+          negativePrompt = negativePrompt ? `${negativePrompt}, ${styleNegative}` : styleNegative;
+        }
+      }
+    }
 
     // Create generation job
     const job = await storage.createGenerationJob({
@@ -390,7 +406,7 @@ export class VisualAssetGeneratorService {
       assetType: 'character_portrait',
       targetEntityId: characterId,
       targetEntityType: 'character',
-      prompt,
+      prompt: finalPrompt,
       generationProvider: provider,
       generationParams: params || {},
       batchSize: variantCount,
@@ -404,7 +420,8 @@ export class VisualAssetGeneratorService {
       try {
         // Generate image
         const result = await imageGenerator.generateImage(provider, {
-          prompt,
+          prompt: finalPrompt,
+          negativePrompt: negativePrompt || undefined,
           width: 512,
           height: 512,
           quality: 'high',
@@ -435,7 +452,7 @@ export class VisualAssetGeneratorService {
           width: image.width,
           height: image.height,
           generationProvider: provider,
-          generationPrompt: prompt,
+          generationPrompt: finalPrompt,
           generationParams: params || {},
           purpose: 'authorial',
           usageContext: '2d_ui',
@@ -445,6 +462,7 @@ export class VisualAssetGeneratorService {
             variantIndex: i + 1,
             variantCount,
             jobId: job.id,
+            ...(params?.stylePresetId ? { stylePresetId: params.stylePresetId } : {}),
           },
         });
 
@@ -500,7 +518,22 @@ export class VisualAssetGeneratorService {
       settlement = await storage.getSettlement(business.settlementId);
     }
 
-    const prompt = generateBuildingPrompt(business, settlement);
+    // Generate base prompt
+    let basePrompt = generateBuildingPrompt(business, settlement);
+    let finalPrompt = basePrompt;
+    let negativePrompt = params?.negativePrompt || '';
+
+    // Apply style preset if provided
+    if (params?.stylePresetId) {
+      const stylePreset = getStylePreset(params.stylePresetId as string);
+      if (stylePreset) {
+        const { enhancedPrompt, negativePrompt: styleNegative } = applyStylePreset(basePrompt, params.stylePresetId as string);
+        finalPrompt = enhancedPrompt;
+        if (styleNegative) {
+          negativePrompt = negativePrompt ? `${negativePrompt}, ${styleNegative}` : styleNegative;
+        }
+      }
+    }
 
     // Create generation job
     const job = await storage.createGenerationJob({
@@ -509,7 +542,7 @@ export class VisualAssetGeneratorService {
       assetType: 'building_exterior',
       targetEntityId: businessId,
       targetEntityType: 'business',
-      prompt,
+      prompt: finalPrompt,
       generationProvider: provider,
       generationParams: params || {},
       batchSize: 1,
@@ -517,7 +550,8 @@ export class VisualAssetGeneratorService {
     });
 
     const result = await imageGenerator.generateImage(provider, {
-      prompt,
+      prompt: finalPrompt,
+      negativePrompt: negativePrompt || undefined,
       width: 768,
       height: 512,
       quality: 'high',
@@ -550,12 +584,13 @@ export class VisualAssetGeneratorService {
       width: image.width,
       height: image.height,
       generationProvider: provider,
-      generationPrompt: prompt,
+      generationPrompt: finalPrompt,
       generationParams: params || {},
       purpose: 'authorial',
       usageContext: '2d_ui',
       tags: ['building', business.businessType, 'exterior'],
       status: 'completed',
+      metadata: params?.stylePresetId ? { stylePresetId: params.stylePresetId } : undefined,
     });
 
     await storage.updateGenerationJob(job.id, {
