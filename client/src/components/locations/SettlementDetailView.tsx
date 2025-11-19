@@ -5,6 +5,8 @@ import { MapPinned, MapPin, Building2, Users, Home, Trash2, ChevronRight, Plus, 
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 import type { Character, VisualAsset } from '@shared/schema';
 import { VisualAssetGeneratorDialog } from '../VisualAssetGeneratorDialog';
 import { AssetBrowserDialog } from '../AssetBrowserDialog';
@@ -48,6 +50,7 @@ export function SettlementDetailView({
   const [mapZoom, setMapZoom] = useState(1);
   const [activeMapTab, setActiveMapTab] = useState<'terrain' | 'political' | 'regional'>('terrain');
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   // Fetch settlement visual assets
   const { data: settlementAssets = [] } = useQuery<VisualAsset[]>({
@@ -415,34 +418,86 @@ export function SettlementDetailView({
             </Button>
           )}
         </div>
-        <div className="grid gap-3">
-          {businesses.map((business) => (
-            <Card key={business.id}>
-              <CardHeader className="py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-primary" />
-                    <div>
-                      <CardTitle className="text-base">{business.name}</CardTitle>
-                      <CardDescription>{business.businessType}</CardDescription>
+        <div className="grid md:grid-cols-2 gap-4">
+          {businesses.map((business) => {
+            // Fetch visual assets for this business
+            const { data: businessAssets = [] } = useQuery<any[]>({
+              queryKey: ['/api/assets/business', business.id],
+              queryFn: async () => {
+                const response = await apiRequest('GET', `/api/assets/business/${business.id}`);
+                return response.json();
+              },
+            });
+
+            const exterior = businessAssets.find(a => a.assetType === 'building_exterior');
+
+            return (
+              <Card key={business.id} className="overflow-hidden">
+                {/* Building Exterior Image */}
+                {exterior && (
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={`/${exterior.filePath}`}
+                      alt={business.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <CardHeader className="py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 flex-1">
+                      <Building2 className="w-5 h-5 text-primary" />
+                      <div>
+                        <CardTitle className="text-base">{business.name}</CardTitle>
+                        <CardDescription>{business.businessType}</CardDescription>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {!exterior && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              await apiRequest('POST', `/api/businesses/${business.id}/generate-exterior`, {
+                                provider: 'flux',
+                              });
+                              toast({
+                                title: 'Generation Started',
+                                description: 'Building exterior is being generated',
+                              });
+                            } catch (error) {
+                              toast({
+                                title: 'Generation Failed',
+                                description: 'Failed to start generation',
+                                variant: 'destructive',
+                              });
+                            }
+                          }}
+                        >
+                          <Sparkles className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {onDeleteBusiness && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteBusiness(business.id);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      )}
                     </div>
                   </div>
-                  {onDeleteBusiness && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteBusiness(business.id);
-                      }}
-                    >
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
+                </CardHeader>
+              </Card>
+            );
+          })}
           {businesses.length === 0 && (
             <Card className="border-dashed">
               <CardContent className="pt-6 pb-6">
