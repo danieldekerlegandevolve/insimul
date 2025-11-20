@@ -954,7 +954,11 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
               const character = await characterRes.json();
               const truths = await truthsRes.json();
 
-              chatPanelRef.current.show(character, truths);
+              // Get NPC mesh
+              const npcInstance = npcMeshesRef.current.get(selectedNPCId);
+              const npcMesh = npcInstance?.mesh;
+
+              chatPanelRef.current.show(character, truths, npcMesh);
 
               // Set dialogue actions for the chat panel
               chatPanelRef.current.setDialogueActions(availableActions, playerEnergy);

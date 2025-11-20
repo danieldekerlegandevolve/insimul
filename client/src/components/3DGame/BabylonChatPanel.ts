@@ -10,9 +10,10 @@ import {
   TextBlock,
   TextWrapping
 } from "@babylonjs/gui";
-import { Scene } from "babylonjs";
+import { Scene, Mesh } from "babylonjs";
 import { BabylonDialogueActions } from "./BabylonDialogueActions";
 import { Action } from "../rpg/types/actions";
+import { NPCTalkingIndicator } from "./NPCTalkingIndicator";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -57,6 +58,10 @@ export class BabylonChatPanel {
   private availableActions: Action[] = [];
   private playerEnergy: number = 100;
 
+  // Talking Indicator
+  private talkingIndicator: NPCTalkingIndicator | null = null;
+  private npcMesh: Mesh | null = null;
+
   // Callbacks
   private onClose: (() => void) | null = null;
   private onQuestAssigned: ((questData: any) => void) | null = null;
@@ -65,10 +70,12 @@ export class BabylonChatPanel {
   constructor(advancedTexture: AdvancedDynamicTexture, scene: Scene) {
     this.advancedTexture = advancedTexture;
     this.scene = scene;
+    this.talkingIndicator = new NPCTalkingIndicator(scene);
   }
 
-  public show(character: Character, truths: any[]) {
+  public show(character: Character, truths: any[], npcMesh?: Mesh) {
     this.character = character;
+    this.npcMesh = npcMesh || null;
     this.isVisible = true;
 
     if (this.chatContainer) {
@@ -88,6 +95,10 @@ export class BabylonChatPanel {
     }
     if (this.dialogueActions) {
       this.dialogueActions.hide();
+    }
+    // Hide talking indicator
+    if (this.talkingIndicator && this.character) {
+      this.talkingIndicator.hide(this.character.id);
     }
     this.stopAllAudio();
   }
@@ -514,8 +525,19 @@ Respond naturally and conversationally.`;
     if (voice) utterance.voice = voice;
 
     this.isSpeaking = true;
+
+    // Show talking indicator
+    if (this.talkingIndicator && this.character && this.npcMesh) {
+      this.talkingIndicator.show(this.character.id, this.npcMesh);
+    }
+
     utterance.onend = () => {
       this.isSpeaking = false;
+
+      // Hide talking indicator
+      if (this.talkingIndicator && this.character) {
+        this.talkingIndicator.hide(this.character.id);
+      }
     };
 
     speechSynthesis.speak(utterance);
@@ -527,9 +549,20 @@ Respond naturally and conversationally.`;
     this.currentAudio = audio;
 
     this.isSpeaking = true;
+
+    // Show talking indicator
+    if (this.talkingIndicator && this.character && this.npcMesh) {
+      this.talkingIndicator.show(this.character.id, this.npcMesh);
+    }
+
     audio.onended = () => {
       this.isSpeaking = false;
       URL.revokeObjectURL(audioUrl);
+
+      // Hide talking indicator
+      if (this.talkingIndicator && this.character) {
+        this.talkingIndicator.hide(this.character.id);
+      }
     };
 
     await audio.play();
@@ -646,6 +679,10 @@ Respond naturally and conversationally.`;
     if (this.dialogueActions) {
       this.dialogueActions.hide();
       this.dialogueActions = null;
+    }
+    if (this.talkingIndicator) {
+      this.talkingIndicator.dispose();
+      this.talkingIndicator = null;
     }
     if (this.chatContainer) {
       this.advancedTexture.removeControl(this.chatContainer);
