@@ -6,14 +6,16 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Save, X, Trash2, BookOpen, Calendar, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Users, Save, X, Trash2, BookOpen, Calendar, ChevronRight, ArrowLeft, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Character } from '@shared/schema';
+import type { Character, VisualAsset } from '@shared/schema';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent } from '@/components/ui/card';
+import { VisualAssetGeneratorDialog } from './VisualAssetGeneratorDialog';
+import { AssetBrowserDialog } from './AssetBrowserDialog';
 
 interface CharacterEditDialogProps {
   open: boolean;
@@ -58,11 +60,20 @@ export function CharacterEditDialog({
 }: CharacterEditDialogProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showAssetGenerator, setShowAssetGenerator] = useState(false);
+  const [showAssetBrowser, setShowAssetBrowser] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Fetch character truth
   const { data: truths = [] } = useQuery<Truth[]>({
     queryKey: ['/api/characters', character?.id, 'truth'],
+    enabled: !!character?.id && open,
+  });
+
+  // Fetch character visual assets
+  const { data: characterAssets = [] } = useQuery<VisualAsset[]>({
+    queryKey: ['/api/assets', 'character', character?.id],
     enabled: !!character?.id && open,
   });
 
@@ -303,9 +314,13 @@ export function CharacterEditDialog({
           </DialogHeader>
 
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="basic">Basic Info</TabsTrigger>
               <TabsTrigger value="truth">Truth</TabsTrigger>
+              <TabsTrigger value="assets">
+                <ImageIcon className="h-4 w-4 mr-2" />
+                Visual Assets
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="basic" className="space-y-4 mt-4">
@@ -498,6 +513,82 @@ export function CharacterEditDialog({
                 </ScrollArea>
               </div>
             </TabsContent>
+
+            <TabsContent value="assets" className="space-y-4 mt-4">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-medium">Character Visual Assets</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Generate and manage AI-created visual assets for this character
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowAssetBrowser(true)}
+                    >
+                      <ImageIcon className="h-4 w-4 mr-2" />
+                      Browse All
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowAssetGenerator(true)}
+                    >
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Generate New
+                    </Button>
+                  </div>
+                </div>
+
+                {characterAssets.length === 0 ? (
+                  <Card className="border-dashed">
+                    <CardContent className="flex flex-col items-center justify-center py-12">
+                      <ImageIcon className="h-12 w-12 text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground mb-2">No visual assets yet</p>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Generate a portrait or upload custom character art
+                      </p>
+                      <Button onClick={() => setShowAssetGenerator(true)}>
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Generate Character Portrait
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {characterAssets.map(asset => (
+                      <Card key={asset.id} className="overflow-hidden">
+                        <CardContent className="p-0">
+                          <div className="relative aspect-square">
+                            <img
+                              src={`/${asset.filePath}`}
+                              alt={asset.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute top-2 right-2">
+                              <Badge variant="secondary">
+                                {asset.assetType.replace(/_/g, ' ')}
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="p-3">
+                            <p className="text-sm font-medium truncate">{asset.name}</p>
+                            {asset.generationProvider && (
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                                <Sparkles className="h-3 w-3" />
+                                {asset.generationProvider}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </TabsContent>
           </Tabs>
 
           <DialogFooter className="gap-2 sm:justify-between">
@@ -529,6 +620,31 @@ export function CharacterEditDialog({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Asset Generator Dialog */}
+      {character && (
+        <VisualAssetGeneratorDialog
+          open={showAssetGenerator}
+          onOpenChange={setShowAssetGenerator}
+          entityType="character"
+          entityId={character.id}
+          entityName={`${character.firstName} ${character.lastName}`}
+          assetType="character_portrait"
+          onAssetGenerated={() => {
+            queryClient.invalidateQueries({ queryKey: ['/api/assets', 'character', character.id] });
+          }}
+        />
+      )}
+
+      {/* Asset Browser Dialog */}
+      {character && (
+        <AssetBrowserDialog
+          open={showAssetBrowser}
+          onOpenChange={setShowAssetBrowser}
+          entityType="character"
+          entityId={character.id}
+        />
+      )}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>

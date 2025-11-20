@@ -23,6 +23,12 @@ import {
   type InsertQuest,
   type Truth,
   type InsertTruth,
+  type VisualAsset,
+  type InsertVisualAsset,
+  type AssetCollection,
+  type InsertAssetCollection,
+  type GenerationJob,
+  type InsertGenerationJob
   type User,
   type InsertUser,
   type PlayerProgress,
@@ -82,6 +88,18 @@ interface TruthDoc extends Omit<Truth, 'id'>, Document {
 
 interface QuestDoc extends Omit<Quest, 'id'>, Document {
   _id: string;
+}
+
+interface VisualAssetDoc extends Omit<VisualAsset, 'id'>, Document {
+  _id: string;
+}
+
+interface AssetCollectionDoc extends Omit<AssetCollection, 'id'>, Document {
+  _id: string;
+}
+
+interface GenerationJobDoc extends Omit<GenerationJob, 'id'>, Document {
+    _id: string;
 }
 
 interface UserDoc extends Omit<User, 'id'>, Document {
@@ -370,6 +388,40 @@ const QuestSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+const VisualAssetSchema = new Schema({
+  worldId: { type: String, default: null },
+  name: { type: String, required: true },
+  description: { type: String, default: null },
+  assetType: { type: String, required: true },
+  characterId: { type: String, default: null },
+  businessId: { type: String, default: null },
+  settlementId: { type: String, default: null },
+  countryId: { type: String, default: null },
+  stateId: { type: String, default: null },
+  filePath: { type: String, required: true },
+  fileName: { type: String, required: true },
+  fileSize: { type: Number, default: null },
+  mimeType: { type: String, default: 'image/png' },
+  width: { type: Number, default: null },
+  height: { type: Number, default: null },
+  generationProvider: { type: String, default: null },
+  generationPrompt: { type: String, default: null },
+  generationParams: { type: Schema.Types.Mixed, default: {} },
+  parentAssetId: { type: String, default: null },
+  version: { type: Number, default: 1 },
+  variants: { type: [String], default: [] },
+  purpose: { type: String, default: null },
+  usageContext: { type: String, default: null },
+  tags: { type: [String], default: [] },
+  status: { type: String, default: 'completed' },
+  isPublic: { type: Boolean, default: false },
+  isActive: { type: Boolean, default: true },
+  errorMessage: { type: String, default: null },
+  metadata: { type: Schema.Types.Mixed, default: {} },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
 const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
@@ -404,6 +456,20 @@ const PlayerProgressSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+const AssetCollectionSchema = new Schema({
+  worldId: { type: String, default: null },
+  name: { type: String, required: true },
+  description: { type: String, default: null },
+  collectionType: { type: String, required: true },
+  assetIds: { type: [String], default: [] },
+  purpose: { type: String, default: null },
+  tags: { type: [String], default: [] },
+  isPublic: { type: Boolean, default: false },
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
 const PlayerSessionSchema = new Schema({
   userId: { type: String, required: true },
   worldId: { type: String, required: true },
@@ -429,6 +495,27 @@ const AchievementSchema = new Schema({
   rewards: { type: Schema.Types.Mixed, default: {} },
   isHidden: { type: Boolean, default: false },
   rarity: { type: String, default: 'common' },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const GenerationJobSchema = new Schema({
+  worldId: { type: String, default: null },
+  jobType: { type: String, required: true },
+  assetType: { type: String, required: true },
+  targetEntityId: { type: String, default: null },
+  targetEntityType: { type: String, default: null },
+  prompt: { type: String, required: true },
+  generationProvider: { type: String, required: true },
+  generationParams: { type: Schema.Types.Mixed, default: {} },
+  batchSize: { type: Number, default: 1 },
+  completedCount: { type: Number, default: 0 },
+  generatedAssetIds: { type: [String], default: [] },
+  status: { type: String, default: 'queued' },
+  progress: { type: Number, default: 0.0 },
+  errorMessage: { type: String, default: null },
+  startedAt: { type: Date, default: null },
+  completedAt: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -500,6 +587,9 @@ const SimulationModel = mongoose.model<SimulationDoc>('Simulation', SimulationSc
 const ActionModel = mongoose.model<ActionDoc>('Action', ActionSchema);
 const TruthModel = mongoose.model<TruthDoc>('Truth', TruthSchema);
 const QuestModel = mongoose.model<QuestDoc>('Quest', QuestSchema);
+const VisualAssetModel = mongoose.model<VisualAssetDoc>('VisualAsset', VisualAssetSchema);
+const AssetCollectionModel = mongoose.model<AssetCollectionDoc>('AssetCollection', AssetCollectionSchema);
+const GenerationJobModel = mongoose.model<GenerationJobDoc>('GenerationJob', GenerationJobSchema);
 const UserModel = mongoose.model<UserDoc>('User', UserSchema);
 const PlayerProgressModel = mongoose.model<PlayerProgressDoc>('PlayerProgress', PlayerProgressSchema);
 const PlayerSessionModel = mongoose.model<PlayerSessionDoc>('PlayerSession', PlayerSessionSchema);
@@ -550,6 +640,18 @@ function docToTruth(doc: TruthDoc): Truth {
 }
 
 function docToQuest(doc: QuestDoc): Quest {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToVisualAsset(doc: VisualAssetDoc): VisualAsset {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToAssetCollection(doc: AssetCollectionDoc): AssetCollection {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToGenerationJob(doc: GenerationJobDoc): GenerationJob {
   return { ...doc.toObject(), id: doc._id.toString() };
 }
 
@@ -1378,6 +1480,140 @@ export class MongoStorage implements IStorage {
     return !!result;
   }
 
+  // ============= VISUAL ASSETS =============
+
+  async getVisualAsset(id: string): Promise<VisualAsset | undefined> {
+    await this.connect();
+    const doc = await VisualAssetModel.findById(id);
+    return doc ? docToVisualAsset(doc) : undefined;
+  }
+
+  async getVisualAssetsByWorld(worldId: string): Promise<VisualAsset[]> {
+    await this.connect();
+    const docs = await VisualAssetModel.find({ worldId });
+    return docs.map(docToVisualAsset);
+  }
+
+  async getVisualAssetsByType(worldId: string, assetType: string): Promise<VisualAsset[]> {
+    await this.connect();
+    const docs = await VisualAssetModel.find({ worldId, assetType });
+    return docs.map(docToVisualAsset);
+  }
+
+  async getVisualAssetsByEntity(entityId: string, entityType: string): Promise<VisualAsset[]> {
+    await this.connect();
+    const query: any = {};
+
+    switch (entityType) {
+      case 'character':
+        query.characterId = entityId;
+        break;
+      case 'business':
+        query.businessId = entityId;
+        break;
+      case 'settlement':
+        query.settlementId = entityId;
+        break;
+      case 'country':
+        query.countryId = entityId;
+        break;
+      case 'state':
+        query.stateId = entityId;
+        break;
+    }
+
+    const docs = await VisualAssetModel.find(query);
+    return docs.map(docToVisualAsset);
+  }
+
+  async createVisualAsset(asset: InsertVisualAsset): Promise<VisualAsset> {
+    await this.connect();
+    const doc = await VisualAssetModel.create(asset);
+    return docToVisualAsset(doc);
+  }
+
+  async updateVisualAsset(id: string, asset: Partial<InsertVisualAsset>): Promise<VisualAsset | undefined> {
+    await this.connect();
+    const doc = await VisualAssetModel.findByIdAndUpdate(id, { ...asset, updatedAt: new Date() }, { new: true });
+    return doc ? docToVisualAsset(doc) : undefined;
+  }
+
+  async deleteVisualAsset(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await VisualAssetModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  // ============= ASSET COLLECTIONS =============
+
+  async getAssetCollection(id: string): Promise<AssetCollection | undefined> {
+    await this.connect();
+    const doc = await AssetCollectionModel.findById(id);
+    return doc ? docToAssetCollection(doc) : undefined;
+  }
+
+  async getAssetCollectionsByWorld(worldId: string): Promise<AssetCollection[]> {
+    await this.connect();
+    const docs = await AssetCollectionModel.find({ worldId });
+    return docs.map(docToAssetCollection);
+  }
+
+  async createAssetCollection(collection: InsertAssetCollection): Promise<AssetCollection> {
+    await this.connect();
+    const doc = await AssetCollectionModel.create(collection);
+    return docToAssetCollection(doc);
+  }
+
+  async updateAssetCollection(id: string, collection: Partial<InsertAssetCollection>): Promise<AssetCollection | undefined> {
+    await this.connect();
+    const doc = await AssetCollectionModel.findByIdAndUpdate(id, { ...collection, updatedAt: new Date() }, { new: true });
+    return doc ? docToAssetCollection(doc) : undefined;
+  }
+
+  async deleteAssetCollection(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await AssetCollectionModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  // ============= GENERATION JOBS =============
+
+  async getGenerationJob(id: string): Promise<GenerationJob | undefined> {
+    await this.connect();
+    const doc = await GenerationJobModel.findById(id);
+    return doc ? docToGenerationJob(doc) : undefined;
+  }
+
+  async getGenerationJobsByWorld(worldId: string): Promise<GenerationJob[]> {
+    await this.connect();
+    const docs = await GenerationJobModel.find({ worldId });
+    return docs.map(docToGenerationJob);
+  }
+
+  async getGenerationJobsByStatus(worldId: string, status: string): Promise<GenerationJob[]> {
+    await this.connect();
+    const docs = await GenerationJobModel.find({ worldId, status });
+    return docs.map(docToGenerationJob);
+  }
+
+  async createGenerationJob(job: InsertGenerationJob): Promise<GenerationJob> {
+    await this.connect();
+    const doc = await GenerationJobModel.create(job);
+    return docToGenerationJob(doc);
+  }
+
+  async updateGenerationJob(id: string, job: Partial<InsertGenerationJob>): Promise<GenerationJob | undefined> {
+    await this.connect();
+    const doc = await GenerationJobModel.findByIdAndUpdate(id, { ...job, updatedAt: new Date() }, { new: true });
+    return doc ? docToGenerationJob(doc) : undefined;
+  }
+
+  async deleteGenerationJob(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await GenerationJobModel.findByIdAndDelete(id);
+    return !!result;
+  }
+  
   // ===== User Management =====
   async getUser(id: string): Promise<User | undefined> {
     await this.connect();

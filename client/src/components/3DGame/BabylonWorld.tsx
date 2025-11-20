@@ -30,13 +30,16 @@ import { CharacterController } from "@/components/3D/src/CharacterController";
 import { DialogueActions } from "@/components/rpg/actions/DialogueActions";
 import { Action, ActionContext, ActionResult } from "@/components/rpg/types/actions";
 import { ActionManager } from "@/components/rpg/actions/ActionManager";
+import { TextureManager } from "@/components/3DGame/TextureManager";
 import { BabylonGUIManager } from "@/components/3DGame/BabylonGUIManager";
 import { BabylonChatPanel } from "@/components/3DGame/BabylonChatPanel";
 import { BabylonQuestTracker } from "@/components/3DGame/BabylonQuestTracker";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import type { VisualAsset } from "@shared/schema";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface BabylonWorldProps {
@@ -247,6 +250,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const sceneRef = useRef<Scene | null>(null);
   const cameraRef = useRef<ArcRotateCamera | null>(null);
   const actionManagerRef = useRef<ActionManager | null>(null);
+  const textureManagerRef = useRef<TextureManager | null>(null);
   const playerControllerRef = useRef<CharacterController | null>(null);
   const playerMeshRef = useRef<Mesh | null>(null);
   const npcMeshesRef = useRef<Map<string, NPCInstance>>(new Map());
@@ -277,6 +281,15 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [playthroughId, setPlaythroughId] = useState<string | null>(null);
 
+  const [availableTextures, setAvailableTextures] = useState<VisualAsset[]>([]);
+  const [selectedGroundTexture, setSelectedGroundTexture] = useState<string | null>(null);
+  const [selectedWallTexture, setSelectedWallTexture] = useState<string | null>(null);
+  const [selectedRoadTexture, setSelectedRoadTexture] = useState<string | null>(null);
+  const [showTexturePanel, setShowTexturePanel] = useState<boolean>(false);
+
+  const [characterPortraits, setCharacterPortraits] = useState<Map<string, VisualAsset>>(new Map());
+  const [showCharacterDetail, setShowCharacterDetail] = useState<boolean>(false);
+
   const worldTheme = useMemo(() => getWorldVisualTheme(worldType), [worldType]);
 
   const initializeScene = useCallback(() => {
@@ -295,6 +308,10 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     try {
       const camera = setupScene(scene, canvas, worldTheme);
       cameraRef.current = camera;
+
+      // Initialize TextureManager
+      const textureManager = new TextureManager(scene);
+      textureManagerRef.current = textureManager;
 
       engine.runRenderLoop(() => {
         if (scene.activeCamera) {
@@ -358,6 +375,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     initializeScene();
 
     return () => {
+      textureManagerRef.current?.dispose();
+      textureManagerRef.current = null;
       chatPanelRef.current?.dispose();
       chatPanelRef.current = null;
       questTrackerRef.current?.dispose();
@@ -390,6 +409,92 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
+
+  // Load available textures when scene is ready
+  useEffect(() => {
+    if (sceneStatus !== "ready" || !textureManagerRef.current) return;
+
+    let cancelled = false;
+
+    async function loadTextures() {
+      const textureManager = textureManagerRef.current;
+      if (!textureManager) return;
+
+      try {
+        const textures = await textureManager.fetchWorldTextures(worldId);
+        if (cancelled) return;
+        setAvailableTextures(textures);
+
+        // Auto-select first ground texture if available
+        const groundTexture = textures.find(t => t.assetType === 'texture_ground');
+        if (groundTexture) {
+          setSelectedGroundTexture(groundTexture.id);
+        }
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Failed to load textures", error);
+      }
+    }
+
+    loadTextures();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [sceneStatus, worldId]);
+
+  // Load character portraits when world data is ready
+  useEffect(() => {
+    if (!worldData || worldData.characters.length === 0) return;
+
+    let cancelled = false;
+
+    async function loadCharacterPortraits() {
+      const portraitMap = new Map<string, VisualAsset>();
+
+      try {
+        // Fetch portraits for all characters
+        const portraitPromises = worldData.characters.slice(0, MAX_NPCS).map(async (character) => {
+          try {
+            const response = await fetch(`/api/assets/character/${character.id}`);
+            if (response.ok) {
+              const assets: VisualAsset[] = await response.json();
+              const portrait = assets.find(a =>
+                a.assetType === 'character_portrait' || a.assetType === 'character_full_body'
+              );
+              if (portrait) {
+                return { characterId: character.id, portrait };
+              }
+            }
+          } catch (error) {
+            console.error(`Failed to load portrait for character ${character.id}:`, error);
+          }
+          return null;
+        });
+
+        const results = await Promise.all(portraitPromises);
+
+        if (cancelled) return;
+
+        results.forEach(result => {
+          if (result) {
+            portraitMap.set(result.characterId, result.portrait);
+          }
+        });
+
+        setCharacterPortraits(portraitMap);
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Failed to load character portraits", error);
+      }
+    }
+
+    loadCharacterPortraits();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [worldData]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1066,6 +1171,85 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     }
   };
 
+  const handleApplyGroundTexture = useCallback(
+    (assetId: string) => {
+      const textureManager = textureManagerRef.current;
+      if (!textureManager) return;
+
+      const asset = textureManager.getAsset(assetId);
+      if (!asset) {
+        console.warn("Asset not found:", assetId);
+        return;
+      }
+
+      textureManager.applyGroundTexture(asset, {
+        uScale: 8,
+        vScale: 8,
+        useBump: true
+      });
+
+      setSelectedGroundTexture(assetId);
+
+      toast({
+        title: "Texture applied",
+        description: `Applied ${asset.name} to ground`
+      });
+    },
+    [toast]
+  );
+
+  const handleApplyWallTexture = useCallback(
+    (assetId: string) => {
+      const textureManager = textureManagerRef.current;
+      if (!textureManager) return;
+
+      const asset = textureManager.getAsset(assetId);
+      if (!asset) {
+        console.warn("Asset not found:", assetId);
+        return;
+      }
+
+      textureManager.applySettlementTextures(asset, {
+        uScale: 2,
+        vScale: 2
+      });
+
+      setSelectedWallTexture(assetId);
+
+      toast({
+        title: "Texture applied",
+        description: `Applied ${asset.name} to settlements`
+      });
+    },
+    [toast]
+  );
+
+  const handleApplyRoadTexture = useCallback(
+    (assetId: string) => {
+      const textureManager = textureManagerRef.current;
+      if (!textureManager) return;
+
+      const asset = textureManager.getAsset(assetId);
+      if (!asset) {
+        console.warn("Asset not found:", assetId);
+        return;
+      }
+
+      textureManager.applyRoadTexture(asset, {
+        uScale: 4,
+        vScale: 4
+      });
+
+      setSelectedRoadTexture(assetId);
+
+      toast({
+        title: "Texture applied",
+        description: `Applied ${asset.name} to roads`
+      });
+    },
+    [toast]
+  );
+
   const handlePerformAction = useCallback(
     async (actionId: string) => {
       const manager = actionManagerRef.current;
@@ -1145,13 +1329,148 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   );
 
   return (
-    <div className="w-full h-screen bg-black">
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full"
-        style={{ display: 'block', touchAction: 'none' }}
-      />
-    </div>
+    <Card className="w-full h-full">
+      <CardHeader className="flex flex-row items-center justify-between gap-4">
+        <div>
+          <CardTitle>Explore {worldName}</CardTitle>
+          <CardDescription className="text-xs text-muted-foreground">
+            BabylonJS scene prototype · World ID: {worldId}
+          </CardDescription>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowTexturePanel(!showTexturePanel)}
+            disabled={!sceneRef.current || availableTextures.length === 0}
+          >
+            {showTexturePanel ? "Hide Textures" : "Textures"}
+            {availableTextures.length > 0 && <Badge className="ml-2" variant="secondary">{availableTextures.length}</Badge>}
+          </Button>
+          <Button variant="outline" onClick={handleToggleFullscreen} disabled={!sceneRef.current}>
+            {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+          </Button>
+          <Button variant="outline" onClick={handleToggleDebug} disabled={!sceneRef.current}>
+            Toggle Debug
+          </Button>
+          <Button variant="secondary" onClick={onBack}>
+            Back
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="relative space-y-4">
+        <div className="relative">
+          <canvas
+            ref={canvasRef}
+            className={`w-full ${isFullscreen ? "h-screen" : "h-[600px]"} border border-border rounded-md`}
+          />
+
+          <StatusOverlay
+            sceneStatus={sceneStatus}
+            dataStatus={dataStatus}
+            playerStatus={playerStatus}
+            npcStatus={npcStatus}
+            errorMessage={combinedError}
+          />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <PlayerStatusPanel status={playerStatus} errorMessage={playerError} energy={playerEnergy} />
+          <NPCPanel
+            status={npcStatus}
+            npcs={npcInfos}
+            selectedNPCId={selectedNPCId}
+            onSelectNPC={setSelectedNPCId}
+            focusedNPC={selectedNPC}
+            characterPortraits={characterPortraits}
+            onShowCharacterDetail={() => setShowCharacterDetail(true)}
+          />
+        </div>
+
+        <ActionConsole
+          selectedNPC={selectedNPC}
+          actions={availableActions}
+          playerEnergy={playerEnergy}
+          onActionSelect={handlePerformAction}
+          actionFeedback={actionFeedback}
+          isPerforming={actionInProgress}
+        />
+
+        <WorldDataPanel
+          worldData={worldData}
+          dataStatus={dataStatus}
+          actionSummaries={actionSummaries}
+          sampleSocialActions={sampleSocialActions}
+          errorMessage={worldError}
+        />
+
+        {showTexturePanel && (
+          <TexturePanel
+            textures={availableTextures}
+            selectedGroundTexture={selectedGroundTexture}
+            selectedWallTexture={selectedWallTexture}
+            selectedRoadTexture={selectedRoadTexture}
+            onApplyGroundTexture={handleApplyGroundTexture}
+            onApplyWallTexture={handleApplyWallTexture}
+            onApplyRoadTexture={handleApplyRoadTexture}
+            worldId={worldId}
+          />
+        )}
+      </CardContent>
+
+      {/* Character Detail Dialog */}
+      {selectedNPC && characterPortraits.get(selectedNPC.id) && (
+        <Dialog open={showCharacterDetail} onOpenChange={setShowCharacterDetail}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{selectedNPC.name}</DialogTitle>
+            </DialogHeader>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <img
+                  src={`/${characterPortraits.get(selectedNPC.id)!.filePath}`}
+                  alt={selectedNPC.name}
+                  className="w-full rounded-lg object-cover border"
+                />
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p><strong>Generated by:</strong> {characterPortraits.get(selectedNPC.id)!.generationProvider || 'Unknown'}</p>
+                  {characterPortraits.get(selectedNPC.id)!.generationPrompt && (
+                    <p className="line-clamp-3"><strong>Prompt:</strong> {characterPortraits.get(selectedNPC.id)!.generationPrompt}</p>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold mb-2">Character Information</h3>
+                  <div className="space-y-2 text-sm">
+                    {selectedNPC.occupation && (
+                      <div>
+                        <span className="text-muted-foreground">Occupation:</span>
+                        <p className="font-medium">{selectedNPC.occupation}</p>
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-muted-foreground">Disposition:</span>
+                      <p className="font-medium">{selectedNPC.disposition || 'Unknown'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Position:</span>
+                      <p className="font-medium">
+                        ({selectedNPC.position.x.toFixed(1)}, {selectedNPC.position.z.toFixed(1)})
+                      </p>
+                    </div>
+                    {selectedNPC.questGiver && (
+                      <div className="pt-2">
+                        <Badge>Quest Giver</Badge>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </Card>
   );
 }
 
@@ -1880,4 +2199,453 @@ function buildActionContext({
 function findActionDefinition(worldData: WorldData | null, actionId: string) {
   if (!worldData) return undefined;
   return [...worldData.actions, ...worldData.baseActions].find((action) => action.id === actionId);
+}
+
+interface StatusOverlayProps {
+  sceneStatus: SceneStatus;
+  dataStatus: DataStatus;
+  playerStatus: PlayerStatus;
+  npcStatus: NPCStatus;
+  errorMessage: string;
+}
+
+function StatusOverlay({ sceneStatus, dataStatus, playerStatus, npcStatus, errorMessage }: StatusOverlayProps) {
+  const isReady = sceneStatus === "ready" && dataStatus === "ready" && playerStatus === "ready" && npcStatus === "ready";
+  if (isReady) return null;
+
+  const statusRows = [
+    { label: "Scene", value: sceneStatus },
+    { label: "World Data", value: dataStatus },
+    { label: "Player", value: playerStatus },
+    { label: "NPCs", value: npcStatus }
+  ];
+
+  return (
+    <div className="absolute inset-4 flex flex-col items-center justify-center rounded-md bg-background/80 backdrop-blur-sm border text-center gap-3">
+      <p className="font-medium text-lg">Preparing world...</p>
+      <div className="w-full max-w-xs space-y-2 text-sm">
+        {statusRows.map((row) => (
+          <div key={row.label} className="flex items-center justify-between">
+            <span className="text-muted-foreground">{row.label}</span>
+            <span className={row.value === "error" ? "text-destructive font-semibold" : "font-medium"}>
+              {row.value}
+            </span>
+          </div>
+        ))}
+      </div>
+      {errorMessage && <p className="text-sm text-destructive max-w-sm">{errorMessage}</p>}
+    </div>
+  );
+}
+
+interface PlayerStatusPanelProps {
+  status: PlayerStatus;
+  errorMessage: string;
+  energy: number;
+}
+
+function PlayerStatusPanel({ status, errorMessage, energy }: PlayerStatusPanelProps) {
+  const statusText: Record<PlayerStatus, string> = {
+    idle: "Waiting for scene...",
+    loading: "Loading avatar & animations",
+    ready: "Player controller ready",
+    error: "Failed to load player"
+  };
+
+  return (
+    <div className="p-4 border rounded-md bg-muted/15 text-sm flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <p className="font-medium">Player status</p>
+        <span
+          className={`text-xs uppercase tracking-wide ${
+            status === "ready" ? "text-primary" : status === "error" ? "text-destructive" : "text-muted-foreground"
+          }`}
+        >
+          {status}
+        </span>
+      </div>
+      <p className="text-muted-foreground">{statusText[status]}</p>
+      <p className="text-xs text-muted-foreground">Energy: {energy}</p>
+      {errorMessage && <p className="text-xs text-destructive">{errorMessage}</p>}
+    </div>
+  );
+}
+
+interface NPCPanelProps {
+  status: NPCStatus;
+  npcs: NPCDisplayInfo[];
+  selectedNPCId: string | null;
+  onSelectNPC: (id: string) => void;
+  focusedNPC: NPCDisplayInfo | null;
+  characterPortraits: Map<string, VisualAsset>;
+  onShowCharacterDetail: () => void;
+}
+
+function NPCPanel({ status, npcs, selectedNPCId, onSelectNPC, focusedNPC, characterPortraits, onShowCharacterDetail }: NPCPanelProps) {
+  if (status === "error") {
+    return (
+      <div className="p-4 border rounded-md bg-destructive/10 text-sm text-destructive">
+        Failed to place NPCs. Check console for details.
+      </div>
+    );
+  }
+
+  if (status === "loading") {
+    return (
+      <div className="p-4 border rounded-md bg-muted/15 text-sm text-muted-foreground">Spawning NPCs...</div>
+    );
+  }
+
+  if (status === "idle" && npcs.length === 0) {
+    return (
+      <div className="p-4 border rounded-md bg-muted/15 text-sm text-muted-foreground">
+        NPCs will appear once the scene finishes loading.
+      </div>
+    );
+  }
+
+  if (!npcs.length) {
+    return (
+      <div className="p-4 border rounded-md bg-muted/15 text-sm text-muted-foreground">No characters available.</div>
+    );
+  }
+
+  return (
+    <div className="p-4 border rounded-md bg-background space-y-3 text-sm">
+      <div className="flex items-center justify-between">
+        <p className="font-semibold">NPC overview</p>
+        <span className="text-xs text-muted-foreground">{npcs.length} placed</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {npcs.map((npc) => (
+          <button
+            key={npc.id}
+            type="button"
+            onClick={() => onSelectNPC(npc.id)}
+            className={`px-3 py-1 rounded-full border text-xs transition-colors ${
+              npc.id === selectedNPCId
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-muted/50 hover:bg-muted"
+            } ${npc.questGiver ? "border-amber-500" : "border-border"}`}
+          >
+            {npc.name}
+          </button>
+        ))}
+      </div>
+
+      {focusedNPC && (
+        <div className="rounded-md border bg-muted/20 p-3">
+          <div className="flex gap-3">
+            {/* Character Portrait */}
+            {characterPortraits.get(focusedNPC.id) ? (
+              <div className="flex-shrink-0">
+                <img
+                  src={`/${characterPortraits.get(focusedNPC.id)!.filePath}`}
+                  alt={focusedNPC.name}
+                  className="w-20 h-20 rounded-md object-cover border-2 border-primary/20"
+                />
+              </div>
+            ) : (
+              <div className="flex-shrink-0 w-20 h-20 rounded-md bg-muted/50 border-2 border-dashed border-border flex items-center justify-center">
+                <span className="text-xs text-muted-foreground">No portrait</span>
+              </div>
+            )}
+
+            {/* Character Info */}
+            <div className="flex-1 space-y-1">
+              <div className="flex items-center justify-between">
+                <p className="font-medium">{focusedNPC.name}</p>
+                {focusedNPC.questGiver && <Badge className="text-[10px]">Quest giver</Badge>}
+              </div>
+              {focusedNPC.occupation && <p className="text-xs text-muted-foreground">{focusedNPC.occupation}</p>}
+              <p className="text-xs text-muted-foreground">Disposition: {focusedNPC.disposition || "Unknown"}</p>
+              <p className="text-xs text-muted-foreground">
+                Position: ({focusedNPC.position.x.toFixed(1)}, {focusedNPC.position.z.toFixed(1)})
+              </p>
+              {characterPortraits.get(focusedNPC.id) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2 h-7 text-xs"
+                  onClick={onShowCharacterDetail}
+                >
+                  View Details
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface ActionConsoleProps {
+  selectedNPC: NPCDisplayInfo | null;
+  actions: Action[];
+  playerEnergy: number;
+  onActionSelect: (actionId: string) => void;
+  actionFeedback: ActionFeedback | null;
+  isPerforming: boolean;
+}
+
+function ActionConsole({
+  selectedNPC,
+  actions,
+  playerEnergy,
+  onActionSelect,
+  actionFeedback,
+  isPerforming
+}: ActionConsoleProps) {
+  return (
+    <div className="p-4 border rounded-md bg-background space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="font-semibold">Action console</p>
+          <p className="text-xs text-muted-foreground">
+            {selectedNPC ? `Interacting with ${selectedNPC.name}` : "Select an NPC in the scene to see actions"}
+          </p>
+        </div>
+        {isPerforming && <Badge variant="outline">Performing...</Badge>}
+      </div>
+
+      {selectedNPC ? (
+        <DialogueActions actions={actions} onActionSelect={onActionSelect} playerEnergy={playerEnergy} />
+      ) : (
+        <div className="text-sm text-muted-foreground">Tap an NPC to surface contextual actions.</div>
+      )}
+
+      {actionFeedback && (
+        <div className="rounded-md border bg-muted/20 p-3 space-y-1 text-sm">
+          <p className="font-medium">Last action: {actionFeedback.actionName}</p>
+          <p className="text-xs text-muted-foreground">
+            Target: {actionFeedback.targetName} · {new Date(actionFeedback.timestamp).toLocaleTimeString()}
+          </p>
+          <p>{actionFeedback.result.narrativeText || actionFeedback.result.message || "No narrative provided."}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface WorldDataPanelProps {
+  worldData: WorldData | null;
+  dataStatus: DataStatus;
+  actionSummaries: ActionCategorySummary[];
+  sampleSocialActions: SampleAction[];
+  errorMessage: string;
+}
+
+function WorldDataPanel({ worldData, dataStatus, actionSummaries, sampleSocialActions, errorMessage }: WorldDataPanelProps) {
+  if (dataStatus === "loading") {
+    return <div className="p-4 border rounded-md text-sm text-muted-foreground">Loading world data...</div>;
+  }
+
+  if (dataStatus === "error") {
+    return (
+      <div className="p-4 border rounded-md bg-destructive/10 text-sm text-destructive">
+        Failed to load world data: {errorMessage}
+      </div>
+    );
+  }
+
+  if (!worldData) {
+    return null;
+  }
+
+  return (
+    <div className="p-4 border rounded-md bg-background space-y-4 text-sm">
+      <div className="flex items-center justify-between">
+        <p className="font-semibold">World data</p>
+        <Badge variant="outline">{worldData.characters.length} characters</Badge>
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 text-xs">
+        <Stat label="Quests" value={worldData.quests.length} />
+        <Stat label="World actions" value={worldData.actions.length} />
+        <Stat label="Base actions" value={worldData.baseActions.length} />
+        <Stat label="NPCs shown" value={Math.min(worldData.characters.length, MAX_NPCS)} />
+      </div>
+
+      <div>
+        <p className="font-medium text-xs mb-1">Action categories</p>
+        <div className="flex flex-wrap gap-2">
+          {actionSummaries.map((summary) => (
+            <Badge key={summary.category} variant="secondary">
+              {summary.category}: {summary.count}
+            </Badge>
+          ))}
+        </div>
+      </div>
+
+      {sampleSocialActions.length > 0 && (
+        <div>
+          <p className="font-medium text-xs mb-1">Sample social actions</p>
+          <ul className="space-y-1">
+            {sampleSocialActions.map((action) => (
+              <li key={action.id} className="flex items-center justify-between text-xs border-b border-border/70 pb-1">
+                <span className="font-medium">{action.name}</span>
+                {action.energyCost && <span className="text-muted-foreground">⚡{action.energyCost}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: number | string }) {
+  return (
+    <div className="rounded-md bg-muted/30 p-3">
+      <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="text-lg font-semibold">{value}</p>
+    </div>
+  );
+}
+
+interface TexturePanelProps {
+  textures: VisualAsset[];
+  selectedGroundTexture: string | null;
+  selectedWallTexture: string | null;
+  selectedRoadTexture: string | null;
+  onApplyGroundTexture: (assetId: string) => void;
+  onApplyWallTexture: (assetId: string) => void;
+  onApplyRoadTexture: (assetId: string) => void;
+  worldId: string;
+}
+
+function TexturePanel({
+  textures,
+  selectedGroundTexture,
+  selectedWallTexture,
+  selectedRoadTexture,
+  onApplyGroundTexture,
+  onApplyWallTexture,
+  onApplyRoadTexture,
+  worldId
+}: TexturePanelProps) {
+  const groundTextures = textures.filter(t => t.assetType === 'texture_ground');
+  const wallTextures = textures.filter(t => t.assetType === 'texture_wall');
+  const materialTextures = textures.filter(t => t.assetType === 'texture_material');
+
+  return (
+    <div className="p-4 border rounded-md bg-background space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="font-semibold">Texture Manager</p>
+          <p className="text-xs text-muted-foreground">
+            Apply AI-generated textures to the world
+          </p>
+        </div>
+        <Badge variant="outline">{textures.length} total</Badge>
+      </div>
+
+      {/* Ground Textures */}
+      {groundTextures.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Ground Textures ({groundTextures.length})</p>
+          <p className="text-xs text-muted-foreground">Click to apply to terrain</p>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+            {groundTextures.map(texture => (
+              <button
+                key={texture.id}
+                onClick={() => onApplyGroundTexture(texture.id)}
+                className={`relative aspect-square rounded-md border-2 overflow-hidden transition-all hover:scale-105 ${
+                  selectedGroundTexture === texture.id
+                    ? "border-primary ring-2 ring-primary"
+                    : "border-border hover:border-primary/50"
+                }`}
+                title={texture.name}
+              >
+                <img
+                  src={`/${texture.filePath}`}
+                  alt={texture.name}
+                  className="w-full h-full object-cover"
+                />
+                {selectedGroundTexture === texture.id && (
+                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                    <Badge className="text-[10px]">Active</Badge>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Wall Textures - Apply to Settlements */}
+      {wallTextures.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Building Textures ({wallTextures.length})</p>
+          <p className="text-xs text-muted-foreground">Click to apply to all settlements and buildings</p>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+            {wallTextures.map(texture => (
+              <button
+                key={texture.id}
+                onClick={() => onApplyWallTexture(texture.id)}
+                className={`relative aspect-square rounded-md border-2 overflow-hidden transition-all hover:scale-105 ${
+                  selectedWallTexture === texture.id
+                    ? "border-primary ring-2 ring-primary"
+                    : "border-border hover:border-primary/50"
+                }`}
+                title={texture.name}
+              >
+                <img
+                  src={`/${texture.filePath}`}
+                  alt={texture.name}
+                  className="w-full h-full object-cover"
+                />
+                {selectedWallTexture === texture.id && (
+                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                    <Badge className="text-[10px]">Active</Badge>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Road/Material Textures */}
+      {materialTextures.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Road Textures ({materialTextures.length})</p>
+          <p className="text-xs text-muted-foreground">Click to apply to all roads connecting settlements</p>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+            {materialTextures.map(texture => (
+              <button
+                key={texture.id}
+                onClick={() => onApplyRoadTexture(texture.id)}
+                className={`relative aspect-square rounded-md border-2 overflow-hidden transition-all hover:scale-105 ${
+                  selectedRoadTexture === texture.id
+                    ? "border-primary ring-2 ring-primary"
+                    : "border-border hover:border-primary/50"
+                }`}
+                title={texture.name}
+              >
+                <img
+                  src={`/${texture.filePath}`}
+                  alt={texture.name}
+                  className="w-full h-full object-cover"
+                />
+                {selectedRoadTexture === texture.id && (
+                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                    <Badge className="text-[10px]">Active</Badge>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {textures.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          <p className="text-sm">No textures available yet.</p>
+          <p className="text-xs mt-1">Generate textures from the world management panel.</p>
+        </div>
+      )}
+    </div>
+  );
 }

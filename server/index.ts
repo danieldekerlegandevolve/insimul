@@ -337,7 +337,16 @@ function logEndpoints(app: any, port: number): void {
  */
 async function shutdown(signal: string): Promise<void> {
   console.log(`\\n🛑 Received ${signal}, shutting down gracefully...`);
-  
+
+  // Stop job queue manager
+  try {
+    const { jobQueueManager } = await import('./services/job-queue-manager.js');
+    jobQueueManager.stop();
+    console.log('✅ Job queue manager stopped');
+  } catch (error) {
+    console.error('Error stopping job queue manager:', error);
+  }
+
   if (httpServer && httpServer.listening) {
     try {
       await new Promise<void>((resolve, reject) => {
@@ -351,14 +360,14 @@ async function shutdown(signal: string): Promise<void> {
       console.error('Error closing HTTP server:', error);
     }
   }
-  
+
   try {
     await storage.disconnect();
     console.log('✅ MongoDB connection closed');
   } catch (error) {
     console.error('Error closing MongoDB connection:', error);
   }
-  
+
   console.log('👋 Shutdown complete');
   process.exit(0);
 }
@@ -382,7 +391,13 @@ process.on('unhandledRejection', async (reason, promise) => {
   try {
     // Initialize database
     await initializeDatabase();
-    
+
+    // Start job queue manager
+    console.log('🔄 Starting job queue manager...');
+    const { jobQueueManager } = await import('./services/job-queue-manager.js');
+    jobQueueManager.start();
+    console.log('✅ Job queue manager started');
+
     // Register API routes
     const server = await registerRoutes(app);
     httpServer = server;

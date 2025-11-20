@@ -1165,6 +1165,211 @@ export type InsertResidence = z.infer<typeof insertResidenceSchema>;
 export type Whereabouts = typeof whereabouts.$inferSelect;
 export type InsertWhereabouts = z.infer<typeof insertWhereaboutsSchema>;
 
+// ============= VISUAL ASSETS SYSTEM =============
+
+// Asset types for procedural generation
+export type AssetType =
+  | 'character_portrait' | 'character_full_body' | 'character_sprite'
+  | 'building_exterior' | 'building_interior' | 'building_icon'
+  | 'map_terrain' | 'map_political' | 'map_region'
+  | 'texture_ground' | 'texture_wall' | 'texture_material'
+  | 'item_icon' | 'item_image' | 'artifact_image'
+  | 'landscape' | 'skybox' | 'environmental'
+  | 'ui_background' | 'ui_decoration' | 'custom';
+
+export type AssetStatus = 'generating' | 'completed' | 'failed' | 'archived';
+
+export type GenerationProvider = 'gemini-imagen' | 'stable-diffusion' | 'dalle' | 'flux' | 'manual';
+
+// Visual Assets - stores generated or uploaded images and visual content
+export const visualAssets = pgTable("visual_assets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  worldId: varchar("world_id"), // Nullable for base/reusable assets
+
+  // Asset identification
+  name: text("name").notNull(),
+  description: text("description"),
+  assetType: text("asset_type").notNull(), // character_portrait, building_exterior, etc.
+
+  // Associated entities (what this asset represents)
+  characterId: varchar("character_id"), // For character images
+  businessId: varchar("business_id"), // For building images
+  settlementId: varchar("settlement_id"), // For maps
+  countryId: varchar("country_id"), // For national symbols/maps
+  stateId: varchar("state_id"), // For regional maps
+
+  // File information
+  filePath: text("file_path").notNull(), // Relative path from public/assets
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size"), // In bytes
+  mimeType: text("mime_type").default("image/png"),
+  width: integer("width"),
+  height: integer("height"),
+
+  // Generation metadata
+  generationProvider: text("generation_provider"), // gemini-imagen, stable-diffusion, dalle, flux, manual
+  generationPrompt: text("generation_prompt"), // The prompt used to generate this
+  generationParams: jsonb("generation_params").$type<Record<string, any>>().default({}),
+
+  // Versioning and variants
+  parentAssetId: varchar("parent_asset_id"), // For variations/edits of existing assets
+  version: integer("version").default(1),
+  variants: jsonb("variants").$type<string[]>().default([]), // IDs of variant assets
+
+  // Usage and purpose
+  purpose: text("purpose"), // "authorial" (maps, character art), "procedural" (textures, tilesets)
+  usageContext: text("usage_context"), // "3d_game", "2d_ui", "map_display", "character_sheet"
+  tags: jsonb("tags").$type<string[]>().default([]),
+
+  // Status and availability
+  status: text("status").default("completed"), // generating, completed, failed, archived
+  isPublic: boolean("is_public").default(false), // Can be reused across worlds
+  isActive: boolean("is_active").default(true),
+
+  // Error tracking (for failed generations)
+  errorMessage: text("error_message"),
+
+  // Metadata
+  metadata: jsonb("metadata").$type<Record<string, any>>().default({}),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Asset Collections - group related assets together
+export const assetCollections = pgTable("asset_collections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  worldId: varchar("world_id"), // Nullable for base collections
+
+  name: text("name").notNull(),
+  description: text("description"),
+  collectionType: text("collection_type").notNull(), // texture_pack, character_set, building_set, map_atlas
+
+  // Assets in this collection
+  assetIds: jsonb("asset_ids").$type<string[]>().default([]),
+
+  // Collection purpose
+  purpose: text("purpose"), // "medieval_textures", "cyberpunk_buildings", etc.
+  tags: jsonb("tags").$type<string[]>().default([]),
+
+  isPublic: boolean("is_public").default(false),
+  isActive: boolean("is_active").default(true),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Generation Jobs - track ongoing and queued generation tasks
+export const generationJobs = pgTable("generation_jobs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  worldId: varchar("world_id"),
+
+  // Job details
+  jobType: text("job_type").notNull(), // single_asset, batch_generation, texture_set
+  assetType: text("asset_type").notNull(),
+
+  // Target entity (what we're generating for)
+  targetEntityId: varchar("target_entity_id"),
+  targetEntityType: text("target_entity_type"), // character, business, settlement, etc.
+
+  // Generation parameters
+  prompt: text("prompt").notNull(),
+  generationProvider: text("generation_provider").notNull(),
+  generationParams: jsonb("generation_params").$type<Record<string, any>>().default({}),
+
+  // Batch settings (for multiple generations)
+  batchSize: integer("batch_size").default(1),
+  completedCount: integer("completed_count").default(0),
+
+  // Results
+  generatedAssetIds: jsonb("generated_asset_ids").$type<string[]>().default([]),
+
+  // Status tracking
+  status: text("status").default("queued"), // queued, processing, completed, failed, cancelled
+  progress: real("progress").default(0.0), // 0.0 to 1.0
+  errorMessage: text("error_message"),
+
+  // Timing
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Insert schemas
+export const insertVisualAssetSchema = createInsertSchema(visualAssets).pick({
+  worldId: true,
+  name: true,
+  description: true,
+  assetType: true,
+  characterId: true,
+  businessId: true,
+  settlementId: true,
+  countryId: true,
+  stateId: true,
+  filePath: true,
+  fileName: true,
+  fileSize: true,
+  mimeType: true,
+  width: true,
+  height: true,
+  generationProvider: true,
+  generationPrompt: true,
+  generationParams: true,
+  parentAssetId: true,
+  version: true,
+  variants: true,
+  purpose: true,
+  usageContext: true,
+  tags: true,
+  status: true,
+  isPublic: true,
+  isActive: true,
+  errorMessage: true,
+  metadata: true,
+});
+
+export const insertAssetCollectionSchema = createInsertSchema(assetCollections).pick({
+  worldId: true,
+  name: true,
+  description: true,
+  collectionType: true,
+  assetIds: true,
+  purpose: true,
+  tags: true,
+  isPublic: true,
+  isActive: true,
+});
+
+export const insertGenerationJobSchema = createInsertSchema(generationJobs).pick({
+  worldId: true,
+  jobType: true,
+  assetType: true,
+  targetEntityId: true,
+  targetEntityType: true,
+  prompt: true,
+  generationProvider: true,
+  generationParams: true,
+  batchSize: true,
+  completedCount: true,
+  generatedAssetIds: true,
+  status: true,
+  progress: true,
+  errorMessage: true,
+  startedAt: true,
+  completedAt: true,
+});
+
+// Types
+export type VisualAsset = typeof visualAssets.$inferSelect;
+export type InsertVisualAsset = z.infer<typeof insertVisualAssetSchema>;
+
+export type AssetCollection = typeof assetCollections.$inferSelect;
+export type InsertAssetCollection = z.infer<typeof insertAssetCollectionSchema>;
+
+export type GenerationJob = typeof generationJobs.$inferSelect;
+export type InsertGenerationJob = z.infer<typeof insertGenerationJobSchema>;
 // User and Player Progress insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,

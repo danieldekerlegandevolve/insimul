@@ -28,7 +28,13 @@ import {
   type Truth,
   type InsertTruth,
   type Quest,
-  type InsertQuest
+  type InsertQuest,
+  type VisualAsset,
+  type InsertVisualAsset,
+  type AssetCollection,
+  type InsertAssetCollection,
+  type GenerationJob,
+  type InsertGenerationJob
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import * as fs from "fs/promises";
@@ -157,6 +163,29 @@ export interface IStorage {
   updateQuest(id: string, quest: Partial<InsertQuest>): Promise<Quest | undefined>;
   deleteQuest(id: string): Promise<boolean>;
 
+  // Visual Assets
+  getVisualAsset(id: string): Promise<VisualAsset | undefined>;
+  getVisualAssetsByWorld(worldId: string): Promise<VisualAsset[]>;
+  getVisualAssetsByType(worldId: string, assetType: string): Promise<VisualAsset[]>;
+  getVisualAssetsByEntity(entityId: string, entityType: string): Promise<VisualAsset[]>;
+  createVisualAsset(asset: InsertVisualAsset): Promise<VisualAsset>;
+  updateVisualAsset(id: string, asset: Partial<InsertVisualAsset>): Promise<VisualAsset | undefined>;
+  deleteVisualAsset(id: string): Promise<boolean>;
+
+  // Asset Collections
+  getAssetCollection(id: string): Promise<AssetCollection | undefined>;
+  getAssetCollectionsByWorld(worldId: string): Promise<AssetCollection[]>;
+  createAssetCollection(collection: InsertAssetCollection): Promise<AssetCollection>;
+  updateAssetCollection(id: string, collection: Partial<InsertAssetCollection>): Promise<AssetCollection | undefined>;
+  deleteAssetCollection(id: string): Promise<boolean>;
+
+  // Generation Jobs
+  getGenerationJob(id: string): Promise<GenerationJob | undefined>;
+  getGenerationJobsByWorld(worldId: string): Promise<GenerationJob[]>;
+  getGenerationJobsByStatus(worldId: string, status: string): Promise<GenerationJob[]>;
+  createGenerationJob(job: InsertGenerationJob): Promise<GenerationJob>;
+  updateGenerationJob(id: string, job: Partial<InsertGenerationJob>): Promise<GenerationJob | undefined>;
+  deleteGenerationJob(id: string): Promise<boolean>;
   // Users
   getUser(id: string): Promise<import("@shared/schema").User | undefined>;
   getUserByUsername(username: string): Promise<import("@shared/schema").User | undefined>;

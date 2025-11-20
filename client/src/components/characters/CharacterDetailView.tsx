@@ -1,7 +1,14 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Heart, Brain, Activity, Briefcase, Users, ChevronRight, MessageCircle } from 'lucide-react';
-import type { Character } from '@shared/schema';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { User, Heart, Brain, Activity, Briefcase, Users, ChevronRight, MessageCircle, Image, Sparkles, Play, History } from 'lucide-react';
+import { VisualAssetGeneratorDialog } from '@/components/VisualAssetGeneratorDialog';
+import { SpriteGeneratorDialog } from '@/components/SpriteGeneratorDialog';
+import { GenerationHistoryViewer } from '@/components/GenerationHistoryViewer';
+import type { Character, VisualAsset } from '@shared/schema';
 
 interface CharacterDetailViewProps {
   character: Character;
@@ -18,7 +25,24 @@ export function CharacterDetailView({
   onChatWithCharacter,
   onViewCharacter
 }: CharacterDetailViewProps) {
-  
+  const [showVisualGenerator, setShowVisualGenerator] = useState(false);
+  const [showSpriteGenerator, setShowSpriteGenerator] = useState(false);
+  const [showGenerationHistory, setShowGenerationHistory] = useState(false);
+  const [historyAssetType, setHistoryAssetType] = useState<string | undefined>();
+
+  // Fetch visual assets for this character
+  const { data: visualAssets = [] } = useQuery<any[]>({
+    queryKey: ['/api/assets/character', character.id],
+    queryFn: async () => {
+      const response = await apiRequest('GET', `/api/assets/character/${character.id}`);
+      return response.json();
+    },
+  });
+
+  const portrait = visualAssets.find(a => a.assetType === 'character_portrait');
+  const fullBody = visualAssets.find(a => a.assetType === 'character_full_body');
+  const sprites = visualAssets.filter(a => a.assetType === 'character_sprite');
+
   const getFullName = (char: Character) => {
     const parts = [
       char.firstName,
@@ -39,24 +63,70 @@ export function CharacterDetailView({
     return allCharacters.find(c => c.id === id);
   };
 
+  const handleRegenerateFromHistory = (asset: VisualAsset) => {
+    // Open the generator dialog with settings from the historical asset
+    // This would pass the generation params to the generator
+    setShowVisualGenerator(true);
+    // Note: The VisualAssetGeneratorDialog would need to accept initialParams
+    // For now, this just opens the dialog
+  };
+
+  const handleViewHistory = (assetType?: string) => {
+    setHistoryAssetType(assetType);
+    setShowGenerationHistory(true);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Character Info Card */}
+      {/* Character Info Card with Portrait */}
       <Card className="border-2 border-primary/20 shadow-lg">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <User className="w-6 h-6 text-primary" />
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4 flex-1">
+              {/* Portrait Display */}
+              <div className="flex-shrink-0">
+                {portrait ? (
+                  <img
+                    src={`/${portrait.filePath}`}
+                    alt={getFullName(character)}
+                    className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg border-2 border-primary/20"
+                  />
+                ) : (
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-primary/10 rounded-lg flex items-center justify-center border-2 border-dashed border-primary/30">
+                    <User className="w-12 h-12 text-primary/50" />
+                  </div>
+                )}
               </div>
-              <div>
+
+              <div className="flex-1">
                 <CardTitle className="text-2xl">{getFullName(character)}</CardTitle>
                 <CardDescription className="mt-1">
                   {getAge(character) && `Age ${getAge(character)} • `}
                   {character.gender && `${character.gender.charAt(0).toUpperCase() + character.gender.slice(1)}`}
                 </CardDescription>
+
+                {/* Visual Asset Quick Actions */}
+                <div className="flex gap-2 mt-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowVisualGenerator(true)}
+                  >
+                    <Sparkles className="w-3 h-3 mr-2" />
+                    {portrait ? 'Regenerate' : 'Generate'} Portrait
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowSpriteGenerator(true)}
+                  >
+                    <Play className="w-3 h-3 mr-2" />
+                    {sprites.length > 0 ? 'View' : 'Generate'} Sprites
+                  </Button>
+                </div>
               </div>
             </div>
+
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => onChatWithCharacter(character)}>
                 <MessageCircle className="w-4 h-4 mr-2" />
@@ -89,6 +159,124 @@ export function CharacterDetailView({
           </div>
         </CardContent>
       </Card>
+
+      {/* Visual Assets Section */}
+      {(portrait || fullBody || sprites.length > 0) && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Image className="w-5 h-5 text-primary" />
+                  Visual Assets
+                </CardTitle>
+                <CardDescription>AI-generated character visuals</CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleViewHistory()}
+              >
+                <History className="w-4 h-4 mr-2" />
+                View History
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="portrait" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="portrait">Portrait</TabsTrigger>
+                <TabsTrigger value="full-body">Full Body</TabsTrigger>
+                <TabsTrigger value="sprites">Sprites ({sprites.length})</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="portrait" className="mt-4">
+                {portrait ? (
+                  <div className="space-y-3">
+                    <img
+                      src={`/${portrait.filePath}`}
+                      alt={portrait.name}
+                      className="w-full max-w-md mx-auto rounded-lg border"
+                    />
+                    <div className="text-sm text-muted-foreground text-center">
+                      Generated with {portrait.generationProvider}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No portrait generated yet</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-3"
+                      onClick={() => setShowVisualGenerator(true)}
+                    >
+                      <Sparkles className="w-3 h-3 mr-2" />
+                      Generate Portrait
+                    </Button>
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="full-body" className="mt-4">
+                {fullBody ? (
+                  <div className="space-y-3">
+                    <img
+                      src={`/${fullBody.filePath}`}
+                      alt={fullBody.name}
+                      className="w-full max-w-md mx-auto rounded-lg border"
+                    />
+                    <div className="text-sm text-muted-foreground text-center">
+                      Generated with {fullBody.generationProvider}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No full-body image generated yet</p>
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="sprites" className="mt-4">
+                {sprites.length > 0 ? (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {sprites.map((sprite) => (
+                      <Card key={sprite.id}>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">{sprite.name}</CardTitle>
+                          <CardDescription className="text-xs">
+                            {sprite.metadata?.animationType} • {sprite.metadata?.viewAngle} • {sprite.metadata?.frameCount} frames
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <img
+                            src={`/${sprite.filePath}`}
+                            alt={sprite.name}
+                            className="w-full border rounded"
+                          />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No sprite sheets generated yet</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-3"
+                      onClick={() => setShowSpriteGenerator(true)}
+                    >
+                      <Play className="w-3 h-3 mr-2" />
+                      Generate Sprites
+                    </Button>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Personality & Traits */}
       {character.personality && Object.keys(character.personality).length > 0 && (
@@ -262,6 +450,38 @@ export function CharacterDetailView({
             )}
           </CardContent>
         </Card>
+      )}
+
+      {/* Visual Generation Dialogs */}
+      {showVisualGenerator && (
+        <VisualAssetGeneratorDialog
+          open={showVisualGenerator}
+          onOpenChange={setShowVisualGenerator}
+          entityType="character"
+          entityId={character.id}
+          entityName={getFullName(character)}
+        />
+      )}
+
+      {showSpriteGenerator && (
+        <SpriteGeneratorDialog
+          open={showSpriteGenerator}
+          onOpenChange={setShowSpriteGenerator}
+          characterId={character.id}
+          characterName={getFullName(character)}
+        />
+      )}
+
+      {showGenerationHistory && (
+        <GenerationHistoryViewer
+          open={showGenerationHistory}
+          onOpenChange={setShowGenerationHistory}
+          entityType="character"
+          entityId={character.id}
+          entityName={getFullName(character)}
+          assetType={historyAssetType}
+          onRegenerateFromHistory={handleRegenerateFromHistory}
+        />
       )}
     </div>
   );

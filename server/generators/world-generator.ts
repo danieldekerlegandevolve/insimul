@@ -16,6 +16,8 @@ import { updateRelationship } from '../extensions/tott/social-dynamics-system.js
 import { initializeFamilyKnowledge, initializeCoworkerKnowledge } from '../extensions/tott/knowledge-system.js';
 import { addMoney } from '../extensions/tott/economics-system.js';
 import { adjustCommunityMorale, scheduleFestival } from '../extensions/tott/town-events-system.js';
+// GenAI Visual Asset Generation Integration
+import { visualAssetGenerator } from '../services/visual-asset-generator.js';
 
 export interface WorldGenerationConfig {
   worldName: string;
@@ -49,6 +51,12 @@ export interface WorldGenerationConfig {
   initializeWealth?: boolean;          // Phase 9: Starting money
   initializeCommunityMorale?: boolean; // Phase 10: Community
   scheduleFestival?: boolean;          // Phase 10: Initial festival
+  // GenAI Visual Asset Generation
+  generateVisualAssets?: boolean;      // Master toggle for visual generation
+  generateCharacterPortraits?: boolean; // Generate portraits for all characters
+  generateBuildingExteriors?: boolean;  // Generate exteriors for all buildings
+  generateSettlementMaps?: boolean;     // Generate settlement maps
+  visualGenerationProvider?: 'flux' | 'gemini-imagen' | 'dalle' | 'stable-diffusion';
 }
 
 export class WorldGenerator {
@@ -71,6 +79,11 @@ export class WorldGenerator {
     employed: number;
     routines: number;
     events: number;
+    visualAssets: {
+      portraits: number;
+      buildings: number;
+      maps: number;
+    };
   }> {
     console.log(`🌍 Generating world: ${config.worldName}...`);
     console.log(`   Settlement: ${config.settlementName} (${config.settlementType})`);
@@ -286,7 +299,43 @@ export class WorldGenerator {
         fidelity: fidelity
       });
     }
-    
+
+    // GenAI Visual Asset Generation
+    let portraitCount = 0;
+    let buildingAssetCount = 0;
+    let mapCount = 0;
+
+    if (config.generateVisualAssets) {
+      const provider = config.visualGenerationProvider || 'flux';
+
+      // Generate character portraits
+      if (config.generateCharacterPortraits && population > 0) {
+        console.log('\n🎨 Generating character portraits...');
+        portraitCount = await this.generateCharacterPortraitsForWorld({
+          worldId: world.id,
+          provider
+        });
+      }
+
+      // Generate building exteriors
+      if (config.generateBuildingExteriors && businessCount > 0) {
+        console.log('\n🏢 Generating building exteriors...');
+        buildingAssetCount = await this.generateBuildingExteriorsForWorld({
+          worldId: world.id,
+          provider
+        });
+      }
+
+      // Generate settlement maps
+      if (config.generateSettlementMaps) {
+        console.log('\n🗺️  Generating settlement maps...');
+        mapCount = await this.generateSettlementMapsForSettlement({
+          settlementId: settlement.id,
+          provider
+        });
+      }
+    }
+
     console.log('\n✅ World generation complete!');
     console.log(`   Population: ${population}`);
     console.log(`   Families: ${families}`);
@@ -297,7 +346,13 @@ export class WorldGenerator {
     console.log(`   Employed: ${employedCount}`);
     console.log(`   Routines: ${routineCount}`);
     console.log(`   Historical Events: ${eventCount}`);
-    
+    if (config.generateVisualAssets) {
+      console.log(`   Visual Assets Generated:`);
+      console.log(`     - Character Portraits: ${portraitCount}`);
+      console.log(`     - Building Exteriors: ${buildingAssetCount}`);
+      console.log(`     - Settlement Maps: ${mapCount}`);
+    }
+
     return {
       worldId: world.id,
       countryId: country.id,
@@ -310,7 +365,12 @@ export class WorldGenerator {
       businesses: businessCount,
       employed: employedCount,
       routines: routineCount,
-      events: eventCount
+      events: eventCount,
+      visualAssets: {
+        portraits: portraitCount,
+        buildings: buildingAssetCount,
+        maps: mapCount
+      }
     };
   }
 
@@ -932,6 +992,66 @@ export class WorldGenerator {
   }
 
   /**
+   * Generate character portraits for all characters in a world
+   */
+  private async generateCharacterPortraitsForWorld(config: {
+    worldId: string;
+    provider: 'flux' | 'gemini-imagen' | 'dalle' | 'stable-diffusion';
+  }): Promise<number> {
+    try {
+      const assetIds = await visualAssetGenerator.batchGenerateCharacterPortraits(
+        config.worldId,
+        config.provider
+      );
+      console.log(`   ✓ Generated ${assetIds.length} character portraits`);
+      return assetIds.length;
+    } catch (error) {
+      console.error('   ✗ Failed to generate character portraits:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Generate building exteriors for all businesses in a world
+   */
+  private async generateBuildingExteriorsForWorld(config: {
+    worldId: string;
+    provider: 'flux' | 'gemini-imagen' | 'dalle' | 'stable-diffusion';
+  }): Promise<number> {
+    try {
+      const assetIds = await visualAssetGenerator.batchGenerateBuildingExteriors(
+        config.worldId,
+        config.provider
+      );
+      console.log(`   ✓ Generated ${assetIds.length} building exteriors`);
+      return assetIds.length;
+    } catch (error) {
+      console.error('   ✗ Failed to generate building exteriors:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Generate all map types for a settlement
+   */
+  private async generateSettlementMapsForSettlement(config: {
+    settlementId: string;
+    provider: 'flux' | 'gemini-imagen' | 'dalle' | 'stable-diffusion';
+  }): Promise<number> {
+    try {
+      const assetIds = await visualAssetGenerator.batchGenerateSettlementMaps(
+        config.settlementId,
+        config.provider
+      );
+      console.log(`   ✓ Generated ${assetIds.length} settlement maps`);
+      return assetIds.length;
+    } catch (error) {
+      console.error('   ✗ Failed to generate settlement maps:', error);
+      return 0;
+    }
+  }
+
+  /**
    * Get preset configurations
    */
   static getPresets(): Record<string, Partial<WorldGenerationConfig>> {
@@ -960,7 +1080,13 @@ export class WorldGenerator {
         initializeKnowledge: true,
         initializeWealth: true,
         initializeCommunityMorale: true,
-        scheduleFestival: true
+        scheduleFestival: true,
+        // GenAI Visual Asset Generation
+        generateVisualAssets: true,
+        generateCharacterPortraits: true,
+        generateBuildingExteriors: true,
+        generateSettlementMaps: true,
+        visualGenerationProvider: 'flux'
       },
       colonialTown: {
         worldName: 'New World',
@@ -980,7 +1106,13 @@ export class WorldGenerator {
         assignEmployment: true,
         generateRoutines: true,
         simulateHistory: true,
-        historyFidelity: 'low'
+        historyFidelity: 'low',
+        // GenAI Visual Asset Generation
+        generateVisualAssets: true,
+        generateCharacterPortraits: true,
+        generateBuildingExteriors: true,
+        generateSettlementMaps: true,
+        visualGenerationProvider: 'flux'
       },
       modernCity: {
         worldName: 'Contemporary World',
@@ -1000,7 +1132,13 @@ export class WorldGenerator {
         assignEmployment: true,
         generateRoutines: true,
         simulateHistory: true,
-        historyFidelity: 'medium'
+        historyFidelity: 'medium',
+        // GenAI Visual Asset Generation
+        generateVisualAssets: true,
+        generateCharacterPortraits: true,
+        generateBuildingExteriors: true,
+        generateSettlementMaps: true,
+        visualGenerationProvider: 'flux'
       },
       fantasyRealm: {
         worldName: 'Mystical Lands',
@@ -1020,7 +1158,13 @@ export class WorldGenerator {
         assignEmployment: true,
         generateRoutines: true,
         simulateHistory: true,
-        historyFidelity: 'low'
+        historyFidelity: 'low',
+        // GenAI Visual Asset Generation
+        generateVisualAssets: true,
+        generateCharacterPortraits: true,
+        generateBuildingExteriors: true,
+        generateSettlementMaps: true,
+        visualGenerationProvider: 'flux'
       }
     };
   }

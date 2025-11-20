@@ -5,10 +5,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Globe, Edit3, Trash2, Save, X, Info } from 'lucide-react';
+import { Globe, Edit3, Trash2, Save, X, Info, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { World } from '@shared/schema';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { VisualAssetGeneratorDialog } from './VisualAssetGeneratorDialog';
+import { AssetBrowserDialog } from './AssetBrowserDialog';
+import { BatchGenerationDialog } from './BatchGenerationDialog';
+import type { World, VisualAsset } from '@shared/schema';
 
 interface WorldDetailsDialogProps {
   open: boolean;
@@ -29,15 +35,28 @@ export function WorldDetailsDialog({
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Form state
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  
+
   // Geographical data
   const [countries, setCountries] = useState<any[]>([]);
   const [settlements, setSettlements] = useState<any[]>([]);
   const [totalPopulation, setTotalPopulation] = useState(0);
+
+  // Visual Assets state
+  const [showAssetGenerator, setShowAssetGenerator] = useState(false);
+  const [showAssetBrowser, setShowAssetBrowser] = useState(false);
+  const [showBatchGeneration, setShowBatchGeneration] = useState(false);
+  const [assetType, setAssetType] = useState<'texture_ground' | 'texture_wall' | 'texture_material'>('texture_ground');
+
+  // Fetch world visual assets
+  const { data: worldAssets = [] } = useQuery<VisualAsset[]>({
+    queryKey: ['/api/worlds', world?.id, 'assets'],
+    enabled: !!world?.id && open
+  });
 
   // Load world data when dialog opens
   useEffect(() => {
@@ -208,9 +227,14 @@ export function WorldDetailsDialog({
           </DialogHeader>
 
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="basic">Basic Info</TabsTrigger>
               <TabsTrigger value="geography">Geography</TabsTrigger>
+              <TabsTrigger value="assets">
+                <ImageIcon className="w-3 h-3 mr-1" />
+                Visual Assets
+                {worldAssets.length > 0 && <Badge className="ml-1" variant="secondary">{worldAssets.length}</Badge>}
+              </TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
               <TabsTrigger value="metadata">Metadata</TabsTrigger>
             </TabsList>
@@ -332,6 +356,120 @@ export function WorldDetailsDialog({
               </div>
             </TabsContent>
 
+            <TabsContent value="assets" className="space-y-4 mt-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold">AI-Generated Visual Assets</h3>
+                    <p className="text-sm text-muted-foreground">Generate and manage visual assets for your world</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => setShowBatchGeneration(true)}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Batch Generation
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowAssetBrowser(true)}
+                      disabled={worldAssets.length === 0}
+                    >
+                      <ImageIcon className="w-4 h-4 mr-2" />
+                      Browse All ({worldAssets.length})
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Quick Generate Buttons */}
+                <Card>
+                  <CardContent className="pt-6 space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-3 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" />
+                        Generate Textures for 3D Game
+                      </h4>
+                      <div className="grid grid-cols-3 gap-3">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setAssetType('texture_ground');
+                            setShowAssetGenerator(true);
+                          }}
+                        >
+                          <Sparkles className="w-3 h-3 mr-2" />
+                          Ground Texture
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setAssetType('texture_wall');
+                            setShowAssetGenerator(true);
+                          }}
+                        >
+                          <Sparkles className="w-3 h-3 mr-2" />
+                          Wall Texture
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setAssetType('texture_material');
+                            setShowAssetGenerator(true);
+                          }}
+                        >
+                          <Sparkles className="w-3 h-3 mr-2" />
+                          Material Texture
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 text-xs text-muted-foreground">
+                      <p>Generated textures will be available in the 3D game for applying to terrain, buildings, and objects.</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Existing Assets Preview */}
+                {worldAssets.length > 0 && (
+                  <div>
+                    <h4 className="font-medium mb-2">Recent Assets ({worldAssets.length})</h4>
+                    <div className="grid grid-cols-4 gap-2">
+                      {worldAssets.slice(0, 8).map(asset => (
+                        <div key={asset.id} className="relative aspect-square rounded-md overflow-hidden border">
+                          <img
+                            src={`/${asset.filePath}`}
+                            alt={asset.name}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/70 px-2 py-1">
+                            <p className="text-xs text-white truncate">{asset.assetType.replace('texture_', '')}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {worldAssets.length > 8 && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        +{worldAssets.length - 8} more. Click "Browse All" to see them.
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {worldAssets.length === 0 && (
+                  <Card className="border-dashed">
+                    <CardContent className="flex flex-col items-center justify-center py-12">
+                      <ImageIcon className="h-12 w-12 text-muted-foreground mb-3" />
+                      <p className="font-medium mb-1">No visual assets yet</p>
+                      <p className="text-sm text-muted-foreground mb-4">Generate textures to use in your 3D world</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </TabsContent>
+
             <TabsContent value="settings" className="space-y-4 mt-4">
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -385,6 +523,40 @@ export function WorldDetailsDialog({
           </Tabs>
         </DialogContent>
       </Dialog>
+
+      {/* Visual Asset Generator Dialog */}
+      {world && (
+        <VisualAssetGeneratorDialog
+          open={showAssetGenerator}
+          onOpenChange={setShowAssetGenerator}
+          entityType="world"
+          entityId={world.id}
+          entityName={world.name}
+          assetType={assetType}
+          onAssetGenerated={() => {
+            queryClient.invalidateQueries({ queryKey: ['/api/worlds', world.id, 'assets'] });
+          }}
+        />
+      )}
+
+      {/* Asset Browser Dialog */}
+      {world && (
+        <AssetBrowserDialog
+          open={showAssetBrowser}
+          onOpenChange={setShowAssetBrowser}
+          worldId={world.id}
+        />
+      )}
+
+      {/* Batch Generation Dialog */}
+      {world && (
+        <BatchGenerationDialog
+          open={showBatchGeneration}
+          onOpenChange={setShowBatchGeneration}
+          worldId={world.id}
+          worldName={world.name}
+        />
+      )}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
