@@ -29,6 +29,20 @@ import {
   type InsertAssetCollection,
   type GenerationJob,
   type InsertGenerationJob
+  type User,
+  type InsertUser,
+  type PlayerProgress,
+  type InsertPlayerProgress,
+  type PlayerSession,
+  type InsertPlayerSession,
+  type Achievement,
+  type InsertAchievement,
+  type Playthrough,
+  type InsertPlaythrough,
+  type PlaythroughDelta,
+  type InsertPlaythroughDelta,
+  type PlayTrace,
+  type InsertPlayTrace
 } from "@shared/schema";
 
 // Mongoose Document interfaces
@@ -85,6 +99,34 @@ interface AssetCollectionDoc extends Omit<AssetCollection, 'id'>, Document {
 }
 
 interface GenerationJobDoc extends Omit<GenerationJob, 'id'>, Document {
+    _id: string;
+}
+
+interface UserDoc extends Omit<User, 'id'>, Document {
+  _id: string;
+}
+
+interface PlayerProgressDoc extends Omit<PlayerProgress, 'id'>, Document {
+  _id: string;
+}
+
+interface PlayerSessionDoc extends Omit<PlayerSession, 'id'>, Document {
+  _id: string;
+}
+
+interface AchievementDoc extends Omit<Achievement, 'id'>, Document {
+  _id: string;
+}
+
+interface PlaythroughDoc extends Omit<Playthrough, 'id'>, Document {
+  _id: string;
+}
+
+interface PlaythroughDeltaDoc extends Omit<PlaythroughDelta, 'id'>, Document {
+  _id: string;
+}
+
+interface PlayTraceDoc extends Omit<PlayTrace, 'id'>, Document {
   _id: string;
 }
 
@@ -155,11 +197,25 @@ const CharacterSchema = new Schema({
 const WorldSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String, default: null },
+  targetLanguage: { type: String, default: null },
+
+  // Ownership and permissions
+  ownerId: { type: String, default: null },
+  visibility: { type: String, default: 'private' },
+  isTemplate: { type: Boolean, default: false },
+  allowedUserIds: { type: [String], default: [] },
+  maxPlayers: { type: Number, default: null },
+  requiresAuth: { type: Boolean, default: false },
+
   sourceFormats: { type: Schema.Types.Mixed, default: null },
   config: { type: Schema.Types.Mixed, default: null },
   worldData: { type: Schema.Types.Mixed, default: null },
   historicalEvents: { type: Schema.Types.Mixed, default: null },
   generationConfig: { type: Schema.Types.Mixed, default: null },
+
+  // Version tracking for playthroughs
+  version: { type: Number, default: 1 },
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -366,6 +422,40 @@ const VisualAssetSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+const UserSchema = new Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true },
+  displayName: { type: String, default: null },
+  avatarUrl: { type: String, default: null },
+  isActive: { type: Boolean, default: true },
+  isVerified: { type: Boolean, default: false },
+  lastLoginAt: { type: Date, default: null },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const PlayerProgressSchema = new Schema({
+  userId: { type: String, required: true },
+  worldId: { type: String, required: true },
+  characterId: { type: String, default: null },
+  level: { type: Number, default: 1 },
+  experience: { type: Number, default: 0 },
+  playtime: { type: Number, default: 0 },
+  currentPosition: { type: Schema.Types.Mixed, default: { x: 0, y: 0, z: 0 } },
+  currentLocation: { type: String, default: null },
+  questsCompleted: { type: [String], default: [] },
+  achievementsUnlocked: { type: [String], default: [] },
+  stats: { type: Schema.Types.Mixed, default: {} },
+  inventory: { type: Schema.Types.Mixed, default: [] },
+  lastCheckpoint: { type: Schema.Types.Mixed, default: {} },
+  saveData: { type: Schema.Types.Mixed, default: {} },
+  lastPlayedAt: { type: Date, default: Date.now },
+  sessionsCount: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
 const AssetCollectionSchema = new Schema({
   worldId: { type: String, default: null },
   name: { type: String, required: true },
@@ -376,6 +466,35 @@ const AssetCollectionSchema = new Schema({
   tags: { type: [String], default: [] },
   isPublic: { type: Boolean, default: false },
   isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const PlayerSessionSchema = new Schema({
+  userId: { type: String, required: true },
+  worldId: { type: String, required: true },
+  progressId: { type: String, required: true },
+  startedAt: { type: Date, default: Date.now },
+  endedAt: { type: Date, default: null },
+  duration: { type: Number, default: 0 },
+  experienceGained: { type: Number, default: 0 },
+  questsCompletedInSession: { type: Number, default: 0 },
+  achievementsEarnedInSession: { type: Number, default: 0 },
+  sessionData: { type: Schema.Types.Mixed, default: {} },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const AchievementSchema = new Schema({
+  worldId: { type: String, default: null },
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  iconUrl: { type: String, default: null },
+  achievementType: { type: String, required: true },
+  criteria: { type: Schema.Types.Mixed, default: {} },
+  experienceReward: { type: Number, default: 0 },
+  rewards: { type: Schema.Types.Mixed, default: {} },
+  isHidden: { type: Boolean, default: false },
+  rarity: { type: String, default: 'common' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -401,6 +520,61 @@ const GenerationJobSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+const PlaythroughSchema = new Schema({
+  userId: { type: String, required: true },
+  worldId: { type: String, required: true },
+  worldSnapshotVersion: { type: Number, required: true, default: 1 },
+  name: { type: String, default: null },
+  description: { type: String, default: null },
+  notes: { type: String, default: null },
+  status: { type: String, default: 'active' },
+  currentTimestep: { type: Number, default: 0 },
+  playtime: { type: Number, default: 0 },
+  actionsCount: { type: Number, default: 0 },
+  decisionsCount: { type: Number, default: 0 },
+  startedAt: { type: Date, default: Date.now },
+  lastPlayedAt: { type: Date, default: Date.now },
+  completedAt: { type: Date, default: null },
+  playerCharacterId: { type: String, default: null },
+  saveData: { type: Schema.Types.Mixed, default: {} },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const PlaythroughDeltaSchema = new Schema({
+  playthroughId: { type: String, required: true },
+  entityType: { type: String, required: true },
+  entityId: { type: String, required: true },
+  operation: { type: String, required: true },
+  deltaData: { type: Schema.Types.Mixed, default: null },
+  fullData: { type: Schema.Types.Mixed, default: null },
+  timestep: { type: Number, required: true },
+  appliedAt: { type: Date, default: Date.now },
+  description: { type: String, default: null },
+  tags: { type: [String], default: [] },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const PlayTraceSchema = new Schema({
+  playthroughId: { type: String, required: true },
+  userId: { type: String, required: true },
+  actionType: { type: String, required: true },
+  actionName: { type: String, default: null },
+  actionData: { type: Schema.Types.Mixed, default: {} },
+  timestep: { type: Number, required: true },
+  characterId: { type: String, default: null },
+  targetId: { type: String, default: null },
+  targetType: { type: String, default: null },
+  locationId: { type: String, default: null },
+  outcome: { type: String, default: null },
+  outcomeData: { type: Schema.Types.Mixed, default: {} },
+  stateChanges: { type: Schema.Types.Mixed, default: [] },
+  narrativeText: { type: String, default: null },
+  durationMs: { type: Number, default: null },
+  timestamp: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now }
+});
+
 // Mongoose Models
 const RuleModel = mongoose.model<RuleDoc>('Rule', RuleSchema);
 const GrammarModel = mongoose.model<GrammarDoc>('Grammar', GrammarSchema);
@@ -416,6 +590,13 @@ const QuestModel = mongoose.model<QuestDoc>('Quest', QuestSchema);
 const VisualAssetModel = mongoose.model<VisualAssetDoc>('VisualAsset', VisualAssetSchema);
 const AssetCollectionModel = mongoose.model<AssetCollectionDoc>('AssetCollection', AssetCollectionSchema);
 const GenerationJobModel = mongoose.model<GenerationJobDoc>('GenerationJob', GenerationJobSchema);
+const UserModel = mongoose.model<UserDoc>('User', UserSchema);
+const PlayerProgressModel = mongoose.model<PlayerProgressDoc>('PlayerProgress', PlayerProgressSchema);
+const PlayerSessionModel = mongoose.model<PlayerSessionDoc>('PlayerSession', PlayerSessionSchema);
+const AchievementModel = mongoose.model<AchievementDoc>('Achievement', AchievementSchema);
+const PlaythroughModel = mongoose.model<PlaythroughDoc>('Playthrough', PlaythroughSchema);
+const PlaythroughDeltaModel = mongoose.model<PlaythroughDeltaDoc>('PlaythroughDelta', PlaythroughDeltaSchema);
+const PlayTraceModel = mongoose.model<PlayTraceDoc>('PlayTrace', PlayTraceSchema);
 
 // Helper to convert Mongoose doc to our type
 function docToRule(doc: RuleDoc): Rule {
@@ -471,6 +652,34 @@ function docToAssetCollection(doc: AssetCollectionDoc): AssetCollection {
 }
 
 function docToGenerationJob(doc: GenerationJobDoc): GenerationJob {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToUser(doc: UserDoc): User {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToPlayerProgress(doc: PlayerProgressDoc): PlayerProgress {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToPlayerSession(doc: PlayerSessionDoc): PlayerSession {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToAchievement(doc: AchievementDoc): Achievement {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToPlaythrough(doc: PlaythroughDoc): Playthrough {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToPlaythroughDelta(doc: PlaythroughDeltaDoc): PlaythroughDelta {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToPlayTrace(doc: PlayTraceDoc): PlayTrace {
   return { ...doc.toObject(), id: doc._id.toString() };
 }
 
@@ -1402,6 +1611,257 @@ export class MongoStorage implements IStorage {
   async deleteGenerationJob(id: string): Promise<boolean> {
     await this.connect();
     const result = await GenerationJobModel.findByIdAndDelete(id);
+    return !!result;
+  }
+  
+  // ===== User Management =====
+  async getUser(id: string): Promise<User | undefined> {
+    await this.connect();
+    const doc = await UserModel.findById(id);
+    return doc ? docToUser(doc) : undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    await this.connect();
+    const doc = await UserModel.findOne({ username });
+    return doc ? docToUser(doc) : undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    await this.connect();
+    const doc = await UserModel.findOne({ email });
+    return doc ? docToUser(doc) : undefined;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    await this.connect();
+    const doc = await UserModel.create(user);
+    return docToUser(doc);
+  }
+
+  async updateUser(id: string, user: Partial<InsertUser>): Promise<User | undefined> {
+    await this.connect();
+    const doc = await UserModel.findByIdAndUpdate(id, { ...user, updatedAt: new Date() }, { new: true });
+    return doc ? docToUser(doc) : undefined;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await UserModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  // ===== Player Progress =====
+  async getPlayerProgress(id: string): Promise<PlayerProgress | undefined> {
+    await this.connect();
+    const doc = await PlayerProgressModel.findById(id);
+    return doc ? docToPlayerProgress(doc) : undefined;
+  }
+
+  async getPlayerProgressByUser(userId: string, worldId: string): Promise<PlayerProgress | undefined> {
+    await this.connect();
+    const doc = await PlayerProgressModel.findOne({ userId, worldId });
+    return doc ? docToPlayerProgress(doc) : undefined;
+  }
+
+  async getPlayerProgressesByUser(userId: string): Promise<PlayerProgress[]> {
+    await this.connect();
+    const docs = await PlayerProgressModel.find({ userId });
+    return docs.map(docToPlayerProgress);
+  }
+
+  async createPlayerProgress(progress: InsertPlayerProgress): Promise<PlayerProgress> {
+    await this.connect();
+    const doc = await PlayerProgressModel.create(progress);
+    return docToPlayerProgress(doc);
+  }
+
+  async updatePlayerProgress(id: string, progress: Partial<InsertPlayerProgress>): Promise<PlayerProgress | undefined> {
+    await this.connect();
+    const doc = await PlayerProgressModel.findByIdAndUpdate(id, { ...progress, updatedAt: new Date() }, { new: true });
+    return doc ? docToPlayerProgress(doc) : undefined;
+  }
+
+  async deletePlayerProgress(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await PlayerProgressModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  // ===== Player Sessions =====
+  async getPlayerSession(id: string): Promise<PlayerSession | undefined> {
+    await this.connect();
+    const doc = await PlayerSessionModel.findById(id);
+    return doc ? docToPlayerSession(doc) : undefined;
+  }
+
+  async getPlayerSessionsByUser(userId: string): Promise<PlayerSession[]> {
+    await this.connect();
+    const docs = await PlayerSessionModel.find({ userId }).sort({ startedAt: -1 });
+    return docs.map(docToPlayerSession);
+  }
+
+  async createPlayerSession(session: InsertPlayerSession): Promise<PlayerSession> {
+    await this.connect();
+    const doc = await PlayerSessionModel.create(session);
+    return docToPlayerSession(doc);
+  }
+
+  async updatePlayerSession(id: string, session: Partial<InsertPlayerSession>): Promise<PlayerSession | undefined> {
+    await this.connect();
+    const doc = await PlayerSessionModel.findByIdAndUpdate(id, session, { new: true });
+    return doc ? docToPlayerSession(doc) : undefined;
+  }
+
+  async endPlayerSession(id: string, duration: number): Promise<PlayerSession | undefined> {
+    await this.connect();
+    const doc = await PlayerSessionModel.findByIdAndUpdate(
+      id,
+      { endedAt: new Date(), duration },
+      { new: true }
+    );
+    return doc ? docToPlayerSession(doc) : undefined;
+  }
+
+  // ===== Achievements =====
+  async getAchievement(id: string): Promise<Achievement | undefined> {
+    await this.connect();
+    const doc = await AchievementModel.findById(id);
+    return doc ? docToAchievement(doc) : undefined;
+  }
+
+  async getAchievementsByWorld(worldId: string): Promise<Achievement[]> {
+    await this.connect();
+    const docs = await AchievementModel.find({ worldId });
+    return docs.map(docToAchievement);
+  }
+
+  async getGlobalAchievements(): Promise<Achievement[]> {
+    await this.connect();
+    const docs = await AchievementModel.find({ worldId: null });
+    return docs.map(docToAchievement);
+  }
+
+  async createAchievement(achievement: InsertAchievement): Promise<Achievement> {
+    await this.connect();
+    const doc = await AchievementModel.create(achievement);
+    return docToAchievement(doc);
+  }
+
+  async updateAchievement(id: string, achievement: Partial<InsertAchievement>): Promise<Achievement | undefined> {
+    await this.connect();
+    const doc = await AchievementModel.findByIdAndUpdate(id, { ...achievement, updatedAt: new Date() }, { new: true });
+    return doc ? docToAchievement(doc) : undefined;
+  }
+
+  async deleteAchievement(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await AchievementModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  // ===== Playthroughs =====
+  async getPlaythrough(id: string): Promise<Playthrough | undefined> {
+    await this.connect();
+    const doc = await PlaythroughModel.findById(id);
+    return doc ? docToPlaythrough(doc) : undefined;
+  }
+
+  async getPlaythroughsByUser(userId: string): Promise<Playthrough[]> {
+    await this.connect();
+    const docs = await PlaythroughModel.find({ userId }).sort({ lastPlayedAt: -1 });
+    return docs.map(docToPlaythrough);
+  }
+
+  async getPlaythroughsByWorld(worldId: string): Promise<Playthrough[]> {
+    await this.connect();
+    const docs = await PlaythroughModel.find({ worldId }).sort({ lastPlayedAt: -1 });
+    return docs.map(docToPlaythrough);
+  }
+
+  async getUserPlaythroughForWorld(userId: string, worldId: string): Promise<Playthrough | undefined> {
+    await this.connect();
+    const doc = await PlaythroughModel.findOne({ userId, worldId, status: { $ne: 'completed' } }).sort({ lastPlayedAt: -1 });
+    return doc ? docToPlaythrough(doc) : undefined;
+  }
+
+  async createPlaythrough(playthrough: InsertPlaythrough): Promise<Playthrough> {
+    await this.connect();
+    const doc = await PlaythroughModel.create(playthrough);
+    return docToPlaythrough(doc);
+  }
+
+  async updatePlaythrough(id: string, playthrough: Partial<InsertPlaythrough>): Promise<Playthrough | undefined> {
+    await this.connect();
+    const doc = await PlaythroughModel.findByIdAndUpdate(id, { ...playthrough, updatedAt: new Date() }, { new: true });
+    return doc ? docToPlaythrough(doc) : undefined;
+  }
+
+  async deletePlaythrough(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await PlaythroughModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  // ===== Playthrough Deltas =====
+  async getPlaythroughDelta(id: string): Promise<PlaythroughDelta | undefined> {
+    await this.connect();
+    const doc = await PlaythroughDeltaModel.findById(id);
+    return doc ? docToPlaythroughDelta(doc) : undefined;
+  }
+
+  async getDeltasByPlaythrough(playthroughId: string): Promise<PlaythroughDelta[]> {
+    await this.connect();
+    const docs = await PlaythroughDeltaModel.find({ playthroughId }).sort({ timestep: 1 });
+    return docs.map(docToPlaythroughDelta);
+  }
+
+  async getDeltasByEntityType(playthroughId: string, entityType: string): Promise<PlaythroughDelta[]> {
+    await this.connect();
+    const docs = await PlaythroughDeltaModel.find({ playthroughId, entityType }).sort({ timestep: 1 });
+    return docs.map(docToPlaythroughDelta);
+  }
+
+  async createPlaythroughDelta(delta: InsertPlaythroughDelta): Promise<PlaythroughDelta> {
+    await this.connect();
+    const doc = await PlaythroughDeltaModel.create(delta);
+    return docToPlaythroughDelta(doc);
+  }
+
+  async deletePlaythroughDelta(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await PlaythroughDeltaModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  // ===== Play Traces =====
+  async getPlayTrace(id: string): Promise<PlayTrace | undefined> {
+    await this.connect();
+    const doc = await PlayTraceModel.findById(id);
+    return doc ? docToPlayTrace(doc) : undefined;
+  }
+
+  async getTracesByPlaythrough(playthroughId: string): Promise<PlayTrace[]> {
+    await this.connect();
+    const docs = await PlayTraceModel.find({ playthroughId }).sort({ timestamp: 1 });
+    return docs.map(docToPlayTrace);
+  }
+
+  async getTracesByUser(userId: string): Promise<PlayTrace[]> {
+    await this.connect();
+    const docs = await PlayTraceModel.find({ userId }).sort({ timestamp: -1 });
+    return docs.map(docToPlayTrace);
+  }
+
+  async createPlayTrace(trace: InsertPlayTrace): Promise<PlayTrace> {
+    await this.connect();
+    const doc = await PlayTraceModel.create(trace);
+    return docToPlayTrace(doc);
+  }
+
+  async deletePlayTrace(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await PlayTraceModel.findByIdAndDelete(id);
     return !!result;
   }
 

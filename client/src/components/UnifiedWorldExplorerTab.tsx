@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, ChevronRight, Plus } from 'lucide-react';
+import { useWorldPermissions } from '@/hooks/use-world-permissions';
+import { ArrowLeft, ChevronRight, Plus, Lock } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import type { InsertCharacter, Character } from '@shared/schema';
@@ -32,6 +34,7 @@ type ViewLevel = 'countries' | 'country-detail' | 'states' | 'state-detail' | 's
 export function UnifiedWorldExplorerTab({ worldId }: UnifiedWorldExplorerTabProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { canEdit, loading: permissionsLoading } = useWorldPermissions(worldId);
 
   // Navigation state
   const [viewLevel, setViewLevel] = useState<ViewLevel>('countries');
@@ -452,13 +455,30 @@ export function UnifiedWorldExplorerTab({ worldId }: UnifiedWorldExplorerTabProp
               </h2>
               <p className="text-muted-foreground mt-1">Explore your world's locations, settlements, and characters</p>
             </div>
-            <Button
-              onClick={() => setShowCountryDialog(true)}
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Country
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      onClick={() => setShowCountryDialog(true)}
+                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                      disabled={!canEdit || permissionsLoading}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Country
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!canEdit && (
+                  <TooltipContent>
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-3 h-3" />
+                      <span>Only the world owner can add countries</span>
+                    </div>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <CountriesListView countries={countries} onSelectCountry={selectCountry} />
         </div>
@@ -474,6 +494,7 @@ export function UnifiedWorldExplorerTab({ worldId }: UnifiedWorldExplorerTabProp
           onSelectSettlement={selectSettlement}
           onAddState={() => setShowStateDialog(true)}
           onAddSettlement={() => setShowSettlementDialog(true)}
+          canEdit={canEdit}
           onDeleteCountry={async () => {
             try {
               await fetch(`/api/countries/${selectedCountry.id}`, { method: 'DELETE' });
@@ -533,6 +554,7 @@ export function UnifiedWorldExplorerTab({ worldId }: UnifiedWorldExplorerTabProp
           settlements={settlements}
           onSelectSettlement={selectSettlement}
           onAddSettlement={() => setShowSettlementDialog(true)}
+          canEdit={canEdit}
           onDeleteSettlement={async (settlementId: string) => {
             try {
               await fetch(`/api/settlements/${settlementId}`, { method: 'DELETE' });
@@ -571,6 +593,7 @@ export function UnifiedWorldExplorerTab({ worldId }: UnifiedWorldExplorerTabProp
           onAddLot={() => setShowLotDialog(true)}
           onAddBusiness={() => setShowBusinessDialog(true)}
           onAddResidence={() => setShowResidenceDialog(true)}
+          canEdit={canEdit}
           onDeleteLot={async (lotId: string) => {
             try {
               await fetch(`/api/lots/${lotId}`, { method: 'DELETE' });
@@ -610,6 +633,7 @@ export function UnifiedWorldExplorerTab({ worldId }: UnifiedWorldExplorerTabProp
           onSelectCharacter={selectCharacter}
           onCreateCharacter={(data) => createCharacterMutation.mutate(data)}
           isCreating={createCharacterMutation.isPending}
+          canEdit={canEdit}
           onDeleteCharacter={async (characterId: string) => {
             try {
               await fetch(`/api/characters/${characterId}`, { method: 'DELETE' });

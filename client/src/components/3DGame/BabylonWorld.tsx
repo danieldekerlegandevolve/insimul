@@ -5,6 +5,7 @@ import {
   Color3,
   Color4,
   DirectionalLight,
+  DynamicTexture,
   Engine,
   HemisphericLight,
   Mesh,
@@ -30,17 +31,22 @@ import { DialogueActions } from "@/components/rpg/actions/DialogueActions";
 import { Action, ActionContext, ActionResult } from "@/components/rpg/types/actions";
 import { ActionManager } from "@/components/rpg/actions/ActionManager";
 import { TextureManager } from "@/components/3DGame/TextureManager";
+import { BabylonGUIManager } from "@/components/3DGame/BabylonGUIManager";
+import { BabylonChatPanel } from "@/components/3DGame/BabylonChatPanel";
+import { BabylonQuestTracker } from "@/components/3DGame/BabylonQuestTracker";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import type { VisualAsset } from "@shared/schema";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface BabylonWorldProps {
   worldId: string;
   worldName: string;
   worldType?: string;
+  userId?: string;
   onBack: () => void;
 }
 
@@ -78,7 +84,10 @@ interface WorldData {
   actions: Action[];
   baseActions: Action[];
   quests: QuestSummary[];
-   settlements: SettlementSummary[];
+  settlements: SettlementSummary[];
+  rules: any[];
+  baseRules: any[];
+  countries: any[];
 }
 
 interface ActionCategorySummary {
@@ -106,6 +115,7 @@ interface NPCDisplayInfo {
 interface NPCInstance {
   mesh: Mesh;
   controller?: CharacterController | null;
+  questMarker?: Mesh | null;
 }
 
 interface ActionFeedback {
@@ -233,6 +243,7 @@ const INITIAL_ENERGY = 100;
 
 export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonWorldProps) {
   const { toast } = useToast();
+  const { token } = useAuth();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<Engine | null>(null);
@@ -245,6 +256,9 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const npcMeshesRef = useRef<Map<string, NPCInstance>>(new Map());
   const settlementMeshesRef = useRef<Map<string, Mesh>>(new Map());
   const settlementRoadMeshesRef = useRef<Mesh[]>([]);
+  const guiManagerRef = useRef<BabylonGUIManager | null>(null);
+  const chatPanelRef = useRef<BabylonChatPanel | null>(null);
+  const questTrackerRef = useRef<BabylonQuestTracker | null>(null);
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -265,6 +279,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const [actionFeedback, setActionFeedback] = useState<ActionFeedback | null>(null);
   const [actionInProgress, setActionInProgress] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [playthroughId, setPlaythroughId] = useState<string | null>(null);
 
   const [availableTextures, setAvailableTextures] = useState<VisualAsset[]>([]);
   const [selectedGroundTexture, setSelectedGroundTexture] = useState<string | null>(null);
@@ -311,13 +326,50 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         window.removeEventListener("resize", handleResize);
       });
 
+      // Initialize GUI manager
+      const guiManager = new BabylonGUIManager(scene, {
+        worldName,
+        worldId
+      });
+
+      // Set up GUI callbacks
+      guiManager.setOnBackPressed(() => onBack());
+      guiManager.setOnFullscreenPressed(() => handleToggleFullscreen());
+      guiManager.setOnDebugPressed(() => handleToggleDebug());
+      guiManager.setOnNPCSelected((npcId) => setSelectedNPCId(npcId));
+      guiManager.setOnActionSelected((actionId) => handlePerformAction(actionId));
+
+      guiManagerRef.current = guiManager;
+
+      // Initialize chat panel
+      const chatPanel = new BabylonChatPanel(guiManager.advancedTexture, scene);
+      chatPanel.setOnClose(() => {
+        console.log('Chat closed');
+      });
+      chatPanel.setOnQuestAssigned((questData) => {
+        // Refresh quest tracker when new quest is assigned
+        questTrackerRef.current?.updateQuests(worldId);
+        toast({
+          title: 'New Quest!',
+          description: questData.title || 'Quest assigned',
+        });
+      });
+      chatPanelRef.current = chatPanel;
+
+      // Initialize quest tracker
+      const questTracker = new BabylonQuestTracker(guiManager.advancedTexture, scene);
+      questTracker.setOnClose(() => {
+        console.log('Quest tracker closed');
+      });
+      questTrackerRef.current = questTracker;
+
       setSceneStatus("ready");
     } catch (error) {
       console.error("Failed to initialize Babylon scene", error);
       setSceneStatus("error");
       setSceneErrorMessage(error instanceof Error ? error.message : String(error));
     }
-  }, [worldTheme]);
+  }, [worldTheme, worldName, worldId, onBack]);
 
   useEffect(() => {
     initializeScene();
@@ -325,6 +377,12 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     return () => {
       textureManagerRef.current?.dispose();
       textureManagerRef.current = null;
+      chatPanelRef.current?.dispose();
+      chatPanelRef.current = null;
+      questTrackerRef.current?.dispose();
+      questTrackerRef.current = null;
+      guiManagerRef.current?.dispose();
+      guiManagerRef.current = null;
       sceneRef.current?.dispose();
       engineRef.current?.dispose();
       sceneRef.current = null;
@@ -339,7 +397,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       setPlayerStatus("idle");
       setNPCStatus("idle");
     };
-  }, [initializeScene, worldId]);
+  }, [initializeScene, worldId, toast]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -446,12 +504,25 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       setWorldError("");
 
       try {
-        const [charactersRes, actionsRes, baseActionsRes, questsRes, settlementsRes, configRes] = await Promise.all([
+        const [
+          charactersRes,
+          actionsRes,
+          baseActionsRes,
+          questsRes,
+          settlementsRes,
+          rulesRes,
+          baseRulesRes,
+          countriesRes,
+          configRes
+        ] = await Promise.all([
           fetch(`/api/worlds/${worldId}/characters`),
           fetch(`/api/worlds/${worldId}/actions`),
           fetch(`/api/actions/base`),
           fetch(`/api/worlds/${worldId}/quests`),
           fetch(`/api/worlds/${worldId}/settlements`),
+          fetch(`/api/rules?worldId=${worldId}`),
+          fetch(`/api/rules/base`),
+          fetch(`/api/worlds/${worldId}/countries`),
           fetch(`/api/worlds/${worldId}/base-resources/config`)
         ]);
 
@@ -460,10 +531,17 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         let baseActions = baseActionsRes.ok ? await baseActionsRes.json() : [];
         const quests = questsRes.ok ? await questsRes.json() : [];
         const settlements = settlementsRes.ok ? await settlementsRes.json() : [];
+        let rules = rulesRes.ok ? await rulesRes.json() : [];
+        let baseRules = baseRulesRes.ok ? await baseRulesRes.json() : [];
+        const countries = countriesRes.ok ? await countriesRes.json() : [];
         const config = configRes.ok ? await configRes.json() : {};
 
         if (Array.isArray(config.disabledBaseActions) && config.disabledBaseActions.length > 0) {
           baseActions = baseActions.filter((action: Action) => !config.disabledBaseActions.includes(action.id));
+        }
+
+        if (Array.isArray(config.disabledBaseRules) && config.disabledBaseRules.length > 0) {
+          baseRules = baseRules.filter((rule: any) => !config.disabledBaseRules.includes(rule.id));
         }
 
         if (cancelled) return;
@@ -476,7 +554,10 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           actions,
           baseActions,
           quests,
-          settlements
+          settlements,
+          rules,
+          baseRules,
+          countries
         });
         setTerrainSize(computeTerrainSizeFromSettlements(settlements, worldType));
         setDataStatus("ready");
@@ -495,6 +576,37 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       actionManagerRef.current = null;
     };
   }, [worldId]);
+
+  // Start or resume playthrough
+  useEffect(() => {
+    if (!token || !worldId) return;
+
+    async function startPlaythrough() {
+      try {
+        const response = await fetch(`/api/worlds/${worldId}/playthroughs/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: `${worldName} - Playthrough`,
+          }),
+        });
+
+        if (response.ok) {
+          const playthrough = await response.json();
+          setPlaythroughId(playthrough.id);
+        } else {
+          console.error('Failed to start playthrough:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error starting playthrough:', error);
+      }
+    }
+
+    startPlaythrough();
+  }, [token, worldId, worldName]);
 
   useEffect(() => {
     if (sceneStatus !== "ready") {
@@ -760,6 +872,127 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     };
   }, []);
 
+  // Add keyboard shortcuts for chat, quests, and proximity interaction
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+
+    const handleKeyDown = async (event: KeyboardEvent) => {
+      // SPACE key - proximity interaction
+      if (event.code === 'Space' && !event.repeat) {
+        event.preventDefault();
+
+        // Find nearest NPC to player
+        const playerMesh = playerMeshRef.current;
+        if (!playerMesh) return;
+
+        const playerPos = playerMesh.position;
+        let nearestNPC: { id: string; distance: number } | null = null;
+        const maxInteractionDistance = 8; // units
+
+        npcMeshesRef.current.forEach((instance, npcId) => {
+          if (!instance.mesh) return;
+          const npcPos = instance.mesh.position;
+          const dx = playerPos.x - npcPos.x;
+          const dz = playerPos.z - npcPos.z;
+          const distance = Math.sqrt(dx * dx + dz * dz);
+
+          if (distance <= maxInteractionDistance) {
+            if (!nearestNPC || distance < nearestNPC.distance) {
+              nearestNPC = { id: npcId, distance };
+            }
+          }
+        });
+
+        if (nearestNPC) {
+          setSelectedNPCId(nearestNPC.id);
+
+          // Show a toast notification
+          const npc = npcInfos.find(n => n.id === nearestNPC.id);
+          if (npc) {
+            toast({
+              title: `Interacting with ${npc.name}`,
+              description: npc.occupation || "Character",
+              duration: 2000
+            });
+          }
+        } else {
+          toast({
+            title: "No one nearby",
+            description: "Move closer to an NPC to interact",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // C key - open chat with selected NPC
+      if (event.code === 'KeyC' && !event.repeat && selectedNPCId) {
+        event.preventDefault();
+
+        const npc = npcInfos.find(n => n.id === selectedNPCId);
+        if (npc && worldData && chatPanelRef.current) {
+          // Fetch character details and truths
+          try {
+            const [characterRes, truthsRes] = await Promise.all([
+              fetch(`/api/characters/${selectedNPCId}`),
+              fetch(`/api/truths?worldId=${worldId}`)
+            ]);
+
+            if (characterRes.ok && truthsRes.ok) {
+              const character = await characterRes.json();
+              const truths = await truthsRes.json();
+
+              chatPanelRef.current.show(character, truths);
+
+              toast({
+                title: `Chatting with ${npc.name}`,
+                description: "Press C again to close chat",
+                duration: 2000
+              });
+            }
+          } catch (error) {
+            console.error('Failed to open chat:', error);
+            toast({
+              title: "Chat Error",
+              description: "Failed to load character data",
+              variant: "destructive"
+            });
+          }
+        } else if (!selectedNPCId) {
+          toast({
+            title: "No NPC Selected",
+            description: "Select an NPC first (click or press SPACE near them)",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // Q key - toggle quest tracker
+      if (event.code === 'KeyQ' && !event.repeat) {
+        event.preventDefault();
+
+        if (questTrackerRef.current) {
+          questTrackerRef.current.toggle();
+          questTrackerRef.current.updateQuests(worldId);
+
+          toast({
+            title: "Quest Tracker",
+            description: "Press Q again to toggle",
+            duration: 1500
+          });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [npcInfos, selectedNPCId, worldData, worldId, toast]);
+
   useEffect(() => {
     npcMeshesRef.current.forEach((instance, npcId) => {
       if (!instance || !instance.mesh) return;
@@ -772,6 +1005,85 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       }
     });
   }, [selectedNPCId]);
+
+  // Update GUI: Player status
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui) return;
+
+    const statusText = playerStatus === "ready" ? "Ready" :
+                      playerStatus === "loading" ? "Loading..." :
+                      playerStatus === "error" ? "Error" : "Initializing";
+
+    gui.updatePlayerStatus({
+      energy: playerEnergy,
+      maxEnergy: INITIAL_ENERGY,
+      status: statusText
+    });
+  }, [playerEnergy, playerStatus]);
+
+  // Update GUI: World stats
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui || !worldData) return;
+
+    gui.updateWorldStats({
+      countries: worldData.countries.length,
+      settlements: worldData.settlements.length,
+      characters: worldData.characters.length,
+      rules: worldData.rules.length,
+      baseRules: worldData.baseRules.length,
+      actions: worldData.actions.length,
+      baseActions: worldData.baseActions.length,
+      quests: worldData.quests.length
+    });
+  }, [worldData]);
+
+  // Update GUI: NPC list
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui) return;
+
+    const npcList = npcInfos.map(npc => ({
+      id: npc.id,
+      name: npc.name,
+      occupation: npc.occupation,
+      disposition: npc.disposition,
+      questGiver: npc.questGiver
+    }));
+
+    gui.updateNPCList(npcList);
+  }, [npcInfos]);
+
+  // Update GUI: Action list
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui) return;
+
+    const npc = selectedNPC ? {
+      id: selectedNPC.id,
+      name: selectedNPC.name,
+      occupation: selectedNPC.occupation,
+      disposition: selectedNPC.disposition,
+      questGiver: selectedNPC.questGiver
+    } : null;
+
+    gui.updateActionList(npc, availableActions, playerEnergy);
+  }, [selectedNPC, availableActions, playerEnergy]);
+
+  // Update GUI: Action feedback
+  useEffect(() => {
+    const gui = guiManagerRef.current;
+    if (!gui || !actionFeedback) return;
+
+    gui.showActionFeedback({
+      actionName: actionFeedback.actionName,
+      targetName: actionFeedback.targetName,
+      narrativeText: actionFeedback.result.narrativeText || actionFeedback.result.message || "",
+      success: actionFeedback.result.success,
+      timestamp: actionFeedback.timestamp
+    });
+  }, [actionFeedback]);
 
   const actionCategories = useMemo(() => ["social", "mental", "combat", "movement", "economic"], []);
 
@@ -969,6 +1281,34 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           setPlayerEnergy((energy) => Math.max(0, energy - result.energyUsed));
         }
 
+        // Record play trace if we have a playthrough
+        if (playthroughId && token) {
+          try {
+            await fetch(`/api/playthroughs/${playthroughId}/traces`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                actionType: 'action_performed',
+                actionId,
+                targetCharacterId: selectedNPCId,
+                metadata: {
+                  actionName,
+                  targetName,
+                  success: result.success,
+                  energyUsed: result.energyUsed,
+                  narrativeText: result.narrativeText,
+                },
+              }),
+            });
+          } catch (traceError) {
+            // Don't fail the action if trace recording fails
+            console.error('Failed to record play trace:', traceError);
+          }
+        }
+
         toast({
           title: result.success ? `${actionName} succeeded` : `${actionName} failed`,
           description: result.narrativeText || result.message,
@@ -985,7 +1325,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         setActionInProgress(false);
       }
     },
-    [playerEnergy, selectedNPCId, selectedNPC, toast, worldData]
+    [playerEnergy, selectedNPCId, selectedNPC, toast, worldData, playthroughId, token]
   );
 
   return (
@@ -1745,11 +2085,67 @@ async function spawnNPCInstance({
 
     controller.start();
 
-    return { mesh: npcMesh, controller };
+    // Add quest marker if this NPC is a quest giver
+    let questMarker: Mesh | null = null;
+    if (questGiver) {
+      questMarker = createQuestMarker(scene, character.id);
+      questMarker.parent = npcMesh;
+      questMarker.position = new Vector3(0, 2.8, 0); // Above NPC head
+    }
+
+    return { mesh: npcMesh, controller, questMarker };
   } catch (error) {
     console.warn(`Failed to spawn NPC instance for ${character.id}`, error);
     return null;
   }
+}
+
+function createQuestMarker(scene: Scene, npcId: string): Mesh {
+  // Create a simple exclamation mark billboard
+  const plane = MeshBuilder.CreatePlane(
+    `quest-marker-${npcId}`,
+    { width: 0.8, height: 0.8, sideOrientation: Mesh.DOUBLESIDE },
+    scene
+  );
+
+  // Create dynamic texture for the exclamation mark
+  const texture = new DynamicTexture(`quest-marker-texture-${npcId}`, 128, scene, true);
+  const context = texture.getContext();
+
+  // Draw yellow background circle
+  context.fillStyle = '#FFD700';
+  context.beginPath();
+  context.arc(64, 64, 60, 0, 2 * Math.PI);
+  context.fill();
+
+  // Draw exclamation mark
+  context.fillStyle = '#FFFFFF';
+  context.font = 'bold 80px Arial';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText('!', 64, 64);
+
+  texture.update();
+
+  // Create material
+  const material = new StandardMaterial(`quest-marker-mat-${npcId}`, scene);
+  material.diffuseTexture = texture;
+  material.emissiveColor = new Color3(1, 0.84, 0); // Gold glow
+  material.opacityTexture = texture;
+  material.backFaceCulling = false;
+
+  plane.material = material;
+  plane.billboardMode = Mesh.BILLBOARDMODE_ALL; // Always face camera
+  plane.isPickable = false;
+
+  // Add gentle bobbing animation
+  let time = 0;
+  scene.onBeforeRenderObservable.add(() => {
+    time += 0.016;
+    plane.position.y = 2.8 + Math.sin(time * 3) * 0.1;
+  });
+
+  return plane;
 }
 
 function disposeNPCInstance(instance?: NPCInstance | null) {
@@ -1760,6 +2156,9 @@ function disposeNPCInstance(instance?: NPCInstance | null) {
     console.warn("Failed to stop NPC controller", error);
   }
   instance.controller = null;
+  if (instance.questMarker) {
+    instance.questMarker.dispose(false, true);
+  }
   if (instance.mesh) {
     instance.mesh.dispose(false, true);
   }

@@ -15,12 +15,15 @@ import { ImportDialog } from '@/components/ImportDialog';
 import { SimulationCreateDialog } from '@/components/SimulationCreateDialog';
 import { SimulationConfigDialog } from '@/components/SimulationConfigDialog';
 import { SimulationTimelineView } from '@/components/SimulationTimelineView';
-import { PhaserRPGGame } from '@/components/PhaserRPGGame';
 import { BabylonWorld } from '@/components/3DGame/BabylonWorld';
+import { AuthDialog } from '@/components/AuthDialog';
+import { PlaythroughsList } from '@/components/PlaythroughsList';
+import { WorldBrowser } from '@/components/WorldBrowser';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { Play } from 'lucide-react';
 import { InsimulRuleCompiler } from '@/lib/unified-syntax';
 import type { InsertSimulation } from '@/../../shared/schema';
@@ -44,9 +47,11 @@ export default function ModernEditor() {
   const [activeTab, setActiveTab] = useState('home');
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const queryClient = useQueryClient();
   const ruleCompiler = new InsimulRuleCompiler();
   const { toast } = useToast();
+  const { user, login, isAuthenticated } = useAuth();
 
   // Fetch characters for tabs that need them (TruthTab)
   const { data: characters = [] } = useQuery<Character[]>({
@@ -149,9 +154,19 @@ export default function ModernEditor() {
             setExportDialogOpen(true);
             return;
           }
+          // Require authentication for 3D game
+          if (tab === '3d-game' && !isAuthenticated) {
+            setAuthDialogOpen(true);
+            toast({
+              title: 'Authentication required',
+              description: 'Please sign in to play the 3D game',
+            });
+            return;
+          }
           setActiveTab(tab);
         }}
         onChangeWorld={() => setSelectedWorld('')}
+        onOpenAuth={() => setAuthDialogOpen(true)}
       />
 
       <div className="container mx-auto p-6">
@@ -317,22 +332,34 @@ export default function ModernEditor() {
           </Card>
         )}
 
-        {/* RPG Game Tab - 2D */}
-        {activeTab === 'rpg-game' && selectedWorld && (
-          <PhaserRPGGame
-            worldId={selectedWorld}
-            worldName={currentWorld?.name || 'Unknown World'}
-            onBack={() => setActiveTab('simulations')}
-          />
-        )}
-
         {/* 3D Game Tab */}
-        {activeTab === '3d-game' && selectedWorld && (
+        {activeTab === '3d-game' && selectedWorld && isAuthenticated && (
           <BabylonWorld
             worldId={selectedWorld}
             worldName={currentWorld?.name || 'Unknown World'}
             worldType={currentWorld?.config?.worldType}
+            userId={user?.id}
             onBack={() => setActiveTab('simulations')}
+          />
+        )}
+
+        {/* My Playthroughs Tab */}
+        {activeTab === 'my-playthroughs' && (
+          <PlaythroughsList
+            onResumePlaythrough={(worldId, playthroughId) => {
+              setSelectedWorld(worldId);
+              setActiveTab('3d-game');
+            }}
+          />
+        )}
+
+        {/* Browse Worlds Tab */}
+        {activeTab === 'browse-worlds' && (
+          <WorldBrowser
+            onPlayWorld={(worldId) => {
+              setSelectedWorld(worldId);
+              setActiveTab('3d-game');
+            }}
           />
         )}
 
@@ -390,6 +417,16 @@ export default function ModernEditor() {
           }}
         />
       )}
+
+      {/* Auth Dialog */}
+      <AuthDialog
+        open={authDialogOpen}
+        onOpenChange={setAuthDialogOpen}
+        onAuthSuccess={(user, token) => {
+          login(user, token);
+          setActiveTab('3d-game');
+        }}
+      />
     </div>
   );
 }

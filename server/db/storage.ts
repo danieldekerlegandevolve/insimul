@@ -186,6 +186,59 @@ export interface IStorage {
   createGenerationJob(job: InsertGenerationJob): Promise<GenerationJob>;
   updateGenerationJob(id: string, job: Partial<InsertGenerationJob>): Promise<GenerationJob | undefined>;
   deleteGenerationJob(id: string): Promise<boolean>;
+  // Users
+  getUser(id: string): Promise<import("@shared/schema").User | undefined>;
+  getUserByUsername(username: string): Promise<import("@shared/schema").User | undefined>;
+  getUserByEmail(email: string): Promise<import("@shared/schema").User | undefined>;
+  createUser(user: import("@shared/schema").InsertUser): Promise<import("@shared/schema").User>;
+  updateUser(id: string, user: Partial<import("@shared/schema").InsertUser>): Promise<import("@shared/schema").User | undefined>;
+  deleteUser(id: string): Promise<boolean>;
+
+  // Player Progress
+  getPlayerProgress(id: string): Promise<import("@shared/schema").PlayerProgress | undefined>;
+  getPlayerProgressByUser(userId: string, worldId: string): Promise<import("@shared/schema").PlayerProgress | undefined>;
+  getPlayerProgressesByUser(userId: string): Promise<import("@shared/schema").PlayerProgress[]>;
+  createPlayerProgress(progress: import("@shared/schema").InsertPlayerProgress): Promise<import("@shared/schema").PlayerProgress>;
+  updatePlayerProgress(id: string, progress: Partial<import("@shared/schema").InsertPlayerProgress>): Promise<import("@shared/schema").PlayerProgress | undefined>;
+  deletePlayerProgress(id: string): Promise<boolean>;
+
+  // Player Sessions
+  getPlayerSession(id: string): Promise<import("@shared/schema").PlayerSession | undefined>;
+  getPlayerSessionsByUser(userId: string): Promise<import("@shared/schema").PlayerSession[]>;
+  createPlayerSession(session: import("@shared/schema").InsertPlayerSession): Promise<import("@shared/schema").PlayerSession>;
+  updatePlayerSession(id: string, session: Partial<import("@shared/schema").InsertPlayerSession>): Promise<import("@shared/schema").PlayerSession | undefined>;
+  endPlayerSession(id: string, duration: number): Promise<import("@shared/schema").PlayerSession | undefined>;
+
+  // Achievements
+  getAchievement(id: string): Promise<import("@shared/schema").Achievement | undefined>;
+  getAchievementsByWorld(worldId: string): Promise<import("@shared/schema").Achievement[]>;
+  getGlobalAchievements(): Promise<import("@shared/schema").Achievement[]>;
+  createAchievement(achievement: import("@shared/schema").InsertAchievement): Promise<import("@shared/schema").Achievement>;
+  updateAchievement(id: string, achievement: Partial<import("@shared/schema").InsertAchievement>): Promise<import("@shared/schema").Achievement | undefined>;
+  deleteAchievement(id: string): Promise<boolean>;
+
+  // Playthroughs
+  getPlaythrough(id: string): Promise<import("@shared/schema").Playthrough | undefined>;
+  getPlaythroughsByUser(userId: string): Promise<import("@shared/schema").Playthrough[]>;
+  getPlaythroughsByWorld(worldId: string): Promise<import("@shared/schema").Playthrough[]>;
+  getUserPlaythroughForWorld(userId: string, worldId: string): Promise<import("@shared/schema").Playthrough | undefined>;
+  createPlaythrough(playthrough: import("@shared/schema").InsertPlaythrough): Promise<import("@shared/schema").Playthrough>;
+  updatePlaythrough(id: string, playthrough: Partial<import("@shared/schema").InsertPlaythrough>): Promise<import("@shared/schema").Playthrough | undefined>;
+  deletePlaythrough(id: string): Promise<boolean>;
+
+  // Playthrough Deltas
+  getPlaythroughDelta(id: string): Promise<import("@shared/schema").PlaythroughDelta | undefined>;
+  getDeltasByPlaythrough(playthroughId: string): Promise<import("@shared/schema").PlaythroughDelta[]>;
+  getDeltasByEntityType(playthroughId: string, entityType: string): Promise<import("@shared/schema").PlaythroughDelta[]>;
+  createPlaythroughDelta(delta: import("@shared/schema").InsertPlaythroughDelta): Promise<import("@shared/schema").PlaythroughDelta>;
+  deletePlaythroughDelta(id: string): Promise<boolean>;
+
+  // Play Traces
+  getPlayTrace(id: string): Promise<import("@shared/schema").PlayTrace | undefined>;
+  getTracesByPlaythrough(playthroughId: string): Promise<import("@shared/schema").PlayTrace[]>;
+  getTracesByUser(userId: string): Promise<import("@shared/schema").PlayTrace[]>;
+  createPlayTrace(trace: import("@shared/schema").InsertPlayTrace): Promise<import("@shared/schema").PlayTrace>;
+  deletePlayTrace(id: string): Promise<boolean>;
 }
 
 // Export MongoStorage as the default storage implementation

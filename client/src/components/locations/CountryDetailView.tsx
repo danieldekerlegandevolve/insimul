@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Globe, Map, MapPin, Building, Plus, ChevronRight, Trash2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Globe, Map, MapPin, Building, Plus, ChevronRight, Trash2, Lock } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useState } from 'react';
@@ -13,6 +14,7 @@ interface CountryDetailViewProps {
   onSelectSettlement: (settlement: any) => void;
   onAddState: () => void;
   onAddSettlement: () => void;
+  canEdit?: boolean;
   onDeleteCountry?: () => void;
   onDeleteState?: (stateId: string) => void;
   onDeleteSettlement?: (settlementId: string) => void;
@@ -28,6 +30,7 @@ export function CountryDetailView({
   onSelectSettlement,
   onAddState,
   onAddSettlement,
+  canEdit = true,
   onDeleteCountry,
   onDeleteState,
   onDeleteSettlement,
@@ -128,15 +131,32 @@ export function CountryDetailView({
               </div>
             </div>
             {onDeleteCountry && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setDeleteCountryConfirmOpen(true)}
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Country
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setDeleteCountryConfirmOpen(true)}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        disabled={!canEdit}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Country
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  {!canEdit && (
+                    <TooltipContent>
+                      <div className="flex items-center gap-2">
+                        <Lock className="w-3 h-3" />
+                        <span>Only the world owner can delete countries</span>
+                      </div>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </CardHeader>
@@ -184,15 +204,32 @@ export function CountryDetailView({
                 variant="destructive"
                 size="sm"
                 onClick={() => handleBulkDeleteClick('states')}
+                disabled={!canEdit}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Delete {selectedStates.size}
               </Button>
             )}
-            <Button onClick={onAddState} size="sm">
-              <Plus className="w-4 h-4 mr-2" />
-              Add State
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button onClick={onAddState} size="sm" disabled={!canEdit}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add State
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!canEdit && (
+                  <TooltipContent>
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-3 h-3" />
+                      <span>Only the world owner can add states</span>
+                    </div>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
 
