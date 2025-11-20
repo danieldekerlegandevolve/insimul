@@ -265,6 +265,9 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const questTrackerRef = useRef<BabylonQuestTracker | null>(null);
   const radialMenuRef = useRef<BabylonRadialMenu | null>(null);
   const questObjectManagerRef = useRef<QuestObjectManager | null>(null);
+  const buildingGeneratorRef = useRef<ProceduralBuildingGenerator | null>(null);
+  const natureGeneratorRef = useRef<ProceduralNatureGenerator | null>(null);
+  const worldScaleManagerRef = useRef<WorldScaleManager | null>(null);
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -402,6 +405,17 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       });
       questObjectManagerRef.current = questObjectManager;
 
+      // Initialize procedural generators
+      const buildingGenerator = new ProceduralBuildingGenerator(scene);
+      buildingGeneratorRef.current = buildingGenerator;
+
+      const natureGenerator = new ProceduralNatureGenerator(scene);
+      natureGeneratorRef.current = natureGenerator;
+
+      // Initialize world scale manager with default size (will be updated based on world data)
+      const worldScaleManager = new WorldScaleManager(512, worldId);
+      worldScaleManagerRef.current = worldScaleManager;
+
       setSceneStatus("ready");
     } catch (error) {
       console.error("Failed to initialize Babylon scene", error);
@@ -424,6 +438,11 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       radialMenuRef.current = null;
       questObjectManagerRef.current?.dispose();
       questObjectManagerRef.current = null;
+      buildingGeneratorRef.current?.dispose();
+      buildingGeneratorRef.current = null;
+      natureGeneratorRef.current?.dispose();
+      natureGeneratorRef.current = null;
+      worldScaleManagerRef.current = null;
       guiManagerRef.current?.dispose();
       guiManagerRef.current = null;
       sceneRef.current?.dispose();
@@ -556,6 +575,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           rulesRes,
           baseRulesRes,
           countriesRes,
+          statesRes,
           configRes
         ] = await Promise.all([
           fetch(`/api/worlds/${worldId}/characters`),
@@ -566,6 +586,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           fetch(`/api/rules?worldId=${worldId}`),
           fetch(`/api/rules/base`),
           fetch(`/api/worlds/${worldId}/countries`),
+          fetch(`/api/worlds/${worldId}/states`),
           fetch(`/api/worlds/${worldId}/base-resources/config`)
         ]);
 
@@ -577,6 +598,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         let rules = rulesRes.ok ? await rulesRes.json() : [];
         let baseRules = baseRulesRes.ok ? await baseRulesRes.json() : [];
         const countries = countriesRes.ok ? await countriesRes.json() : [];
+        const states = statesRes.ok ? await statesRes.json() : [];
         const config = configRes.ok ? await configRes.json() : {};
 
         if (Array.isArray(config.disabledBaseActions) && config.disabledBaseActions.length > 0) {
@@ -602,7 +624,16 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           baseRules,
           countries
         });
-        setTerrainSize(computeTerrainSizeFromSettlements(settlements, worldType));
+
+        // Calculate optimal world size based on geography
+        const optimalSize = WorldScaleManager.calculateOptimalWorldSize({
+          countryCount: countries.length,
+          stateCount: states.length,
+          settlementCount: settlements.length
+        });
+        setTerrainSize(optimalSize);
+        console.log(`World size calculated: ${optimalSize} (${countries.length} countries, ${states.length} states, ${settlements.length} settlements)`);
+
         setDataStatus("ready");
       } catch (error) {
         if (cancelled) return;
