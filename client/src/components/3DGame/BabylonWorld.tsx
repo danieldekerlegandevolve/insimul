@@ -34,6 +34,7 @@ import { BabylonGUIManager } from "@/components/3DGame/BabylonGUIManager";
 import { BabylonChatPanel } from "@/components/3DGame/BabylonChatPanel";
 import { BabylonQuestTracker } from "@/components/3DGame/BabylonQuestTracker";
 import { BabylonRadialMenu } from "@/components/3DGame/BabylonRadialMenu";
+import { QuestObjectManager } from "@/components/3DGame/QuestObjectManager";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -260,6 +261,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const chatPanelRef = useRef<BabylonChatPanel | null>(null);
   const questTrackerRef = useRef<BabylonQuestTracker | null>(null);
   const radialMenuRef = useRef<BabylonRadialMenu | null>(null);
+  const questObjectManagerRef = useRef<QuestObjectManager | null>(null);
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -359,6 +361,18 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         // Handle action selection from chat panel
         handlePerformAction(actionId);
       });
+      chatPanel.setOnVocabularyUsed((word: string) => {
+        // Track vocabulary usage for quests
+        if (questObjectManagerRef.current) {
+          questObjectManagerRef.current.trackVocabularyUsage(word);
+        }
+      });
+      chatPanel.setOnConversationTurn((keywords: string[]) => {
+        // Track conversation turns for quests
+        if (questObjectManagerRef.current) {
+          questObjectManagerRef.current.trackConversationTurn(keywords);
+        }
+      });
       chatPanelRef.current = chatPanel;
 
       // Initialize quest tracker
@@ -371,6 +385,19 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       // Initialize radial menu
       const radialMenu = new BabylonRadialMenu(scene);
       radialMenuRef.current = radialMenu;
+
+      // Initialize quest object manager
+      const questObjectManager = new QuestObjectManager(scene);
+      questObjectManager.setOnObjectCollected((questId, objectiveId) => {
+        handleQuestObjectiveCompleted(questId, objectiveId, 'collect');
+      });
+      questObjectManager.setOnLocationVisited((questId, objectiveId) => {
+        handleQuestObjectiveCompleted(questId, objectiveId, 'visit');
+      });
+      questObjectManager.setOnObjectiveCompleted((questId, objectiveId) => {
+        handleQuestObjectiveCompleted(questId, objectiveId, 'complete');
+      });
+      questObjectManagerRef.current = questObjectManager;
 
       setSceneStatus("ready");
     } catch (error) {
@@ -392,6 +419,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       questTrackerRef.current = null;
       radialMenuRef.current?.dispose();
       radialMenuRef.current = null;
+      questObjectManagerRef.current?.dispose();
+      questObjectManagerRef.current = null;
       guiManagerRef.current?.dispose();
       guiManagerRef.current = null;
       sceneRef.current?.dispose();
@@ -862,6 +891,37 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     ground.metadata = { ...(ground.metadata || {}), terrainSize };
   }, [terrainSize, sceneStatus]);
 
+  // Load active quests into QuestObjectManager
+  useEffect(() => {
+    const questManager = questObjectManagerRef.current;
+    if (!questManager || !worldData || sceneStatus !== "ready") return;
+
+    // Load active quests
+    const activeQuests = worldData.quests.filter((q: any) => q.status === 'active');
+
+    activeQuests.forEach((quest: any) => {
+      questManager.loadQuest(quest as any);
+    });
+  }, [worldData, sceneStatus]);
+
+  // Check player proximity to quest location markers
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const questManager = questObjectManagerRef.current;
+    const playerMesh = playerMeshRef.current;
+
+    if (!scene || !questManager || !playerMesh) return;
+
+    // Register a render loop to check proximity
+    const observer = scene.onBeforeRenderObservable.add(() => {
+      questManager.checkLocationProximity(playerMesh.position);
+    });
+
+    return () => {
+      scene.onBeforeRenderObservable.remove(observer);
+    };
+  }, [sceneStatus]);
+
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
@@ -962,6 +1022,11 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
 
               // Set dialogue actions for the chat panel
               chatPanelRef.current.setDialogueActions(availableActions, playerEnergy);
+
+              // Track NPC conversation for quests
+              if (questObjectManagerRef.current) {
+                questObjectManagerRef.current.trackNPCConversation(selectedNPCId);
+              }
 
               toast({
                 title: `Chatting with ${npc.name}`,
@@ -1379,6 +1444,63 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       }
     },
     [playerEnergy, selectedNPCId, selectedNPC, toast, worldData, playthroughId, token]
+  );
+
+  // Handle quest objective completion
+  const handleQuestObjectiveCompleted = useCallback(
+    async (questId: string, objectiveId: string, type: string) => {
+      console.log(`Quest objective completed: ${objectiveId} (${type})`);
+
+      try {
+        // Fetch current quest data
+        const questRes = await fetch(`/api/worlds/${worldId}/quests`);
+        if (!questRes.ok) return;
+
+        const quests = await questRes.json();
+        const quest = quests.find((q: any) => q.id === questId);
+        if (!quest) return;
+
+        // Update progress based on type
+        const updatedProgress = { ...quest.progress };
+
+        if (type === 'collect') {
+          updatedProgress.collectedItems = updatedProgress.collectedItems || [];
+          updatedProgress.collectedItems.push(objectiveId);
+        } else if (type === 'visit') {
+          updatedProgress.visitedLocations = updatedProgress.visitedLocations || [];
+          updatedProgress.visitedLocations.push(objectiveId);
+        }
+
+        // Check if all objectives are complete
+        const allObjectivesComplete = quest.objectives?.every((obj: any) => obj.completed);
+
+        // Update quest in database
+        await fetch(`/api/quests/${questId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            progress: updatedProgress,
+            status: allObjectivesComplete ? 'completed' : 'active',
+            completedAt: allObjectivesComplete ? new Date() : null
+          })
+        });
+
+        // Refresh quest tracker
+        questTrackerRef.current?.updateQuests(worldId);
+
+        // Show completion notification
+        toast({
+          title: allObjectivesComplete ? 'Quest Completed!' : 'Objective Completed',
+          description: allObjectivesComplete
+            ? `You completed: ${quest.title}`
+            : `Progress updated for: ${quest.title}`,
+          duration: 3000
+        });
+      } catch (error) {
+        console.error('Failed to update quest progress:', error);
+      }
+    },
+    [worldId, toast]
   );
 
   return (

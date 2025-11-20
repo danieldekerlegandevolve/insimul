@@ -66,6 +66,8 @@ export class BabylonChatPanel {
   private onClose: (() => void) | null = null;
   private onQuestAssigned: ((questData: any) => void) | null = null;
   private onActionSelect: ((actionId: string) => void) | null = null;
+  private onVocabularyUsed: ((word: string) => void) | null = null;
+  private onConversationTurn: ((keywords: string[]) => void) | null = null;
 
   constructor(advancedTexture: AdvancedDynamicTexture, scene: Scene) {
     this.advancedTexture = advancedTexture;
@@ -424,6 +426,9 @@ export class BabylonChatPanel {
       });
       this.updateMessagesDisplay();
 
+      // Track vocabulary usage for quests
+      this.trackQuestProgress(userMessage, aiResponse);
+
       // Convert to speech and play
       await this.textToSpeech(aiResponse);
 
@@ -629,6 +634,43 @@ Respond naturally and conversationally.`;
     return data.transcript;
   }
 
+  /**
+   * Track quest progress from conversation
+   */
+  private trackQuestProgress(userMessage: string, aiResponse: string) {
+    // Extract words from both messages
+    const combinedText = `${userMessage} ${aiResponse}`;
+    const words = combinedText.toLowerCase()
+      .replace(/[^\wà-ÿ\s]/gi, '') // Keep accented characters
+      .split(/\s+/)
+      .filter(word => word.length > 3); // Only words longer than 3 chars
+
+    // Track vocabulary usage
+    if (this.onVocabularyUsed) {
+      // Deduplicate words
+      const uniqueWords = Array.from(new Set(words));
+      uniqueWords.forEach(word => {
+        this.onVocabularyUsed!(word);
+      });
+    }
+
+    // Extract keywords for conversation tracking
+    const keywords = words.filter(word => {
+      // French greeting/polite keywords
+      const importantWords = [
+        'bonjour', 'bonsoir', 'salut', 'au revoir', 'merci', 'pardon',
+        'comment', 'pourquoi', 'quand', 'où', 'qui', 'que', 'quel',
+        'sil', 'vous', 'plaît', 'allez'
+      ];
+      return importantWords.includes(word);
+    });
+
+    // Track conversation turn if we have keywords
+    if (this.onConversationTurn && keywords.length > 0) {
+      this.onConversationTurn(keywords);
+    }
+  }
+
   public setOnClose(callback: () => void) {
     this.onClose = callback;
   }
@@ -639,6 +681,14 @@ Respond naturally and conversationally.`;
 
   public setOnActionSelect(callback: (actionId: string) => void) {
     this.onActionSelect = callback;
+  }
+
+  public setOnVocabularyUsed(callback: (word: string) => void) {
+    this.onVocabularyUsed = callback;
+  }
+
+  public setOnConversationTurn(callback: (keywords: string[]) => void) {
+    this.onConversationTurn = callback;
   }
 
   /**
