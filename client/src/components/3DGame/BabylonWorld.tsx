@@ -34,6 +34,20 @@ import { BabylonGUIManager } from "@/components/3DGame/BabylonGUIManager";
 import { BabylonChatPanel } from "@/components/3DGame/BabylonChatPanel";
 import { BabylonQuestTracker } from "@/components/3DGame/BabylonQuestTracker";
 import { BabylonRadialMenu } from "@/components/3DGame/BabylonRadialMenu";
+import { QuestObjectManager } from "@/components/3DGame/QuestObjectManager";
+import { ProceduralBuildingGenerator, BuildingStyle } from "@/components/3DGame/ProceduralBuildingGenerator";
+import { ProceduralNatureGenerator, BiomeStyle } from "@/components/3DGame/ProceduralNatureGenerator";
+import { WorldScaleManager, ScaledSettlement } from "@/components/3DGame/WorldScaleManager";
+import { BuildingInfoDisplay } from "@/components/3DGame/BuildingInfoDisplay";
+import { BabylonMinimap } from "@/components/3DGame/BabylonMinimap";
+import { BabylonInventory, InventoryItem } from "@/components/3DGame/BabylonInventory";
+import { BabylonRulesPanel, Rule } from "@/components/3DGame/BabylonRulesPanel";
+import { RuleEnforcer, RuleViolation } from "@/components/3DGame/RuleEnforcer";
+import { CombatSystem, DamageResult } from "@/components/3DGame/CombatSystem";
+import { HealthBar } from "@/components/3DGame/HealthBar";
+import { CombatUI } from "@/components/3DGame/CombatUI";
+import { VRManager } from "@/components/3DGame/VRManager";
+import { VRUIPanel } from "@/components/3DGame/VRUIPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -260,6 +274,22 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const chatPanelRef = useRef<BabylonChatPanel | null>(null);
   const questTrackerRef = useRef<BabylonQuestTracker | null>(null);
   const radialMenuRef = useRef<BabylonRadialMenu | null>(null);
+  const questObjectManagerRef = useRef<QuestObjectManager | null>(null);
+  const buildingGeneratorRef = useRef<ProceduralBuildingGenerator | null>(null);
+  const natureGeneratorRef = useRef<ProceduralNatureGenerator | null>(null);
+  const worldScaleManagerRef = useRef<WorldScaleManager | null>(null);
+  const buildingDataRef = useRef<Map<string, { position: Vector3; metadata: any; mesh: Mesh }>>(new Map());
+  const buildingInfoDisplayRef = useRef<BuildingInfoDisplay | null>(null);
+  const minimapRef = useRef<BabylonMinimap | null>(null);
+  const inventoryRef = useRef<BabylonInventory | null>(null);
+  const rulesPanelRef = useRef<BabylonRulesPanel | null>(null);
+  const ruleEnforcerRef = useRef<RuleEnforcer | null>(null);
+  const combatSystemRef = useRef<CombatSystem | null>(null);
+  const combatUIRef = useRef<CombatUI | null>(null);
+  const playerHealthBarRef = useRef<HealthBar | null>(null);
+  const npcHealthBarsRef = useRef<Map<string, HealthBar>>(new Map());
+  const vrManagerRef = useRef<VRManager | null>(null);
+  const vrUIPanelsRef = useRef<Map<string, VRUIPanel>>(new Map());
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -276,6 +306,11 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const [npcStatus, setNPCStatus] = useState<NPCStatus>("idle");
   const [npcInfos, setNPCInfos] = useState<NPCDisplayInfo[]>([]);
   const [selectedNPCId, setSelectedNPCId] = useState<string | null>(null);
+  const [combatTargetId, setCombatTargetId] = useState<string | null>(null);
+  const [playerHealth, setPlayerHealth] = useState<number>(100);
+  const [isInCombat, setIsInCombat] = useState<boolean>(false);
+  const [isVRMode, setIsVRMode] = useState<boolean>(false);
+  const [vrSupported, setVRSupported] = useState<boolean>(false);
 
   const [actionFeedback, setActionFeedback] = useState<ActionFeedback | null>(null);
   const [actionInProgress, setActionInProgress] = useState<boolean>(false);
@@ -337,6 +372,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       guiManager.setOnBackPressed(() => onBack());
       guiManager.setOnFullscreenPressed(() => handleToggleFullscreen());
       guiManager.setOnDebugPressed(() => handleToggleDebug());
+      guiManager.setOnVRToggled(() => handleToggleVR());
       guiManager.setOnNPCSelected((npcId) => setSelectedNPCId(npcId));
       guiManager.setOnActionSelected((actionId) => handlePerformAction(actionId));
 
@@ -359,6 +395,18 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         // Handle action selection from chat panel
         handlePerformAction(actionId);
       });
+      chatPanel.setOnVocabularyUsed((word: string) => {
+        // Track vocabulary usage for quests
+        if (questObjectManagerRef.current) {
+          questObjectManagerRef.current.trackVocabularyUsage(word);
+        }
+      });
+      chatPanel.setOnConversationTurn((keywords: string[]) => {
+        // Track conversation turns for quests
+        if (questObjectManagerRef.current) {
+          questObjectManagerRef.current.trackConversationTurn(keywords);
+        }
+      });
       chatPanelRef.current = chatPanel;
 
       // Initialize quest tracker
@@ -371,6 +419,192 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       // Initialize radial menu
       const radialMenu = new BabylonRadialMenu(scene);
       radialMenuRef.current = radialMenu;
+
+      // Initialize quest object manager
+      const questObjectManager = new QuestObjectManager(scene);
+      questObjectManager.setOnObjectCollected((questId, objectiveId) => {
+        handleQuestObjectiveCompleted(questId, objectiveId, 'collect');
+      });
+      questObjectManager.setOnLocationVisited((questId, objectiveId) => {
+        handleQuestObjectiveCompleted(questId, objectiveId, 'visit');
+      });
+      questObjectManager.setOnObjectiveCompleted((questId, objectiveId) => {
+        handleQuestObjectiveCompleted(questId, objectiveId, 'complete');
+      });
+      questObjectManagerRef.current = questObjectManager;
+
+      // Initialize building info display
+      const buildingInfoDisplay = new BuildingInfoDisplay(scene, guiManager.advancedTexture);
+      buildingInfoDisplayRef.current = buildingInfoDisplay;
+
+      // Initialize minimap
+      const minimap = new BabylonMinimap(scene, guiManager.advancedTexture, terrainSize);
+      minimap.show(); // Show by default
+      minimapRef.current = minimap;
+
+      // Initialize inventory
+      const inventory = new BabylonInventory(scene, guiManager.advancedTexture);
+      inventoryRef.current = inventory;
+
+      // Initialize rules panel
+      const rulesPanel = new BabylonRulesPanel(scene, guiManager.advancedTexture);
+      rulesPanelRef.current = rulesPanel;
+
+      // Initialize rule enforcer
+      const ruleEnforcer = new RuleEnforcer(scene);
+      ruleEnforcer.setOnViolation((violation: RuleViolation) => {
+        toast({
+          title: `Rule Violation: ${violation.ruleName}`,
+          description: violation.message,
+          variant: violation.severity === 'high' ? 'destructive' : 'default',
+          duration: 4000
+        });
+      });
+      ruleEnforcerRef.current = ruleEnforcer;
+
+      // Initialize combat system
+      const combatSystem = new CombatSystem(scene);
+      combatSystem.setOnDamageDealt((result: DamageResult) => {
+        // Show damage number
+        if (combatUIRef.current) {
+          const targetEntity = combatSystem.getEntity(result.targetId);
+          if (targetEntity?.mesh) {
+            combatUIRef.current.showDamageNumber(
+              result.actualDamage,
+              targetEntity.mesh.position,
+              result.didCrit,
+              result.didDodge
+            );
+          }
+
+          // Update combat log
+          const attacker = isInCombat && combatTargetId ? combatSystem.getEntity('player') : null;
+          const attackerName = result.targetId === 'player' ?
+            (combatTargetId ? combatSystem.getEntity(combatTargetId)?.name : 'Enemy') :
+            'You';
+
+          combatUIRef.current.showDamageDealt(
+            attackerName,
+            result.targetName,
+            result.actualDamage,
+            result.didCrit,
+            result.didDodge
+          );
+        }
+
+        // Update health bars
+        if (result.targetId === 'player') {
+          setPlayerHealth(result.remainingHealth);
+          if (playerHealthBarRef.current) {
+            playerHealthBarRef.current.updateHealth(result.remainingHealth / 100);
+          }
+        } else {
+          const healthBar = npcHealthBarsRef.current.get(result.targetId);
+          if (healthBar) {
+            const entity = combatSystem.getEntity(result.targetId);
+            if (entity) {
+              healthBar.updateHealth(entity.health / entity.maxHealth);
+            }
+          }
+        }
+
+        // Check if killed
+        if (result.wasKilled) {
+          if (result.targetId === 'player') {
+            toast({
+              title: "You were defeated!",
+              description: "Press F to respawn",
+              variant: "destructive",
+              duration: 5000
+            });
+          } else {
+            toast({
+              title: `${result.targetName} defeated!`,
+              description: "Victory!",
+              duration: 3000
+            });
+          }
+        }
+      });
+
+      combatSystem.setOnEntityDeath((entityId: string, killedBy: string) => {
+        if (combatUIRef.current) {
+          const entity = combatSystem.getEntity(entityId);
+          const killer = combatSystem.getEntity(killedBy);
+          if (entity && killer) {
+            combatUIRef.current.showEntityDeath(entity.name, killer.name);
+          }
+        }
+
+        // Exit combat when enemy dies
+        if (entityId === combatTargetId) {
+          setCombatTargetId(null);
+          setIsInCombat(false);
+          combatSystem.exitCombat('player');
+        }
+      });
+
+      combatSystem.setOnCombatStart((attackerId: string, targetId: string) => {
+        if (combatUIRef.current) {
+          const attacker = combatSystem.getEntity(attackerId);
+          const target = combatSystem.getEntity(targetId);
+          if (attacker && target) {
+            combatUIRef.current.showCombatStart(attacker.name, target.name);
+          }
+        }
+
+        if (attackerId === 'player' || targetId === 'player') {
+          setIsInCombat(true);
+        }
+      });
+
+      combatSystemRef.current = combatSystem;
+
+      // Initialize combat UI
+      const combatUI = new CombatUI(scene, guiManager.advancedTexture);
+      combatUIRef.current = combatUI;
+
+      // Initialize VR manager
+      const vrManager = new VRManager(scene);
+      vrManager.setOnSessionStart(() => {
+        setIsVRMode(true);
+        toast({
+          title: 'VR Mode Activated',
+          description: 'You are now in VR mode',
+        });
+      });
+      vrManager.setOnSessionEnd(() => {
+        setIsVRMode(false);
+        toast({
+          title: 'VR Mode Deactivated',
+          description: 'You have exited VR mode',
+        });
+      });
+      vrManager.setOnTriggerPressed((hand) => {
+        // VR trigger pressed - perform attack if in combat
+        if (combatTargetId && combatSystemRef.current) {
+          const playerEntity = combatSystemRef.current.getEntity('player');
+          if (playerEntity && playerEntity.isAlive) {
+            // Check if in range and can attack
+            if (combatSystemRef.current.isInRange('player', combatTargetId) &&
+                combatSystemRef.current.canAttack('player')) {
+              combatSystemRef.current.attack('player', combatTargetId);
+            }
+          }
+        }
+      });
+      vrManagerRef.current = vrManager;
+
+      // Initialize procedural generators
+      const buildingGenerator = new ProceduralBuildingGenerator(scene);
+      buildingGeneratorRef.current = buildingGenerator;
+
+      const natureGenerator = new ProceduralNatureGenerator(scene);
+      natureGeneratorRef.current = natureGenerator;
+
+      // Initialize world scale manager with default size (will be updated based on world data)
+      const worldScaleManager = new WorldScaleManager(512, worldId);
+      worldScaleManagerRef.current = worldScaleManager;
 
       setSceneStatus("ready");
     } catch (error) {
@@ -392,6 +626,13 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       questTrackerRef.current = null;
       radialMenuRef.current?.dispose();
       radialMenuRef.current = null;
+      questObjectManagerRef.current?.dispose();
+      questObjectManagerRef.current = null;
+      buildingGeneratorRef.current?.dispose();
+      buildingGeneratorRef.current = null;
+      natureGeneratorRef.current?.dispose();
+      natureGeneratorRef.current = null;
+      worldScaleManagerRef.current = null;
       guiManagerRef.current?.dispose();
       guiManagerRef.current = null;
       sceneRef.current?.dispose();
@@ -524,6 +765,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           rulesRes,
           baseRulesRes,
           countriesRes,
+          statesRes,
           configRes
         ] = await Promise.all([
           fetch(`/api/worlds/${worldId}/characters`),
@@ -534,6 +776,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           fetch(`/api/rules?worldId=${worldId}`),
           fetch(`/api/rules/base`),
           fetch(`/api/worlds/${worldId}/countries`),
+          fetch(`/api/worlds/${worldId}/states`),
           fetch(`/api/worlds/${worldId}/base-resources/config`)
         ]);
 
@@ -545,6 +788,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         let rules = rulesRes.ok ? await rulesRes.json() : [];
         let baseRules = baseRulesRes.ok ? await baseRulesRes.json() : [];
         const countries = countriesRes.ok ? await countriesRes.json() : [];
+        const states = statesRes.ok ? await statesRes.json() : [];
         const config = configRes.ok ? await configRes.json() : {};
 
         if (Array.isArray(config.disabledBaseActions) && config.disabledBaseActions.length > 0) {
@@ -570,7 +814,16 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           baseRules,
           countries
         });
-        setTerrainSize(computeTerrainSizeFromSettlements(settlements, worldType));
+
+        // Calculate optimal world size based on geography
+        const optimalSize = WorldScaleManager.calculateOptimalWorldSize({
+          countryCount: countries.length,
+          stateCount: states.length,
+          settlementCount: settlements.length
+        });
+        setTerrainSize(optimalSize);
+        console.log(`World size calculated: ${optimalSize} (${countries.length} countries, ${states.length} states, ${settlements.length} settlements)`);
+
         setDataStatus("ready");
       } catch (error) {
         if (cancelled) return;
@@ -704,6 +957,25 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
 
         playerControllerRef.current = controller;
         playerMeshRef.current = preparedPlayerMesh;
+
+        // Register player in combat system
+        if (combatSystemRef.current) {
+          combatSystemRef.current.registerEntity(
+            'player',
+            'Player',
+            100, // maxHealth
+            preparedPlayerMesh,
+            1.0, // attackPower
+            10, // defense
+            0.15 // dodgeChance
+          );
+
+          // Create player health bar
+          const playerHealthBar = new HealthBar(scene, preparedPlayerMesh, 2.8);
+          playerHealthBar.show(); // Always show player health
+          playerHealthBarRef.current = playerHealthBar;
+        }
+
         setPlayerStatus("ready");
       } catch (error) {
         if (cancelled) return;
@@ -753,7 +1025,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
               scene: sceneForNPCs,
               index,
               total: characters.length,
-              questGiver: questGiverIds.has(character.id)
+              questGiver: questGiverIds.has(character.id),
+              buildingData: buildingDataRef.current
             })
           )
         );
@@ -772,6 +1045,35 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           instance.mesh.metadata = { ...(instance.mesh.metadata || {}), npcId: character.id };
           tagNPCMeshHierarchy(instance.mesh, character.id);
           npcMap.set(character.id, instance);
+
+          // Add NPC marker to minimap
+          if (minimapRef.current) {
+            minimapRef.current.addMarker({
+              id: `npc_${character.id}`,
+              position: instance.mesh.position.clone(),
+              type: 'npc',
+              label: formatCharacterName(character)
+            });
+          }
+
+          // Register NPC in combat system
+          if (combatSystemRef.current) {
+            combatSystemRef.current.registerEntity(
+              character.id,
+              formatCharacterName(character),
+              80 + Math.random() * 40, // maxHealth 80-120
+              instance.mesh,
+              0.8 + Math.random() * 0.4, // attackPower 0.8-1.2
+              Math.floor(Math.random() * 20), // defense 0-20
+              0.05 + Math.random() * 0.15 // dodgeChance 5-20%
+            );
+
+            // Create NPC health bar
+            const npcHealthBar = new HealthBar(scene, instance.mesh, 2.5);
+            npcHealthBarsRef.current.set(character.id, npcHealthBar);
+            // Health bars hidden by default, shown when damaged
+          }
+
           infos.push({
             id: character.id,
             name: formatCharacterName(character),
@@ -804,47 +1106,273 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     };
   }, [worldData, sceneStatus, worldId]);
 
+  // Generate procedural world with buildings and nature
   useEffect(() => {
     const scene = sceneRef.current;
-    if (!scene || sceneStatus !== "ready" || !worldData) {
+    const buildingGenerator = buildingGeneratorRef.current;
+    const natureGenerator = natureGeneratorRef.current;
+    const worldScaleManager = worldScaleManagerRef.current;
+
+    if (!scene || sceneStatus !== "ready" || !worldData || !buildingGenerator || !natureGenerator || !worldScaleManager) {
       disposeAllSettlementMeshes(settlementMeshesRef);
       disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
       return;
     }
 
-    disposeAllSettlementMeshes(settlementMeshesRef);
-    disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
+    let cancelled = false;
 
-    const settlements = worldData.settlements.slice(0, MAX_SETTLEMENTS_3D);
-    const settlementMap = new Map<string, Mesh>();
-    const positions: { id: string; position: Vector3 }[] = [];
+    async function generateProceduralWorld() {
+      disposeAllSettlementMeshes(settlementMeshesRef);
+      disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
 
-    settlements.forEach((settlement, index) => {
-      const mesh = spawnSettlementMesh({
-        settlement,
-        scene,
-        index,
-        total: settlements.length,
-        terrainSize,
-        worldId,
-        theme: worldTheme
-      });
-      if (mesh) {
-        settlementMap.set(settlement.id, mesh);
-        positions.push({ id: settlement.id, position: mesh.position.clone() });
+      const settlements = worldData.settlements.slice(0, MAX_SETTLEMENTS_3D);
+      const settlementMap = new Map<string, Mesh>();
+      const allBuildingPositions: Vector3[] = [];
+
+      // Get world style for buildings
+      const worldStyle = ProceduralBuildingGenerator.getStyleForWorld(worldType, 'plains');
+
+      // Get biome for nature
+      const biome = ProceduralNatureGenerator.getBiomeFromTerrain(worldType);
+
+      console.log(`Generating procedural world: ${settlements.length} settlements, style: ${worldStyle.name}, biome: ${biome.name}`);
+
+      // Distribute settlements using scale manager
+      const scaledSettlements = worldScaleManager.distributeSettlements(
+        { bounds: { minX: -terrainSize/2, maxX: terrainSize/2, minZ: -terrainSize/2, maxZ: terrainSize/2, centerX: 0, centerZ: 0 }, id: worldId },
+        settlements.map(s => ({ ...s, population: s.population || 100 })),
+        false
+      );
+
+      // Generate buildings for each settlement
+      for (let i = 0; i < scaledSettlements.length && !cancelled; i++) {
+        const scaledSettlement = scaledSettlements[i];
+        const settlement = settlements[i];
+
+        // Fetch businesses, lots, and residences for this settlement
+        try {
+          const [businessesRes, lotsRes, residencesRes] = await Promise.all([
+            fetch(`/api/settlements/${settlement.id}/businesses`),
+            fetch(`/api/settlements/${settlement.id}/lots`),
+            fetch(`/api/settlements/${settlement.id}/residences`)
+          ]);
+
+          const businesses = businessesRes.ok ? await businessesRes.json() : [];
+          const lots = lotsRes.ok ? await lotsRes.json() : [];
+          const residences = residencesRes.ok ? await residencesRes.json() : [];
+
+          console.log(`Settlement ${settlement.name}: ${businesses.length} businesses, ${lots.length} lots, ${residences.length} residences`);
+
+          // Calculate building count based on population and actual building data
+          const buildingCount = Math.max(
+            WorldScaleManager.getBuildingCount(scaledSettlement.population),
+            businesses.length + residences.length,
+            lots.length,
+            5 // Minimum 5 buildings per settlement
+          );
+
+          // Generate lot positions
+          const lotPositions = worldScaleManager.generateLotPositions(scaledSettlement, buildingCount);
+
+          // Spawn buildings
+          let buildingIndex = 0;
+
+          // First, spawn businesses at their lots
+          for (const business of businesses) {
+            if (buildingIndex >= lotPositions.length) break;
+
+            const buildingSpec = ProceduralBuildingGenerator.createSpecFromData({
+              id: business.id,
+              type: 'business',
+              businessType: business.businessType,
+              position: lotPositions[buildingIndex],
+              worldStyle,
+              population: scaledSettlement.population
+            });
+
+            const building = buildingGenerator.generateBuilding(buildingSpec);
+            allBuildingPositions.push(building.position);
+
+            // Store business metadata for NPC assignment
+            building.metadata = {
+              buildingType: 'business',
+              businessId: business.id,
+              businessType: business.businessType,
+              businessName: business.name,
+              settlementId: settlement.id,
+              ownerId: business.ownerId,
+              employees: business.employees || []
+            };
+
+            // Store in building data map for NPC positioning
+            buildingDataRef.current.set(business.id, {
+              position: building.position.clone(),
+              metadata: building.metadata,
+              mesh: building
+            });
+
+            // Register building for hover info display
+            if (buildingInfoDisplayRef.current) {
+              buildingInfoDisplayRef.current.registerBuilding(building);
+            }
+
+            buildingIndex++;
+          }
+
+          // Then spawn residences from backend data
+          for (const residence of residences) {
+            if (buildingIndex >= lotPositions.length) break;
+
+            // Determine residence type based on occupancy/size
+            const occupants = residence.occupants || [];
+            const residenceType = occupants.length > 8 ? 'residence_large' :
+                                  occupants.length > 4 ? 'residence_medium' : 'residence_small';
+
+            const buildingSpec = ProceduralBuildingGenerator.createSpecFromData({
+              id: residence.id,
+              type: 'residence',
+              businessType: residenceType,
+              position: lotPositions[buildingIndex],
+              worldStyle,
+              population: occupants.length
+            });
+
+            const building = buildingGenerator.generateBuilding(buildingSpec);
+            allBuildingPositions.push(building.position);
+
+            // Store residence position for NPC assignment
+            building.metadata = {
+              buildingType: 'residence',
+              residenceId: residence.id,
+              settlementId: settlement.id,
+              occupants: residence.occupants
+            };
+
+            // Store in building data map for NPC positioning
+            buildingDataRef.current.set(residence.id, {
+              position: building.position.clone(),
+              metadata: building.metadata,
+              mesh: building
+            });
+
+            // Register building for hover info display
+            if (buildingInfoDisplayRef.current) {
+              buildingInfoDisplayRef.current.registerBuilding(building);
+            }
+
+            buildingIndex++;
+          }
+
+          // Fill any remaining positions with generic residences
+          while (buildingIndex < lotPositions.length) {
+            const residenceType = Math.random() > 0.7 ? 'residence_large' :
+                                  Math.random() > 0.4 ? 'residence_medium' : 'residence_small';
+
+            const buildingSpec = ProceduralBuildingGenerator.createSpecFromData({
+              id: `residence_generic_${settlement.id}_${buildingIndex}`,
+              type: 'residence',
+              businessType: residenceType,
+              position: lotPositions[buildingIndex],
+              worldStyle,
+              population: Math.floor(scaledSettlement.population / buildingCount)
+            });
+
+            const building = buildingGenerator.generateBuilding(buildingSpec);
+            allBuildingPositions.push(building.position);
+
+            // Add metadata for generic residences
+            building.metadata = {
+              buildingType: 'residence',
+              residenceId: `residence_generic_${settlement.id}_${buildingIndex}`,
+              settlementId: settlement.id,
+              occupants: []
+            };
+
+            // Register building for hover info display
+            if (buildingInfoDisplayRef.current) {
+              buildingInfoDisplayRef.current.registerBuilding(building);
+            }
+
+            buildingIndex++;
+          }
+
+          // Create a marker for the settlement center
+          const settlementMarker = MeshBuilder.CreateCylinder(
+            `settlement_marker_${settlement.id}`,
+            { diameter: 3, height: 0.5, tessellation: 16 },
+            scene
+          );
+          settlementMarker.position = scaledSettlement.position.clone();
+          settlementMarker.position.y = 0.25;
+
+          const markerMat = new StandardMaterial(`settlement_marker_mat_${settlement.id}`, scene);
+          markerMat.diffuseColor = new Color3(0.8, 0.6, 0.2);
+          markerMat.emissiveColor = new Color3(0.4, 0.3, 0.1);
+          settlementMarker.material = markerMat;
+
+          settlementMap.set(settlement.id, settlementMarker);
+
+          // Add settlement marker to minimap
+          if (minimapRef.current) {
+            minimapRef.current.addMarker({
+              id: `settlement_${settlement.id}`,
+              position: scaledSettlement.position.clone(),
+              type: 'settlement',
+              label: settlement.name
+            });
+          }
+
+          // Register settlement as a safe zone with rule enforcer
+          if (ruleEnforcerRef.current) {
+            ruleEnforcerRef.current.registerSettlementZone(
+              settlement.id,
+              scaledSettlement.position.clone(),
+              scaledSettlement.radius
+            );
+          }
+
+        } catch (error) {
+          console.error(`Failed to generate buildings for settlement ${settlement.name}:`, error);
+        }
       }
-    });
 
-    settlementMeshesRef.current = settlementMap;
+      if (cancelled) return;
 
-    const roadMeshes = createSettlementRoads(scene, positions, worldTheme);
-    settlementRoadMeshesRef.current = roadMeshes;
+      settlementMeshesRef.current = settlementMap;
+
+      // Generate nature elements (trees, rocks, grass, flowers)
+      console.log('Generating nature elements...');
+
+      const worldBounds = {
+        minX: -terrainSize / 2 + 50, // Leave space at edges
+        maxX: terrainSize / 2 - 50,
+        minZ: -terrainSize / 2 + 50,
+        maxZ: terrainSize / 2 - 50
+      };
+
+      // Trees - avoid building positions
+      natureGenerator.generateTrees(biome, worldBounds, allBuildingPositions, 20);
+
+      // Rocks
+      natureGenerator.generateRocks(biome, worldBounds, Math.floor(terrainSize / 20));
+
+      // Grass patches (fewer for performance)
+      natureGenerator.generateGrass(biome, worldBounds, Math.floor(terrainSize / 5));
+
+      // Flowers
+      natureGenerator.generateFlowers(biome, worldBounds, Math.floor(terrainSize / 10));
+
+      console.log('Procedural world generation complete!');
+    }
+
+    generateProceduralWorld();
 
     return () => {
+      cancelled = true;
       disposeAllSettlementMeshes(settlementMeshesRef);
       disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
     };
-  }, [worldData, sceneStatus, worldId, terrainSize, worldTheme]);
+  }, [worldData, sceneStatus, worldId, terrainSize, worldTheme, worldType]);
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -861,6 +1389,74 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     ground.scaling.z = scale;
     ground.metadata = { ...(ground.metadata || {}), terrainSize };
   }, [terrainSize, sceneStatus]);
+
+  // Load active quests into QuestObjectManager
+  useEffect(() => {
+    const questManager = questObjectManagerRef.current;
+    if (!questManager || !worldData || sceneStatus !== "ready") return;
+
+    // Load active quests
+    const activeQuests = worldData.quests.filter((q: any) => q.status === 'active');
+
+    activeQuests.forEach((quest: any) => {
+      questManager.loadQuest(quest as any);
+    });
+  }, [worldData, sceneStatus]);
+
+  // Update rules panel and enforcer with rules data
+  useEffect(() => {
+    const rulesPanel = rulesPanelRef.current;
+    const ruleEnforcer = ruleEnforcerRef.current;
+    if (!worldData) return;
+
+    if (rulesPanel) {
+      rulesPanel.updateRules(worldData.rules || [], worldData.baseRules || []);
+    }
+
+    if (ruleEnforcer) {
+      ruleEnforcer.updateRules(worldData.rules || [], worldData.baseRules || []);
+    }
+  }, [worldData]);
+
+  // Check player proximity to quest location markers and update minimap
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const questManager = questObjectManagerRef.current;
+    const playerMesh = playerMeshRef.current;
+    const minimap = minimapRef.current;
+
+    if (!scene || !questManager || !playerMesh) return;
+
+    // Add player marker to minimap
+    if (minimap) {
+      minimap.addMarker({
+        id: 'player',
+        position: playerMesh.position.clone(),
+        type: 'player',
+        label: 'You'
+      });
+    }
+
+    // Register a render loop to check proximity and update minimap
+    const observer = scene.onBeforeRenderObservable.add(() => {
+      questManager.checkLocationProximity(playerMesh.position);
+
+      // Update player marker position on minimap
+      if (minimap) {
+        minimap.addMarker({
+          id: 'player',
+          position: playerMesh.position.clone(),
+          type: 'player',
+          label: 'You'
+        });
+        minimap.update();
+      }
+    });
+
+    return () => {
+      scene.onBeforeRenderObservable.remove(observer);
+    };
+  }, [sceneStatus]);
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -963,6 +1559,11 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
               // Set dialogue actions for the chat panel
               chatPanelRef.current.setDialogueActions(availableActions, playerEnergy);
 
+              // Track NPC conversation for quests
+              if (questObjectManagerRef.current) {
+                questObjectManagerRef.current.trackNPCConversation(selectedNPCId);
+              }
+
               toast({
                 title: `Chatting with ${npc.name}`,
                 description: "Press C again to close chat",
@@ -1035,6 +1636,196 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
             description: "Press Q again to toggle",
             duration: 1500
           });
+        }
+      }
+
+      // I key - toggle inventory
+      if (event.code === 'KeyI' && !event.repeat) {
+        event.preventDefault();
+
+        if (inventoryRef.current) {
+          inventoryRef.current.toggle();
+
+          toast({
+            title: "Inventory",
+            description: "Press I again to toggle",
+            duration: 1500
+          });
+        }
+      }
+
+      // R key - toggle rules panel
+      if (event.code === 'KeyR' && !event.repeat) {
+        event.preventDefault();
+
+        if (rulesPanelRef.current) {
+          rulesPanelRef.current.toggle();
+
+          toast({
+            title: "Rules Panel",
+            description: "View active world rules",
+            duration: 1500
+          });
+        }
+      }
+
+      // F key - Attack (or respawn if dead)
+      if (event.code === 'KeyF' && !event.repeat) {
+        event.preventDefault();
+
+        const combatSystem = combatSystemRef.current;
+        const ruleEnforcer = ruleEnforcerRef.current;
+        const playerMesh = playerMeshRef.current;
+
+        if (!combatSystem || !playerMesh) return;
+
+        const playerEntity = combatSystem.getEntity('player');
+
+        // Check if player is dead -> respawn
+        if (playerEntity && !playerEntity.isAlive) {
+          combatSystem.revive('player', 1.0); // Full health
+          setPlayerHealth(100);
+          if (playerHealthBarRef.current) {
+            playerHealthBarRef.current.updateHealth(1.0);
+          }
+          setCombatTargetId(null);
+          setIsInCombat(false);
+
+          toast({
+            title: "Respawned!",
+            description: "You have been restored to full health",
+            duration: 2000
+          });
+          return;
+        }
+
+        // Attack current target
+        if (combatTargetId) {
+          // Check if combat is allowed by rules
+          if (ruleEnforcer) {
+            const settlementInfo = ruleEnforcer.isInSettlement(playerMesh.position);
+            const gameContext = {
+              playerId: 'player',
+              playerPosition: playerMesh.position,
+              actionType: 'combat',
+              inSettlement: settlementInfo.inSettlement,
+              settlementId: settlementInfo.settlementId
+            };
+
+            const combatAllowed = ruleEnforcer.canPerformAction('attack', 'combat', gameContext);
+
+            if (!combatAllowed.allowed) {
+              toast({
+                title: "Combat Restricted",
+                description: combatAllowed.reason || "Combat is not allowed here",
+                variant: "destructive",
+                duration: 3000
+              });
+
+              if (combatAllowed.violatedRule) {
+                ruleEnforcer.recordViolation(
+                  combatAllowed.violatedRule,
+                  gameContext,
+                  "Attempted combat in restricted area"
+                );
+              }
+              return;
+            }
+          }
+
+          // Check range
+          if (!combatSystem.isInRange('player', combatTargetId)) {
+            toast({
+              title: "Out of Range",
+              description: "Move closer to attack",
+              variant: "destructive",
+              duration: 2000
+            });
+            return;
+          }
+
+          // Check cooldown
+          if (!combatSystem.canAttack('player')) {
+            return; // Silently fail, still on cooldown
+          }
+
+          // Perform attack
+          combatSystem.attack('player', combatTargetId);
+        } else {
+          toast({
+            title: "No Target",
+            description: "Press T to target nearest enemy",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // T key - Target nearest NPC
+      if (event.code === 'KeyT' && !event.repeat) {
+        event.preventDefault();
+
+        const combatSystem = combatSystemRef.current;
+        if (!combatSystem) return;
+
+        const nearestId = combatSystem.getNearestEnemy('player', false);
+
+        if (nearestId) {
+          setCombatTargetId(nearestId);
+          setSelectedNPCId(nearestId);
+
+          const target = combatSystem.getEntity(nearestId);
+          toast({
+            title: "Target Locked",
+            description: `Targeting ${target?.name || 'Enemy'}. Press F to attack.`,
+            duration: 2000
+          });
+        } else {
+          toast({
+            title: "No Targets",
+            description: "No enemies nearby",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // V key - Toggle VR Mode
+      if (event.code === 'KeyV' && !event.repeat) {
+        event.preventDefault();
+
+        const vrManager = vrManagerRef.current;
+        const scene = sceneRef.current;
+
+        if (!vrManager || !scene) return;
+
+        // Initialize VR if not already initialized
+        if (!vrManager.isInitialized()) {
+          const ground = scene.getMeshByName("ground") as Mesh | null;
+          vrManager.initializeVR(ground || undefined).then((success) => {
+            if (success) {
+              setVRSupported(true);
+              toast({
+                title: "VR Ready",
+                description: "Press V again to enter VR mode",
+                duration: 3000
+              });
+            } else {
+              toast({
+                title: "VR Not Supported",
+                description: "WebXR is not available on this device",
+                variant: "destructive",
+                duration: 3000
+              });
+            }
+          });
+        } else {
+          // Toggle VR session
+          if (isVRMode) {
+            vrManager.exitVR();
+          } else {
+            vrManager.enterVR();
+          }
         }
       }
     };
@@ -1224,6 +2015,42 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     }
   };
 
+  const handleToggleVR = useCallback(() => {
+    const vrManager = vrManagerRef.current;
+    const scene = sceneRef.current;
+
+    if (!vrManager || !scene) return;
+
+    // Initialize VR if not already initialized
+    if (!vrManager.isInitialized()) {
+      const ground = scene.getMeshByName("ground") as Mesh | null;
+      vrManager.initializeVR(ground || undefined).then((success) => {
+        if (success) {
+          setVRSupported(true);
+          toast({
+            title: "VR Ready",
+            description: "Click 'Toggle VR Mode' again to enter VR",
+            duration: 3000
+          });
+        } else {
+          toast({
+            title: "VR Not Supported",
+            description: "WebXR is not available on this device",
+            variant: "destructive",
+            duration: 3000
+          });
+        }
+      });
+    } else {
+      // Toggle VR session
+      if (isVRMode) {
+        vrManager.exitVR();
+      } else {
+        vrManager.enterVR();
+      }
+    }
+  }, [isVRMode, toast]);
+
   const handleApplyGroundTexture = useCallback(
     (assetId: string) => {
       const textureManager = textureManagerRef.current;
@@ -1315,6 +2142,51 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         worldData
       });
 
+      // Check if action is allowed by rules
+      const ruleEnforcer = ruleEnforcerRef.current;
+      if (ruleEnforcer) {
+        const actionDefinition = findActionDefinition(worldData, actionId);
+        const actionType = actionDefinition?.category || 'social';
+
+        const playerMesh = playerMeshRef.current;
+        const targetNPCInstance = npcMeshesRef.current.get(selectedNPCId);
+        const settlementInfo = playerMesh ? ruleEnforcer.isInSettlement(playerMesh.position) : { inSettlement: false };
+
+        const gameContext = {
+          playerId: 'player',
+          playerPosition: playerMesh?.position,
+          playerEnergy,
+          targetNPCId: selectedNPCId,
+          targetNPCPosition: targetNPCInstance?.mesh.position,
+          actionId,
+          actionType,
+          inSettlement: settlementInfo.inSettlement,
+          settlementId: settlementInfo.settlementId,
+          nearNPC: true
+        };
+
+        const ruleCheck = ruleEnforcer.canPerformAction(actionId, actionType, gameContext);
+
+        if (!ruleCheck.allowed) {
+          toast({
+            title: "Action Restricted",
+            description: ruleCheck.reason || "This action is not allowed here",
+            variant: "destructive",
+            duration: 4000
+          });
+
+          if (ruleCheck.violatedRule) {
+            ruleEnforcer.recordViolation(
+              ruleCheck.violatedRule,
+              gameContext,
+              ruleCheck.reason || "Action attempted"
+            );
+          }
+
+          return; // Don't perform the action
+        }
+      }
+
       setActionInProgress(true);
       try {
         const result = await manager.performAction(actionId, context);
@@ -1379,6 +2251,75 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       }
     },
     [playerEnergy, selectedNPCId, selectedNPC, toast, worldData, playthroughId, token]
+  );
+
+  // Handle quest objective completion
+  const handleQuestObjectiveCompleted = useCallback(
+    async (questId: string, objectiveId: string, type: string) => {
+      console.log(`Quest objective completed: ${objectiveId} (${type})`);
+
+      try {
+        // Fetch current quest data
+        const questRes = await fetch(`/api/worlds/${worldId}/quests`);
+        if (!questRes.ok) return;
+
+        const quests = await questRes.json();
+        const quest = quests.find((q: any) => q.id === questId);
+        if (!quest) return;
+
+        // Update progress based on type
+        const updatedProgress = { ...quest.progress };
+
+        if (type === 'collect') {
+          updatedProgress.collectedItems = updatedProgress.collectedItems || [];
+          updatedProgress.collectedItems.push(objectiveId);
+
+          // Add item to inventory
+          if (inventoryRef.current) {
+            inventoryRef.current.addItem({
+              id: objectiveId,
+              name: `Quest Item`,
+              description: `Collected for: ${quest.title}`,
+              type: 'quest',
+              quantity: 1,
+              questId: questId
+            });
+          }
+        } else if (type === 'visit') {
+          updatedProgress.visitedLocations = updatedProgress.visitedLocations || [];
+          updatedProgress.visitedLocations.push(objectiveId);
+        }
+
+        // Check if all objectives are complete
+        const allObjectivesComplete = quest.objectives?.every((obj: any) => obj.completed);
+
+        // Update quest in database
+        await fetch(`/api/quests/${questId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            progress: updatedProgress,
+            status: allObjectivesComplete ? 'completed' : 'active',
+            completedAt: allObjectivesComplete ? new Date() : null
+          })
+        });
+
+        // Refresh quest tracker
+        questTrackerRef.current?.updateQuests(worldId);
+
+        // Show completion notification
+        toast({
+          title: allObjectivesComplete ? 'Quest Completed!' : 'Objective Completed',
+          description: allObjectivesComplete
+            ? `You completed: ${quest.title}`
+            : `Progress updated for: ${quest.title}`,
+          duration: 3000
+        });
+      } catch (error) {
+        console.error('Failed to update quest progress:', error);
+      }
+    },
+    [worldId, toast]
   );
 
   return (
@@ -2067,18 +3008,54 @@ function createNPCPosition(index: number, total: number): Vector3 {
   return new Vector3(Math.cos(angle) * radius, 12, Math.sin(angle) * radius);
 }
 
+/**
+ * Find the building associated with a character (residence or workplace)
+ */
+function findCharacterBuilding(
+  characterId: string,
+  buildingData: Map<string, { position: Vector3; metadata: any; mesh: Mesh }>
+): { position: Vector3; metadata: any } | null {
+  // Search through all buildings to find one where the character is an occupant or employee
+  for (const [buildingId, building] of buildingData.entries()) {
+    const metadata = building.metadata;
+
+    // Check if character is an occupant (residence)
+    if (metadata.occupants && Array.isArray(metadata.occupants)) {
+      if (metadata.occupants.includes(characterId)) {
+        return { position: building.position, metadata };
+      }
+    }
+
+    // Check if character is an employee (business)
+    if (metadata.employees && Array.isArray(metadata.employees)) {
+      if (metadata.employees.includes(characterId)) {
+        return { position: building.position, metadata };
+      }
+    }
+
+    // Check if character is the owner (business)
+    if (metadata.ownerId === characterId) {
+      return { position: building.position, metadata };
+    }
+  }
+
+  return null;
+}
+
 async function spawnNPCInstance({
   character,
   scene,
   index,
   total,
-  questGiver
+  questGiver,
+  buildingData
 }: {
   character: WorldCharacter;
   scene: Scene;
   index: number;
   total: number;
   questGiver: boolean;
+  buildingData?: Map<string, { position: Vector3; metadata: any; mesh: Mesh }>;
 }): Promise<NPCInstance | null> {
   try {
     const template = await ensureNPCTemplate(scene);
@@ -2095,7 +3072,29 @@ async function spawnNPCInstance({
     npcMesh.setEnabled(true);
     npcMesh.isVisible = true;
 
-    const spawnPosition = createNPCPosition(index, total);
+    // Try to find associated building for this character
+    let spawnPosition: Vector3;
+    if (buildingData) {
+      const building = findCharacterBuilding(character.id, buildingData);
+      if (building) {
+        // Spawn near the building with some random offset
+        const offsetX = (Math.random() - 0.5) * 8; // Random offset within 4 units
+        const offsetZ = (Math.random() - 0.5) * 8;
+        spawnPosition = building.position.clone();
+        spawnPosition.x += offsetX;
+        spawnPosition.z += offsetZ;
+        spawnPosition.y = 0; // Ground level
+
+        console.log(`Spawning NPC ${character.firstName || character.id} near building at (${spawnPosition.x.toFixed(1)}, ${spawnPosition.z.toFixed(1)})`);
+      } else {
+        // No assigned building, use default circular pattern
+        spawnPosition = createNPCPosition(index, total);
+      }
+    } else {
+      // No building data available, use default circular pattern
+      spawnPosition = createNPCPosition(index, total);
+    }
+
     npcMesh.position = spawnPosition.clone();
     npcMesh.checkCollisions = true;
     npcMesh.ellipsoid = new Vector3(0.5, 1, 0.5);
