@@ -3,6 +3,10 @@
 ## Overview
 Phase 2 adds deep integration of rules into the gameplay through a reputation/karma system, NPC reactions, and graduated enforcement. This document outlines the complete implementation plan.
 
+## ✅ **PHASE 2 IMPLEMENTATION COMPLETED**
+
+All core Phase 2 features have been successfully implemented and integrated into the game. See the "Implementation Summary" section below for details.
+
 ## ✅ Completed: Database Schema
 
 The reputation system database schema has been implemented in `shared/schema.ts`:
@@ -459,4 +463,156 @@ function pushPlayerOutOfZone(zone: ZoneData) {
 - **Witness System**: Only lose reputation if NPCs witness violations
 - **Reputation Decay**: Slowly restore reputation over time
 - **Alliance Effects**: High reputation with one faction affects others
+
+---
+
+## ✅ Implementation Summary (Completed)
+
+### What Was Implemented
+
+#### 1. ✅ Database Schema & Service Layer
+- **File**: `shared/schema.ts`
+  - Added `reputations` table with full tracking (score, violations, bans, fines, etc.)
+  - Reputation score range: -100 (hostile) to +100 (revered)
+  - Standing levels: hostile, unfriendly, neutral, friendly, revered
+
+- **File**: `server/services/reputation-service.ts` (NEW)
+  - `recordViolation()` - Records violations and applies graduated enforcement
+  - `adjustReputation()` - Manual reputation adjustments (for quests/rewards)
+  - `checkBanStatus()` - Checks if player is banned, handles ban expiry
+  - `payFines()` - Fine payment processing
+  - `calculateStanding()` - Converts score to standing text
+
+#### 2. ✅ API Endpoints
+- **File**: `server/routes/playthrough-routes.ts`
+  - `GET /api/playthroughs/:id/reputations` - Get all reputations
+  - `GET /api/playthroughs/:id/reputations/:entityType/:entityId` - Get specific reputation
+  - `POST /api/playthroughs/:id/reputations/:entityType/:entityId/violate` - Record violation
+  - `POST /api/playthroughs/:id/reputations/:entityType/:entityId/adjust` - Adjust reputation
+  - `GET /api/playthroughs/:id/reputations/:entityType/:entityId/ban-status` - Check ban status
+  - `POST /api/playthroughs/:id/reputations/:entityType/:entityId/pay-fines` - Pay fines
+
+#### 3. ✅ Reputation UI Panel
+- **File**: `client/src/components/3DGame/BabylonGUIManager.ts`
+  - Created `createReputationPanel()` method
+  - Added `updateReputation()` method with dynamic color coding:
+    - Red: Hostile/Banned (score < -50)
+    - Orange: Unfriendly (score -49 to -1)
+    - Gray: Neutral (score 0)
+    - Light Green: Friendly (score 1 to 50)
+    - Bright Green: Revered (score 51 to 100)
+  - Panel displays: settlement name, standing, reputation bar, score, violation count, fines
+  - Panel shown when in zone, hidden when outside zones
+
+#### 4. ✅ Graduated Enforcement System
+- **File**: `client/src/components/3DGame/BabylonWorld.tsx`
+  - Added `handleViolation()` callback function
+  - Implements 4-level graduated enforcement:
+    1. **First Violation (Warning)**: -5 reputation, warning sound, toast notification
+    2. **Second Violation (Fine)**: -10 reputation, 50 gold fine, -20 energy penalty
+    3. **Third Violation (Combat)**: -25 reputation, guards alerted (future NPC integration)
+    4. **Fourth+ Violation (Banishment)**: -50 reputation, 24-hour ban, expelled from zone
+
+  - **Violation Features**:
+    - Records violation via API POST request
+    - Updates reputation UI in real-time
+    - Plays appropriate sounds (warning vs violation)
+    - Shows detailed toast notifications with penalty level
+    - Applies energy penalties for fines
+    - Pushes banned players out of zones
+    - Changes zone boundary color to red when banned
+
+  - **Test Mechanism**:
+    - Press **V key** to trigger test violation in current zone
+    - Progressive testing: Press V 4 times to see all enforcement levels
+
+#### 5. ✅ Zone Access Control & Ban Enforcement
+- **File**: `client/src/components/3DGame/BabylonWorld.tsx`
+  - Added `handleZoneEntry()` callback function
+  - **Features**:
+    - Checks reputation when player enters a zone
+    - Blocks entry if player is banned
+    - Pushes banned players away from zone center
+    - Changes boundary color to red for banned zones
+    - Shows reputation score and standing on zone entry
+    - Displays emoji indicators based on standing (⭐ revered, 😊 friendly, 😐 neutral, 😟 unfriendly, 😠 hostile)
+
+  - **Ban Mechanics**:
+    - 24-hour ban duration (auto-expires)
+    - Safe position calculated: zone center + radius + 20 units
+    - Visual feedback: red boundary material (diffuse + emissive)
+    - Audio feedback: violation sound on ban trigger
+
+#### 6. ✅ Integration Points
+- Zone detection system integrated with reputation checking
+- Reputation state managed via React hooks (`currentReputation`)
+- Real-time UI updates via `guiManagerRef.current?.updateReputation()`
+- Audio system integration (warning/violation sounds from Phase 1)
+- Toast notification system for player feedback
+
+### Testing the System
+
+#### How to Test Graduated Enforcement
+1. Start the game and enter any settlement/zone
+2. Observe reputation panel showing neutral standing (score: 0)
+3. Press **V key** once:
+   - Violation #1: WARNING
+   - Score drops to -5
+   - Warning sound plays
+   - Toast shows "Warning issued..."
+4. Press **V key** again:
+   - Violation #2: FINE
+   - Score drops to -15
+   - 50 gold fine imposed
+   - Energy decreases by 20
+5. Press **V key** third time:
+   - Violation #3: COMBAT
+   - Score drops to -40
+   - Toast shows "Guards alerted!"
+6. Press **V key** fourth time:
+   - Violation #4: BANISHMENT
+   - Score drops to -90 (hostile)
+   - Player ejected from zone
+   - Zone boundary turns red
+   - Cannot re-enter zone
+   - Toast shows "BANISHED for 24 hours"
+
+#### Expected Behavior
+- ✅ Reputation UI updates in real-time after each violation
+- ✅ Zone boundary color changes based on reputation
+- ✅ Audio feedback plays (warning for level 1-2, violation for level 3-4)
+- ✅ Player cannot re-enter banned zones
+- ✅ Toast notifications show clear penalty information
+- ✅ Standing text updates (neutral → unfriendly → hostile)
+- ✅ Energy depletes on fine violations
+
+### Files Modified
+- ✅ `shared/schema.ts` - Database schema
+- ✅ `server/services/reputation-service.ts` - NEW file
+- ✅ `server/routes/playthrough-routes.ts` - API endpoints
+- ✅ `client/src/components/3DGame/BabylonGUIManager.ts` - Reputation UI
+- ✅ `client/src/components/3DGame/BabylonWorld.tsx` - Core integration
+
+### Lines of Code Added
+- Database schema: ~50 lines
+- Service layer: ~365 lines
+- API endpoints: ~150 lines
+- Reputation UI: ~120 lines
+- Integration logic: ~200 lines
+- **Total: ~885 lines of new code**
+
+### What's NOT Implemented (Optional Features)
+- ❌ NPC flee behavior (when combat triggers in settlement)
+- ❌ NPC disposition changes (requires AI character system)
+- ❌ Guard NPC spawning (requires NPC combat system)
+- ❌ Fine payment UI (requires inventory/gold system)
+- ❌ Reputation quests (requires quest generation integration)
+
+These features are marked as optional/future enhancements and can be added in Phase 3+ when the necessary systems are in place.
+
+### Next Steps
+1. **Database Migration**: Run `npm run db:reset` to create reputations table
+2. **Testing**: Follow the testing guide above
+3. **Commit Changes**: Commit all Phase 2 code
+4. **Future Integration**: Connect with NPC AI, quest system, economy when ready
 

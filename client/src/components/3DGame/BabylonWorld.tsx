@@ -285,6 +285,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   // Zone detection state
   const [currentZone, setCurrentZone] = useState<{ id: string; name: string; type: string } | null>(null);
   const [playthroughId, setPlaythroughId] = useState<string | null>(null);
+  const [currentReputation, setCurrentReputation] = useState<any | null>(null);
 
   const [availableTextures, setAvailableTextures] = useState<VisualAsset[]>([]);
   const [selectedGroundTexture, setSelectedGroundTexture] = useState<string | null>(null);
@@ -870,6 +871,239 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     ground.metadata = { ...(ground.metadata || {}), terrainSize };
   }, [terrainSize, sceneStatus]);
 
+  // Handle zone entry with reputation checking and ban enforcement
+  const handleZoneEntry = useCallback(async (zone: { id: string; name: string; type: string }) => {
+    try {
+      // For now, check if we have a playthrough ID
+      // In a real scenario, this would be fetched from the game state or user session
+      const testPlaythroughId = playthroughId || 'test-playthrough-id';
+
+      // Fetch reputation for this settlement
+      const response = await fetch(
+        `/api/playthroughs/${testPlaythroughId}/reputations/settlement/${zone.id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const reputation = await response.json();
+        setCurrentReputation(reputation);
+
+        // Check if banned
+        if (reputation.isBanned) {
+          // Block entry - push player back
+          playRuleViolationSound();
+
+          toast({
+            title: `BANNED from ${zone.name}`,
+            description: "You are not allowed to enter this area!",
+            variant: "destructive",
+            duration: 5000
+          });
+
+          // Push player out of zone
+          const playerMesh = playerMeshRef.current;
+          const zoneBoundary = zoneBoundaryMeshesRef.current.get(zone.id);
+
+          if (playerMesh && zoneBoundary) {
+            const zoneCenter = zoneBoundary.boundary.position;
+            const playerPos = playerMesh.position;
+
+            // Calculate push direction (away from zone center)
+            const pushDirection = playerPos.subtract(zoneCenter).normalize();
+            const zoneRadius = zoneBoundary.boundary.metadata?.zoneRadius || 50;
+            const safePosition = zoneCenter.add(pushDirection.scale(zoneRadius + 20));
+
+            // Teleport player to safe position
+            playerMesh.position = safePosition;
+
+            // Change zone boundary color to red
+            const boundaryMat = zoneBoundary.boundary.material as StandardMaterial;
+            if (boundaryMat) {
+              boundaryMat.diffuseColor = new Color3(1, 0, 0);
+              boundaryMat.emissiveColor = new Color3(0.8, 0, 0);
+            }
+          }
+
+          // Don't set current zone
+          return;
+        }
+
+        // Allow entry - set current zone
+        setCurrentZone(zone);
+
+        // Play enter sound
+        playZoneEnterSound();
+
+        // Update reputation UI
+        guiManagerRef.current?.updateReputation({
+          settlementName: zone.name,
+          score: reputation.score,
+          standing: reputation.standing,
+          isBanned: reputation.isBanned,
+          violationCount: reputation.violationCount,
+          outstandingFines: reputation.outstandingFines
+        });
+
+        // Show toast notification
+        const standingEmoji = reputation.standing === 'revered' ? '⭐' :
+                             reputation.standing === 'friendly' ? '😊' :
+                             reputation.standing === 'neutral' ? '😐' :
+                             reputation.standing === 'unfriendly' ? '😟' : '😠';
+
+        toast({
+          title: `Entering ${zone.name} ${standingEmoji}`,
+          description: `Reputation: ${reputation.standing} (${reputation.score}/100)`,
+          duration: 3000
+        });
+      } else {
+        // No reputation record yet or error - allow entry with neutral reputation
+        setCurrentZone(zone);
+        playZoneEnterSound();
+
+        toast({
+          title: `Entering ${zone.name}`,
+          description: `Zone type: ${zone.type}`,
+          duration: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Error checking reputation:', error);
+
+      // Allow entry on error (fail open)
+      setCurrentZone(zone);
+      playZoneEnterSound();
+
+      toast({
+        title: `Entering ${zone.name}`,
+        description: `Zone type: ${zone.type}`,
+        duration: 3000
+      });
+    }
+  }, [playthroughId, toast]);
+
+  // Handle rule violation - records violation and applies graduated enforcement
+  const handleViolation = useCallback(async (violationType: string, severity: 'minor' | 'moderate' | 'severe') => {
+    if (!currentZone || !playthroughId) {
+      toast({
+        title: "Cannot Record Violation",
+        description: "You must be in a settlement to violate rules",
+        variant: "destructive",
+        duration: 3000
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/playthroughs/${playthroughId}/reputations/settlement/${currentZone.id}/violate`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+          },
+          body: JSON.stringify({
+            violationType,
+            severity,
+            description: `Player committed ${violationType} in ${currentZone.name}`
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const violationResult = await response.json();
+
+        // Update current reputation state
+        setCurrentReputation({
+          score: violationResult.newScore,
+          standing: violationResult.newStanding,
+          isBanned: violationResult.isBanned,
+          violationCount: violationResult.violationCount,
+          outstandingFines: violationResult.penaltyAmount || 0
+        });
+
+        // Play appropriate sound based on penalty
+        if (violationResult.penaltyApplied === 'banishment' || violationResult.penaltyApplied === 'combat') {
+          playRuleViolationSound();
+        } else {
+          playRuleWarningSound();
+        }
+
+        // Update reputation UI
+        guiManagerRef.current?.updateReputation({
+          settlementName: currentZone.name,
+          score: violationResult.newScore,
+          standing: violationResult.newStanding,
+          isBanned: violationResult.isBanned,
+          violationCount: violationResult.violationCount,
+          outstandingFines: violationResult.penaltyAmount || 0
+        });
+
+        // Show violation notification
+        toast({
+          title: `Violation #${violationResult.violationCount}: ${violationResult.penaltyApplied.toUpperCase()}`,
+          description: violationResult.message,
+          variant: violationResult.penaltyApplied === 'warning' ? 'default' : 'destructive',
+          duration: 5000
+        });
+
+        // If banned, push player out of zone
+        if (violationResult.isBanned) {
+          const playerMesh = playerMeshRef.current;
+          const zoneBoundary = zoneBoundaryMeshesRef.current.get(currentZone.id);
+
+          if (playerMesh && zoneBoundary) {
+            const zoneCenter = zoneBoundary.boundary.position;
+            const playerPos = playerMesh.position;
+
+            // Calculate push direction (away from zone center)
+            const pushDirection = playerPos.subtract(zoneCenter).normalize();
+            const zoneRadius = zoneBoundary.boundary.metadata?.zoneRadius || 50;
+            const safePosition = zoneCenter.add(pushDirection.scale(zoneRadius + 20));
+
+            // Teleport player to safe position
+            playerMesh.position = safePosition;
+
+            // Change zone boundary color to red
+            const boundaryMat = zoneBoundary.boundary.material as StandardMaterial;
+            if (boundaryMat) {
+              boundaryMat.diffuseColor = new Color3(1, 0, 0);
+              boundaryMat.emissiveColor = new Color3(0.8, 0, 0);
+            }
+          }
+
+          // Clear current zone
+          setCurrentZone(null);
+        }
+
+        // Apply energy penalty for fines
+        if (violationResult.penaltyApplied === 'fine') {
+          setPlayerEnergy(prev => Math.max(0, prev - 20));
+        }
+      } else {
+        const errorText = await response.text();
+        toast({
+          title: "Violation Error",
+          description: `Failed to record violation: ${errorText}`,
+          variant: "destructive",
+          duration: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Error recording violation:', error);
+      toast({
+        title: "Violation Error",
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: "destructive",
+        duration: 3000
+      });
+    }
+  }, [currentZone, playthroughId, toast]);
+
   // Zone detection system - monitors player position and tracks zone transitions
   useEffect(() => {
     const scene = sceneRef.current;
@@ -910,18 +1144,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
 
       // Check if zone changed
       if (foundZone && (!currentZone || currentZone.id !== foundZone.id)) {
-        // Entered a new zone
-        setCurrentZone(foundZone);
-
-        // Play enter sound
-        playZoneEnterSound();
-
-        // Show toast notification
-        toast({
-          title: `Entering ${foundZone.name}`,
-          description: `Zone type: ${foundZone.type}`,
-          duration: 3000
-        });
+        // Entered a new zone - check reputation and ban status
+        handleZoneEntry(foundZone);
       } else if (!foundZone && currentZone) {
         // Exited a zone
 
@@ -934,6 +1158,10 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           duration: 3000
         });
         setCurrentZone(null);
+        setCurrentReputation(null);
+
+        // Hide reputation UI
+        guiManagerRef.current?.updateReputation(null);
       }
     };
 
@@ -1141,6 +1369,29 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           });
         }
       }
+
+      // V key - test rule violation (graduated enforcement testing)
+      if (event.code === 'KeyV' && !event.repeat) {
+        event.preventDefault();
+
+        if (currentZone) {
+          // Trigger a moderate violation for testing
+          handleViolation('test_violation', 'moderate');
+
+          toast({
+            title: "Test Violation Triggered",
+            description: "Recording violation in current zone...",
+            duration: 2000
+          });
+        } else {
+          toast({
+            title: "No Zone Active",
+            description: "Enter a settlement to test violations",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -1148,7 +1399,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [npcInfos, selectedNPCId, worldData, worldId, toast]);
+  }, [npcInfos, selectedNPCId, worldData, worldId, toast, currentZone, handleViolation]);
 
   useEffect(() => {
     npcMeshesRef.current.forEach((instance, npcId) => {
