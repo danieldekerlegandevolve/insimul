@@ -36,6 +36,13 @@ import {
   type GenerationJob,
   type InsertGenerationJob
 } from "@shared/schema";
+import type {
+  WorldLanguage,
+  InsertWorldLanguage,
+  LanguageChatMessage,
+  InsertLanguageChatMessage,
+  LanguageScopeType
+} from "@shared/language";
 import { randomUUID } from "crypto";
 import * as fs from "fs/promises";
 import * as path from "path";
@@ -188,6 +195,23 @@ export interface IStorage {
   createGenerationJob(job: InsertGenerationJob): Promise<GenerationJob>;
   updateGenerationJob(id: string, job: Partial<InsertGenerationJob>): Promise<GenerationJob | undefined>;
   deleteGenerationJob(id: string): Promise<boolean>;
+
+  // Languages (real and constructed)
+  getWorldLanguage(id: string): Promise<WorldLanguage | undefined>;
+  getWorldLanguagesByWorld(worldId: string): Promise<WorldLanguage[]>;
+  getWorldLanguagesByScope(
+    worldId: string,
+    scopeType: LanguageScopeType,
+    scopeId: string
+  ): Promise<WorldLanguage[]>;
+  createWorldLanguage(language: InsertWorldLanguage): Promise<WorldLanguage>;
+  updateWorldLanguage(id: string, language: Partial<InsertWorldLanguage>): Promise<WorldLanguage | undefined>;
+  deleteWorldLanguage(id: string): Promise<boolean>;
+
+  // Language-aware chat
+  getLanguageChatMessages(languageId: string): Promise<LanguageChatMessage[]>;
+  createLanguageChatMessage(message: InsertLanguageChatMessage): Promise<LanguageChatMessage>;
+
   // Users
   getUser(id: string): Promise<import("@shared/schema").User | undefined>;
   getUserByUsername(username: string): Promise<import("@shared/schema").User | undefined>;

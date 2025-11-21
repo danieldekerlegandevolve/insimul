@@ -10,6 +10,7 @@ import { TruthTab } from '@/components/TruthTab';
 import { QuestsTab } from '@/components/QuestsTab';
 import { PrologKnowledgeBase } from '@/components/PrologKnowledgeBase';
 import { GrammarsTab } from '@/components/GrammarsTab';
+import { LanguagesTab } from '@/components/LanguagesTab';
 import { ExportDialog } from '@/components/ExportDialog';
 import { ImportDialog } from '@/components/ImportDialog';
 import { SimulationCreateDialog } from '@/components/SimulationCreateDialog';
@@ -203,6 +204,11 @@ export default function ModernEditor() {
         {/* Grammars Tab */}
         {activeTab === 'grammars' && selectedWorld && (
           <GrammarsTab worldId={selectedWorld} />
+        )}
+
+        {/* Languages Tab */}
+        {activeTab === 'languages' && selectedWorld && (
+          <LanguagesTab worldId={selectedWorld} />
         )}
 
         {/* Simulations Tab */}

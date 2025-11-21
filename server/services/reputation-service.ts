@@ -1,4 +1,4 @@
-import { db } from "@db";
+import { db } from "../db";
 import { reputations, type Reputation, type InsertReputation } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
 
@@ -135,11 +135,13 @@ export async function recordViolation(
   const reputation = await getOrCreateReputation(playthroughId, userId, entityType, entityId);
 
   const previousScore = reputation.score;
-  const previousStanding = reputation.standing;
+  const previousStanding = reputation.standing ?? 'neutral';
 
   // Increment violation count
-  const newViolationCount = reputation.violationCount + 1;
-  const newWarningCount = reputation.warningCount + (violation.severity === 'minor' ? 1 : 0);
+  const currentViolationCount = reputation.violationCount ?? 0;
+  const currentWarningCount = reputation.warningCount ?? 0;
+  const newViolationCount = currentViolationCount + 1;
+  const newWarningCount = currentWarningCount + (violation.severity === 'minor' ? 1 : 0);
 
   // Calculate penalty level
   const penaltyLevel = getPenaltyLevel(newViolationCount);
@@ -197,9 +199,11 @@ export async function recordViolation(
     penaltyApplied
   };
 
-  const updatedHistory = [...reputation.violationHistory, violationRecord];
+  const history = reputation.violationHistory ?? [];
+  const updatedHistory = [...history, violationRecord];
 
   // Update reputation in database
+  const currentOutstandingFines = reputation.outstandingFines ?? 0;
   await db
     .update(reputations)
     .set({
@@ -211,7 +215,7 @@ export async function recordViolation(
       violationHistory: updatedHistory,
       isBanned,
       banExpiry,
-      outstandingFines: reputation.outstandingFines + penaltyAmount,
+      outstandingFines: currentOutstandingFines + penaltyAmount,
       updatedAt: new Date()
     })
     .where(eq(reputations.id, reputation.id));
@@ -247,8 +251,8 @@ export async function adjustReputation(
   const newStanding = calculateStanding(newScore);
 
   // Check if we should remove ban if reputation is improving significantly
-  let isBanned = reputation.isBanned;
-  let banExpiry = reputation.banExpiry;
+  let isBanned = !!reputation.isBanned;
+  let banExpiry = reputation.banExpiry ?? null;
 
   if (newScore > -50 && reputation.isBanned) {
     // Reputation improved enough to lift ban
@@ -316,10 +320,11 @@ export async function checkBanStatus(
     }
   }
 
+  const isBanned = !!reputation.isBanned;
   return {
-    isBanned: reputation.isBanned,
-    banExpiry: reputation.banExpiry,
-    reason: reputation.isBanned ? 'Multiple rule violations' : undefined
+    isBanned,
+    banExpiry: reputation.banExpiry ?? null,
+    reason: isBanned ? 'Multiple rule violations' : undefined
   };
 }
 
@@ -349,13 +354,15 @@ export async function payFines(
   }
 
   const reputation = existing[0];
-  const amountPaid = Math.min(amount, reputation.outstandingFines);
+  const currentOutstandingFines = reputation.outstandingFines ?? 0;
+  const currentTotalFinesPaid = reputation.totalFinesPaid ?? 0;
+  const amountPaid = Math.min(amount, currentOutstandingFines);
 
   const [updated] = await db
     .update(reputations)
     .set({
-      totalFinesPaid: reputation.totalFinesPaid + amountPaid,
-      outstandingFines: reputation.outstandingFines - amountPaid,
+      totalFinesPaid: currentTotalFinesPaid + amountPaid,
+      outstandingFines: currentOutstandingFines - amountPaid,
       updatedAt: new Date()
     })
     .where(eq(reputations.id, reputation.id))

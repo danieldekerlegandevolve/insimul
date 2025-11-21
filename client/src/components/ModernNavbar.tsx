@@ -56,6 +56,7 @@ export function ModernNavbar({ currentWorld, activeTab, onTabChange, onChangeWor
     { id: 'actions', label: 'Actions', icon: Zap },
     { id: 'quests', label: 'Quests', icon: Target },
     { id: 'grammars', label: 'Grammars', icon: FileText },
+    { id: 'languages', label: 'Languages', icon: Sparkles },
   ];
 
   const truthItems = [

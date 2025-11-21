@@ -56,7 +56,7 @@ export class JobQueueManager {
       // Check if we have capacity to process more jobs
       if (this.processingJobIds.size < this.maxConcurrentJobs) {
         // Get all worlds to check for queued jobs
-        const worlds = await storage.listWorlds();
+        const worlds = await storage.getWorlds();
 
         for (const world of worlds) {
           if (this.processingJobIds.size >= this.maxConcurrentJobs) break;

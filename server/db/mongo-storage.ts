@@ -28,7 +28,7 @@ import {
   type AssetCollection,
   type InsertAssetCollection,
   type GenerationJob,
-  type InsertGenerationJob
+  type InsertGenerationJob,
   type User,
   type InsertUser,
   type PlayerProgress,
@@ -44,6 +44,13 @@ import {
   type PlayTrace,
   type InsertPlayTrace
 } from "@shared/schema";
+import type {
+  WorldLanguage,
+  InsertWorldLanguage,
+  LanguageChatMessage,
+  InsertLanguageChatMessage,
+  LanguageScopeType
+} from "@shared/language";
 
 // Mongoose Document interfaces
 interface RuleDoc extends Omit<Rule, 'id'>, Document {
@@ -127,6 +134,14 @@ interface PlaythroughDeltaDoc extends Omit<PlaythroughDelta, 'id'>, Document {
 }
 
 interface PlayTraceDoc extends Omit<PlayTrace, 'id'>, Document {
+  _id: string;
+}
+
+interface WorldLanguageDoc extends Omit<WorldLanguage, 'id'>, Document {
+  _id: string;
+}
+
+interface LanguageChatMessageDoc extends Omit<LanguageChatMessage, 'id'>, Document {
   _id: string;
 }
 
@@ -575,6 +590,52 @@ const PlayTraceSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const WorldLanguageSchema = new Schema({
+  worldId: { type: String, required: true },
+  scopeType: { type: String, required: true },
+  scopeId: { type: String, required: true },
+  name: { type: String, required: true },
+  description: { type: String, default: null },
+
+  kind: { type: String, required: true },
+  realCode: { type: String, default: null },
+
+  isPrimary: { type: Boolean, default: false },
+
+  parentLanguageId: { type: String, default: null },
+  influenceLanguageIds: { type: [String], default: [] },
+  realInfluenceCodes: { type: [String], default: [] },
+
+  config: { type: Schema.Types.Mixed, default: null },
+
+  features: { type: Schema.Types.Mixed, default: null },
+  phonemes: { type: Schema.Types.Mixed, default: null },
+  grammar: { type: Schema.Types.Mixed, default: null },
+  writingSystem: { type: Schema.Types.Mixed, default: null },
+  culturalContext: { type: Schema.Types.Mixed, default: null },
+  phoneticInventory: { type: Schema.Types.Mixed, default: null },
+  sampleWords: { type: Schema.Types.Mixed, default: null },
+  sampleTexts: { type: Schema.Types.Mixed, default: null },
+  etymology: { type: Schema.Types.Mixed, default: null },
+  dialectVariations: { type: Schema.Types.Mixed, default: null },
+  learningModules: { type: Schema.Types.Mixed, default: null },
+
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const LanguageChatMessageSchema = new Schema({
+  languageId: { type: String, required: true },
+  worldId: { type: String, required: true },
+  scopeType: { type: String, default: null },
+  scopeId: { type: String, default: null },
+  userId: { type: String, default: null },
+  role: { type: String, required: true },
+  content: { type: String, required: true },
+  inLanguage: { type: String, default: null },
+  createdAt: { type: Date, default: Date.now }
+});
+
 // Mongoose Models
 const RuleModel = mongoose.model<RuleDoc>('Rule', RuleSchema);
 const GrammarModel = mongoose.model<GrammarDoc>('Grammar', GrammarSchema);
@@ -597,6 +658,8 @@ const AchievementModel = mongoose.model<AchievementDoc>('Achievement', Achieveme
 const PlaythroughModel = mongoose.model<PlaythroughDoc>('Playthrough', PlaythroughSchema);
 const PlaythroughDeltaModel = mongoose.model<PlaythroughDeltaDoc>('PlaythroughDelta', PlaythroughDeltaSchema);
 const PlayTraceModel = mongoose.model<PlayTraceDoc>('PlayTrace', PlayTraceSchema);
+const WorldLanguageModel = mongoose.model<WorldLanguageDoc>('WorldLanguage', WorldLanguageSchema);
+const LanguageChatMessageModel = mongoose.model<LanguageChatMessageDoc>('LanguageChatMessage', LanguageChatMessageSchema);
 
 // Helper to convert Mongoose doc to our type
 function docToRule(doc: RuleDoc): Rule {
@@ -680,6 +743,14 @@ function docToPlaythroughDelta(doc: PlaythroughDeltaDoc): PlaythroughDelta {
 }
 
 function docToPlayTrace(doc: PlayTraceDoc): PlayTrace {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToWorldLanguage(doc: WorldLanguageDoc): WorldLanguage {
+  return { ...doc.toObject(), id: doc._id.toString() };
+}
+
+function docToLanguageChatMessage(doc: LanguageChatMessageDoc): LanguageChatMessage {
   return { ...doc.toObject(), id: doc._id.toString() };
 }
 
@@ -1639,7 +1710,71 @@ export class MongoStorage implements IStorage {
     const result = await GenerationJobModel.findByIdAndDelete(id);
     return !!result;
   }
-  
+
+  async getWorldLanguage(id: string): Promise<WorldLanguage | undefined> {
+    await this.connect();
+    const doc = await WorldLanguageModel.findById(id);
+    return doc ? docToWorldLanguage(doc) : undefined;
+  }
+
+  async getWorldLanguagesByWorld(worldId: string): Promise<WorldLanguage[]> {
+    await this.connect();
+    const docs = await WorldLanguageModel.find({ worldId });
+    return docs.map(docToWorldLanguage);
+  }
+
+  async getWorldLanguagesByScope(
+    worldId: string,
+    scopeType: LanguageScopeType,
+    scopeId: string
+  ): Promise<WorldLanguage[]> {
+    await this.connect();
+    const docs = await WorldLanguageModel.find({ worldId, scopeType, scopeId });
+    return docs.map(docToWorldLanguage);
+  }
+
+  async createWorldLanguage(language: InsertWorldLanguage): Promise<WorldLanguage> {
+    await this.connect();
+    const doc = await WorldLanguageModel.create(language);
+    return docToWorldLanguage(doc);
+  }
+
+  async updateWorldLanguage(
+    id: string,
+    language: Partial<InsertWorldLanguage>
+  ): Promise<WorldLanguage | undefined> {
+    await this.connect();
+    const doc = await WorldLanguageModel.findByIdAndUpdate(
+      id,
+      { ...language, updatedAt: new Date() },
+      { new: true }
+    );
+    return doc ? docToWorldLanguage(doc) : undefined;
+  }
+
+  async deleteWorldLanguage(id: string): Promise<boolean> {
+    await this.connect();
+    const result = await WorldLanguageModel.findByIdAndDelete(id);
+    if (result) {
+      await LanguageChatMessageModel.deleteMany({ languageId: id });
+    }
+    return !!result;
+  }
+
+  async getLanguageChatMessages(languageId: string): Promise<LanguageChatMessage[]> {
+    await this.connect();
+    const docs = await LanguageChatMessageModel.find({ languageId }).sort({ createdAt: 1 });
+    return docs.map(docToLanguageChatMessage);
+  }
+
+  async createLanguageChatMessage(
+    message: InsertLanguageChatMessage
+  ): Promise<LanguageChatMessage> {
+    await this.connect();
+    const doc = await LanguageChatMessageModel.create(message);
+    return docToLanguageChatMessage(doc);
+  }
+
   // ===== User Management =====
   async getUser(id: string): Promise<User | undefined> {
     await this.connect();

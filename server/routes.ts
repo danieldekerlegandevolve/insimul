@@ -3,6 +3,14 @@ import { createServer, type Server } from "http";
 import { storage } from './db/storage';
 import { nameGenerator } from './generators/name-generator.js';
 import { isGeminiConfigured, getModel, GEMINI_MODELS } from './config/gemini.js';
+import {
+  generateLanguage,
+  getLanguageById,
+  getLanguagesByWorld,
+  getLanguagesByScope,
+  getLanguageChatHistory,
+  sendLanguageChatMessage
+} from "./services/language-service.js";
 import { grammarTemplates, getCategories as getGrammarCategories, getAllTags as getAllGrammarTags, getTemplate as getGrammarTemplate } from './services/grammar-templates.js';
 import { seedGrammars } from './seed/seed-grammars.js';
 import {
@@ -263,6 +271,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(enrichedWorlds);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch worlds" });
+    }
+  });
+
+  app.get("/api/gemini/status", (req, res) => {
+    try {
+      const configured = isGeminiConfigured();
+      res.json({ configured });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to check Gemini status" });
     }
   });
 
@@ -1189,6 +1206,158 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Failed to delete world",
         message: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // Language routes
+  app.get("/api/worlds/:worldId/languages", async (req, res) => {
+    try {
+      const { worldId } = req.params;
+      const languages = await getLanguagesByWorld(worldId);
+      res.json(languages);
+    } catch (error) {
+      console.error("Failed to fetch languages:", error);
+      res.status(500).json({ error: "Failed to fetch languages" });
+    }
+  });
+
+  app.get("/api/worlds/:worldId/languages/:scopeType/:scopeId", async (req, res) => {
+    try {
+      const { worldId, scopeType, scopeId } = req.params;
+      const validScopes = ["world", "country", "state", "settlement"];
+      if (!validScopes.includes(scopeType)) {
+        return res.status(400).json({ error: "Invalid scopeType" });
+      }
+
+      const languages = await getLanguagesByScope(worldId, scopeType as any, scopeId);
+      res.json(languages);
+    } catch (error) {
+      console.error("Failed to fetch languages by scope:", error);
+      res.status(500).json({ error: "Failed to fetch languages for scope" });
+    }
+  });
+
+  app.post("/api/worlds/:worldId/languages/generate", async (req, res) => {
+    try {
+      const { worldId } = req.params;
+      const { scopeType, scopeId, config, description, makePrimary, mode } = req.body;
+
+      const token = req.headers.authorization?.split(" ")[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const validScopes = ["world", "country", "state", "settlement"];
+      if (!scopeType || !validScopes.includes(scopeType)) {
+        return res.status(400).json({ error: "Invalid or missing scopeType" });
+      }
+      if (!scopeId) {
+        return res.status(400).json({ error: "scopeId is required" });
+      }
+      if (!config) {
+        return res.status(400).json({ error: "config is required" });
+      }
+
+      const language = await generateLanguage({
+        worldId,
+        scopeType,
+        scopeId,
+        config,
+        description,
+        makePrimary,
+        mode,
+      });
+
+      res.status(201).json(language);
+    } catch (error) {
+      console.error("Failed to generate language:", error);
+      res.status(500).json({ error: "Failed to generate language" });
+    }
+  });
+
+  app.get("/api/languages/:id", async (req, res) => {
+    try {
+      const language = await getLanguageById(req.params.id);
+      if (!language) {
+        return res.status(404).json({ error: "Language not found" });
+      }
+      res.json(language);
+    } catch (error) {
+      console.error("Failed to fetch language:", error);
+      res.status(500).json({ error: "Failed to fetch language" });
+    }
+  });
+
+  app.delete("/api/languages/:id", async (req, res) => {
+    try {
+      const language = await getLanguageById(req.params.id);
+      if (!language) {
+        return res.status(404).json({ error: "Language not found" });
+      }
+
+      const token = req.headers.authorization?.split(" ")[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+
+      if (!(await canEditWorld(payload?.userId, language.worldId))) {
+        return res.status(403).json({ error: "You don't have permission to edit this world" });
+      }
+
+      const deleted = await storage.deleteWorldLanguage(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Language not found" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      console.error("Failed to delete language:", error);
+      res.status(500).json({ error: "Failed to delete language" });
+    }
+  });
+
+  app.get("/api/languages/:id/chat", async (req, res) => {
+    try {
+      const language = await getLanguageById(req.params.id);
+      if (!language) {
+        return res.status(404).json({ error: "Language not found" });
+      }
+      const history = await getLanguageChatHistory(req.params.id);
+      res.json(history);
+    } catch (error) {
+      console.error("Failed to fetch language chat history:", error);
+      res.status(500).json({ error: "Failed to fetch language chat history" });
+    }
+  });
+
+  app.post("/api/languages/:id/chat", async (req, res) => {
+    try {
+      const language = await getLanguageById(req.params.id);
+      if (!language) {
+        return res.status(404).json({ error: "Language not found" });
+      }
+
+      const token = req.headers.authorization?.split(" ")[1];
+      const payload = token ? AuthService.verifyToken(token) : null;
+      const { worldId, scopeType, scopeId, message } = req.body;
+
+      if (!worldId || !message) {
+        return res.status(400).json({ error: "worldId and message are required" });
+      }
+
+      const result = await sendLanguageChatMessage({
+        languageId: req.params.id,
+        worldId,
+        scopeType,
+        scopeId,
+        userId: payload?.userId ?? null,
+        message,
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error("Failed to send language chat message:", error);
+      res.status(500).json({ error: "Failed to send language chat message" });
     }
   });
 
@@ -3527,6 +3696,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`   World Type: ${worldType || 'default'}`);
           console.log(`   Custom Prompt: ${customPrompt ? 'Yes' : 'No'}`);
 
+          const existingWorld = await storage.getWorld(worldId);
+          const worldTargetLanguage = existingWorld?.targetLanguage || null;
+
           // Enrich the world description with the world type
       const worldTypeDescriptions: Record<string, string> = {
         'medieval-fantasy': 'A medieval fantasy realm with knights, castles, magic, and dragons',
@@ -3605,6 +3777,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
         numSettlements = result.numSettlements || 0;
         console.log(`✅ Created ${numCountries} countries, ${numSettlements} settlements, ${totalPopulation} characters`);
             progressTracker.updateProgress(taskId, 'geography-complete', `Created ${numSettlements} settlements with ${totalPopulation} characters`, 40);
+      }
+
+      // Step 1b: Generate default world language for language-learning worlds
+      if (gameType === 'language-learning') {
+        try {
+          if (worldTargetLanguage) {
+            console.log(`🗣️ Generating default language for target "${worldTargetLanguage}"...`);
+
+            const baseMap: Record<string, string[]> = {
+              "Spanish": ["spanish"],
+              "French": ["spanish"],
+              "German": ["english"],
+              "Italian": ["spanish"],
+              "Portuguese": ["spanish"],
+              "Dutch": ["english"],
+              "Russian": ["english"],
+              "Polish": ["english"],
+              "Chinese (Mandarin)": ["mandarin"],
+              "Japanese": ["japanese"],
+              "Korean": ["japanese"],
+              "Arabic": ["english"],
+              "Hebrew": ["english"],
+              "Hindi": ["english"],
+              "Bengali": ["english"],
+              "Turkish": ["english"],
+              "Greek": ["english"],
+              "Swedish": ["english"],
+              "Norwegian": ["english"],
+              "Danish": ["english"],
+              "Finnish": ["english"],
+              "Czech": ["english"],
+              "Hungarian": ["english"],
+              "Romanian": ["spanish"],
+              "Thai": ["mandarin"],
+              "Vietnamese": ["mandarin"],
+              "Indonesian": ["english"],
+              "Swahili": ["english"],
+            };
+
+            const selectedBases = baseMap[worldTargetLanguage] ?? ["english"];
+
+            await generateLanguage({
+              worldId,
+              scopeType: "world",
+              scopeId: worldId,
+              config: {
+                selectedLanguages: selectedBases,
+                name: `${worldTargetLanguage} World Language`,
+                emphasis: {
+                  phonology: 0.4,
+                  grammar: 0.3,
+                  vocabulary: 0.3,
+                },
+                complexity: "moderate",
+                purpose: "auxiliary",
+                includeWritingSystem: true,
+                includeCulturalContext: true,
+                includeAdvancedPhonetics: false,
+                generateSampleTexts: true,
+              },
+              description: `Default language for ${worldName}, targeting ${worldTargetLanguage}`,
+              makePrimary: true,
+              mode: "offline",
+            });
+
+            console.log("🗣️ Default world language generated.");
+          }
+        } catch (error) {
+          console.warn('⚠️ Default language generation skipped:', (error as Error).message);
+        }
       }
 
       // Step 2: Generate character truths (backstories, traits, secrets)
@@ -3900,7 +4142,7 @@ Make the action names thematic and immersive. Example for cyberpunk: "Jack Into 
                   description: description.trim(),
                   questType: 'main',
                   difficulty: 'intermediate',
-                  targetLanguage: 'English',
+                  targetLanguage: worldTargetLanguage || 'English',
                   assignedTo: 'Player',
                   status: 'active',
                   objectives: [],

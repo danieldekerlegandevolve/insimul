@@ -17,6 +17,7 @@
     "editor": "cd editor-repo && npm run develop"
   },
   "dependencies": {
+    "@babylonjs/gui": "^8.38.0",
     "@babylonjs/loaders": "^8.37.0",
     "@google-cloud/text-to-speech": "^5.8.0",
     "@google/genai": "^1.19.0",

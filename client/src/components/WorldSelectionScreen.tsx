@@ -364,7 +364,6 @@ export function WorldSelectionScreen({ onWorldSelected }: WorldSelectionScreenPr
                 </CardContent>
               </Card>
             )}
-          </div>
 
           {/* Empty State */}
           {!loading && worlds.length === 0 && (
