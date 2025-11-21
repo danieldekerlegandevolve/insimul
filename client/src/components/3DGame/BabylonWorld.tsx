@@ -935,6 +935,30 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       natureGeneratorRef.current?.dispose();
       natureGeneratorRef.current = null;
       worldScaleManagerRef.current = null;
+      buildingInfoDisplayRef.current?.dispose();
+      buildingInfoDisplayRef.current = null;
+      minimapRef.current?.dispose();
+      minimapRef.current = null;
+      inventoryRef.current?.dispose();
+      inventoryRef.current = null;
+      rulesPanelRef.current?.dispose();
+      rulesPanelRef.current = null;
+      ruleEnforcerRef.current?.dispose();
+      ruleEnforcerRef.current = null;
+      combatSystemRef.current?.dispose();
+      combatSystemRef.current = null;
+      combatUIRef.current?.dispose();
+      combatUIRef.current = null;
+      playerHealthBarRef.current?.dispose();
+      playerHealthBarRef.current = null;
+      // Dispose all NPC health bars
+      npcHealthBarsRef.current.forEach((healthBar) => healthBar.dispose());
+      npcHealthBarsRef.current.clear();
+      vrManagerRef.current?.dispose();
+      vrManagerRef.current = null;
+      // Dispose all VR UI panels
+      vrUIPanelsRef.current.forEach((panel) => panel.dispose());
+      vrUIPanelsRef.current.clear();
       guiManagerRef.current?.dispose();
       guiManagerRef.current = null;
       sceneRef.current?.dispose();
