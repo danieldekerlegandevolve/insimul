@@ -63,6 +63,15 @@ export interface MinimapData {
   worldSize: number; // Terrain size for scaling
 }
 
+export interface ReputationData {
+  settlementName: string;
+  score: number; // -100 to 100
+  standing: string; // hostile, unfriendly, neutral, friendly, revered
+  isBanned: boolean;
+  violationCount: number;
+  outstandingFines: number;
+}
+
 export class BabylonGUIManager {
   public advancedTexture: AdvancedDynamicTexture;
   private scene: Scene;
@@ -78,6 +87,7 @@ export class BabylonGUIManager {
   private menuButton: Button | null = null;
   private menuPanel: Container | null = null;
   private minimapPanel: Container | null = null;
+  private reputationPanel: Container | null = null;
 
   // State
   private isMenuOpen = false;
@@ -114,6 +124,7 @@ export class BabylonGUIManager {
     this.createActionPanel();
     this.createFeedbackPanel();
     this.createMinimapPanel();
+    this.createReputationPanel();
   }
 
   private createMenuButton() {
@@ -507,6 +518,94 @@ export class BabylonGUIManager {
     this.advancedTexture.addControl(panel);
   }
 
+  private createReputationPanel() {
+    const panel = new Rectangle("reputationPanel");
+    panel.width = "220px";
+    panel.height = "120px";
+    panel.background = "rgba(0, 0, 0, 0.75)";
+    panel.color = "white";
+    panel.thickness = 2;
+    panel.cornerRadius = 5;
+    panel.top = "-10px";
+    panel.left = "10px";
+    panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+    panel.isVisible = false; // Hidden by default, shown when in a zone
+
+    const stack = new StackPanel();
+    stack.paddingTop = "10px";
+    stack.paddingLeft = "10px";
+    stack.paddingRight = "10px";
+    panel.addControl(stack);
+
+    // Title
+    const title = new TextBlock("reputationTitle");
+    title.text = "Reputation";
+    title.color = "white";
+    title.fontSize = 14;
+    title.height = "20px";
+    title.fontWeight = "bold";
+    title.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    stack.addControl(title);
+
+    // Settlement name
+    const settlementName = new TextBlock("reputationSettlement");
+    settlementName.text = "Unknown";
+    settlementName.color = "#AAA";
+    settlementName.fontSize = 12;
+    settlementName.height = "18px";
+    settlementName.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    stack.addControl(settlementName);
+
+    // Standing text
+    const standing = new TextBlock("reputationStanding");
+    standing.text = "Neutral";
+    standing.color = "#FFC107";
+    standing.fontSize = 14;
+    standing.height = "20px";
+    standing.fontWeight = "bold";
+    standing.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    stack.addControl(standing);
+
+    // Reputation bar background
+    const repBarBg = new Rectangle("reputationBarBg");
+    repBarBg.width = "200px";
+    repBarBg.height = "16px";
+    repBarBg.background = "rgba(60, 60, 60, 0.9)";
+    repBarBg.color = "#444";
+    repBarBg.thickness = 1;
+    repBarBg.cornerRadius = 3;
+    stack.addControl(repBarBg);
+
+    // Reputation bar fill
+    const repBarFill = new Rectangle("reputationBarFill");
+    repBarFill.width = "100px"; // Will be updated based on score
+    repBarFill.height = "16px";
+    repBarFill.background = "#FFC107"; // Yellow for neutral
+    repBarFill.cornerRadius = 3;
+    repBarFill.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    repBarBg.addControl(repBarFill);
+
+    // Score text overlay
+    const scoreText = new TextBlock("reputationScore");
+    scoreText.text = "0 / 100";
+    scoreText.color = "white";
+    scoreText.fontSize = 11;
+    repBarBg.addControl(scoreText);
+
+    // Warning/Ban indicator
+    const warningText = new TextBlock("reputationWarning");
+    warningText.text = "";
+    warningText.color = "#F44336";
+    warningText.fontSize = 11;
+    warningText.height = "16px";
+    warningText.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    stack.addControl(warningText);
+
+    this.reputationPanel = panel;
+    this.advancedTexture.addControl(panel);
+  }
+
   // Public methods for updating UI
 
   public updatePlayerStatus(status: PlayerStatus) {
@@ -814,6 +913,98 @@ export class BabylonGUIManager {
     playerMarker.left = `${playerX}px`;
     playerMarker.top = `${-playerZ}px`;
     mapContainer.addControl(playerMarker);
+  }
+
+  public updateReputation(data: ReputationData | null) {
+    if (!this.reputationPanel) return;
+
+    // Hide panel if no reputation data (not in any zone)
+    if (!data) {
+      this.reputationPanel.isVisible = false;
+      return;
+    }
+
+    // Show panel
+    this.reputationPanel.isVisible = true;
+
+    // Update settlement name
+    const settlementName = this.reputationPanel.getDescendants().find(
+      (c) => c.name === "reputationSettlement"
+    ) as TextBlock;
+    if (settlementName) {
+      settlementName.text = data.settlementName;
+    }
+
+    // Update standing text and color
+    const standing = this.reputationPanel.getDescendants().find(
+      (c) => c.name === "reputationStanding"
+    ) as TextBlock;
+    if (standing) {
+      standing.text = data.standing.charAt(0).toUpperCase() + data.standing.slice(1);
+
+      // Color based on standing
+      if (data.standing === 'revered') {
+        standing.color = "#4CAF50"; // Green
+      } else if (data.standing === 'friendly') {
+        standing.color = "#8BC34A"; // Light green
+      } else if (data.standing === 'neutral') {
+        standing.color = "#FFC107"; // Yellow
+      } else if (data.standing === 'unfriendly') {
+        standing.color = "#FF9800"; // Orange
+      } else if (data.standing === 'hostile') {
+        standing.color = "#F44336"; // Red
+      }
+    }
+
+    // Update reputation bar
+    const repBarFill = this.reputationPanel.getDescendants().find(
+      (c) => c.name === "reputationBarFill"
+    ) as Rectangle;
+    if (repBarFill) {
+      // Convert score (-100 to 100) to bar width (0 to 200px)
+      const normalizedScore = ((data.score + 100) / 200) * 200;
+      repBarFill.width = `${Math.max(0, Math.min(200, normalizedScore))}px`;
+
+      // Color based on score
+      if (data.score >= 51) {
+        repBarFill.background = "#4CAF50"; // Green (Revered)
+      } else if (data.score >= 1) {
+        repBarFill.background = "#8BC34A"; // Light green (Friendly)
+      } else if (data.score >= -49) {
+        repBarFill.background = "#FFC107"; // Yellow (Neutral)
+      } else if (data.score >= -99) {
+        repBarFill.background = "#FF9800"; // Orange (Unfriendly)
+      } else {
+        repBarFill.background = "#F44336"; // Red (Hostile)
+      }
+    }
+
+    // Update score text
+    const scoreText = this.reputationPanel.getDescendants().find(
+      (c) => c.name === "reputationScore"
+    ) as TextBlock;
+    if (scoreText) {
+      scoreText.text = `${data.score} / 100`;
+    }
+
+    // Update warning/ban text
+    const warningText = this.reputationPanel.getDescendants().find(
+      (c) => c.name === "reputationWarning"
+    ) as TextBlock;
+    if (warningText) {
+      if (data.isBanned) {
+        warningText.text = "⚠ BANNED - Leave immediately!";
+        warningText.color = "#F44336";
+      } else if (data.violationCount > 0) {
+        warningText.text = `⚠ Violations: ${data.violationCount}`;
+        warningText.color = "#FF9800";
+      } else if (data.outstandingFines > 0) {
+        warningText.text = `Fine due: ${data.outstandingFines} gold`;
+        warningText.color = "#FFC107";
+      } else {
+        warningText.text = "";
+      }
+    }
   }
 
   // Callback setters

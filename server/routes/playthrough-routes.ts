@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { storage } from '../db/storage';
 import { AuthService } from "../services/auth-service";
 import { canAccessWorld, canEditWorld } from "../middleware/permissions";
+import * as ReputationService from "../services/reputation-service";
 
 export function registerPlaythroughRoutes(app: Express) {
 
@@ -364,6 +365,269 @@ export function registerPlaythroughRoutes(app: Express) {
     } catch (error) {
       console.error("Create trace error:", error);
       res.status(500).json({ message: "Failed to create trace" });
+    }
+  });
+
+  // ===== REPUTATION ROUTES =====
+
+  // Get all reputations for a playthrough
+  app.get("/api/playthroughs/:id/reputations", async (req, res) => {
+    try {
+      const token = AuthService.extractTokenFromHeader(req.headers.authorization);
+      if (!token) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const playthrough = await storage.getPlaythrough(req.params.id);
+      if (!playthrough) {
+        return res.status(404).json({ message: "Playthrough not found" });
+      }
+
+      // Check ownership
+      if (playthrough.userId !== payload.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const reputations = await ReputationService.getPlaythroughReputations(req.params.id);
+
+      // Enrich with settlement names
+      const enrichedReputations = await Promise.all(
+        reputations.map(async (rep) => {
+          let entityName = 'Unknown';
+          if (rep.entityType === 'settlement') {
+            const settlement = await storage.getSettlement(rep.entityId);
+            entityName = settlement?.name || 'Unknown Settlement';
+          }
+          return {
+            ...rep,
+            entityName
+          };
+        })
+      );
+
+      res.json(enrichedReputations);
+    } catch (error) {
+      console.error("Get reputations error:", error);
+      res.status(500).json({ message: "Failed to get reputations" });
+    }
+  });
+
+  // Get reputation for a specific entity (settlement/faction)
+  app.get("/api/playthroughs/:id/reputations/:entityType/:entityId", async (req, res) => {
+    try {
+      const token = AuthService.extractTokenFromHeader(req.headers.authorization);
+      if (!token) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const playthrough = await storage.getPlaythrough(req.params.id);
+      if (!playthrough) {
+        return res.status(404).json({ message: "Playthrough not found" });
+      }
+
+      // Check ownership
+      if (playthrough.userId !== payload.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const { entityType, entityId } = req.params;
+      const reputation = await ReputationService.getOrCreateReputation(
+        req.params.id,
+        payload.userId,
+        entityType,
+        entityId
+      );
+
+      res.json(reputation);
+    } catch (error) {
+      console.error("Get reputation error:", error);
+      res.status(500).json({ message: "Failed to get reputation" });
+    }
+  });
+
+  // Record a rule violation
+  app.post("/api/playthroughs/:id/reputations/:entityType/:entityId/violate", async (req, res) => {
+    try {
+      const token = AuthService.extractTokenFromHeader(req.headers.authorization);
+      if (!token) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const playthrough = await storage.getPlaythrough(req.params.id);
+      if (!playthrough) {
+        return res.status(404).json({ message: "Playthrough not found" });
+      }
+
+      // Check ownership
+      if (playthrough.userId !== payload.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const { entityType, entityId } = req.params;
+      const { violationType, severity, ruleId, description } = req.body;
+
+      if (!violationType || !severity) {
+        return res.status(400).json({ message: "violationType and severity are required" });
+      }
+
+      const result = await ReputationService.recordViolation(
+        req.params.id,
+        payload.userId,
+        entityType,
+        entityId,
+        {
+          violationType,
+          severity,
+          ruleId,
+          description
+        }
+      );
+
+      res.json(result);
+    } catch (error) {
+      console.error("Record violation error:", error);
+      res.status(500).json({ message: "Failed to record violation" });
+    }
+  });
+
+  // Manually adjust reputation (for quests, rewards, etc.)
+  app.post("/api/playthroughs/:id/reputations/:entityType/:entityId/adjust", async (req, res) => {
+    try {
+      const token = AuthService.extractTokenFromHeader(req.headers.authorization);
+      if (!token) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const playthrough = await storage.getPlaythrough(req.params.id);
+      if (!playthrough) {
+        return res.status(404).json({ message: "Playthrough not found" });
+      }
+
+      // Check ownership
+      if (playthrough.userId !== payload.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const { entityType, entityId } = req.params;
+      const { amount, reason } = req.body;
+
+      if (typeof amount !== 'number' || !reason) {
+        return res.status(400).json({ message: "amount and reason are required" });
+      }
+
+      const updated = await ReputationService.adjustReputation(
+        req.params.id,
+        payload.userId,
+        entityType,
+        entityId,
+        { amount, reason }
+      );
+
+      res.json(updated);
+    } catch (error) {
+      console.error("Adjust reputation error:", error);
+      res.status(500).json({ message: "Failed to adjust reputation" });
+    }
+  });
+
+  // Check ban status
+  app.get("/api/playthroughs/:id/reputations/:entityType/:entityId/ban-status", async (req, res) => {
+    try {
+      const token = AuthService.extractTokenFromHeader(req.headers.authorization);
+      if (!token) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const playthrough = await storage.getPlaythrough(req.params.id);
+      if (!playthrough) {
+        return res.status(404).json({ message: "Playthrough not found" });
+      }
+
+      // Check ownership
+      if (playthrough.userId !== payload.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const { entityType, entityId } = req.params;
+      const banStatus = await ReputationService.checkBanStatus(
+        req.params.id,
+        entityType,
+        entityId
+      );
+
+      res.json(banStatus);
+    } catch (error) {
+      console.error("Check ban status error:", error);
+      res.status(500).json({ message: "Failed to check ban status" });
+    }
+  });
+
+  // Pay fines
+  app.post("/api/playthroughs/:id/reputations/:entityType/:entityId/pay-fines", async (req, res) => {
+    try {
+      const token = AuthService.extractTokenFromHeader(req.headers.authorization);
+      if (!token) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const payload = AuthService.verifyToken(token);
+      if (!payload) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const playthrough = await storage.getPlaythrough(req.params.id);
+      if (!playthrough) {
+        return res.status(404).json({ message: "Playthrough not found" });
+      }
+
+      // Check ownership
+      if (playthrough.userId !== payload.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const { entityType, entityId } = req.params;
+      const { amount } = req.body;
+
+      if (typeof amount !== 'number' || amount <= 0) {
+        return res.status(400).json({ message: "Valid payment amount is required" });
+      }
+
+      const updated = await ReputationService.payFines(
+        req.params.id,
+        entityType,
+        entityId,
+        amount
+      );
+
+      res.json(updated);
+    } catch (error) {
+      console.error("Pay fines error:", error);
+      res.status(500).json({ message: "Failed to pay fines" });
     }
   });
 
