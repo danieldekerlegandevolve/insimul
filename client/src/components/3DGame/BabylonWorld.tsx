@@ -350,6 +350,282 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
 
   const worldTheme = useMemo(() => getWorldVisualTheme(worldType), [worldType]);
 
+  // Handler functions defined before initializeScene to avoid temporal dead zone errors
+
+  const handleToggleFullscreen = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const elem: any = canvas.parentElement ?? canvas;
+    if (!document.fullscreenElement) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch((err: unknown) => {
+          console.error("Failed to enter fullscreen", err);
+        });
+      }
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen().catch((err: unknown) => {
+        console.error("Failed to exit fullscreen", err);
+      });
+    }
+  }, []);
+
+  const handleToggleDebug = () => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+
+    if (scene.debugLayer.isVisible()) {
+      scene.debugLayer.hide();
+    } else {
+      scene.debugLayer.show({ overlay: true });
+    }
+  };
+
+  const handleToggleVR = useCallback(() => {
+    const vrManager = vrManagerRef.current;
+    const scene = sceneRef.current;
+
+    if (!vrManager || !scene) return;
+
+    // Initialize VR if not already initialized
+    if (!vrManager.isInitialized()) {
+      const ground = scene.getMeshByName("ground") as Mesh | null;
+      vrManager.initializeVR(ground || undefined).then((success) => {
+        if (success) {
+          setVRSupported(true);
+          toast({
+            title: "VR Ready",
+            description: "Click 'Toggle VR Mode' again to enter VR",
+            duration: 3000
+          });
+        } else {
+          toast({
+            title: "VR Not Supported",
+            description: "WebXR is not available on this device",
+            variant: "destructive",
+            duration: 3000
+          });
+        }
+      });
+    } else {
+      // Toggle VR session
+      if (isVRMode) {
+        vrManager.exitVR();
+      } else {
+        vrManager.enterVR();
+      }
+    }
+  }, [isVRMode, toast]);
+
+  const handlePayFines = useCallback(async () => {
+    if (!currentZone || !playthroughId || !currentReputation) {
+      toast({
+        title: "Cannot Pay Fines",
+        description: "No active reputation record",
+        variant: "destructive",
+        duration: 3000
+      });
+      return;
+    }
+
+    const fineAmount = currentReputation.outstandingFines || 0;
+
+    // Check if player has enough gold
+    if (playerGold < fineAmount) {
+      toast({
+        title: "Insufficient Gold",
+        description: `You need ${fineAmount} gold but only have ${playerGold}`,
+        variant: "destructive",
+        duration: 4000
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/playthroughs/${playthroughId}/reputations/settlement/${currentZone.id}/pay-fines`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+
+        // Deduct gold from player
+        setPlayerGold(prev => Math.max(0, prev - fineAmount));
+
+        // Update reputation state
+        setCurrentReputation({
+          ...currentReputation,
+          outstandingFines: result.outstandingFines || 0,
+          score: result.newScore,
+          standing: result.newStanding
+        });
+
+        // Update reputation UI
+        guiManagerRef.current?.updateReputation({
+          settlementName: currentZone.name,
+          score: result.newScore,
+          standing: result.newStanding,
+          isBanned: currentReputation.isBanned,
+          violationCount: currentReputation.violationCount,
+          outstandingFines: result.outstandingFines || 0
+        });
+
+        // Show success notification
+        toast({
+          title: "Fines Paid",
+          description: `Paid ${fineAmount} gold. Your reputation has improved slightly.`,
+          duration: 4000
+        });
+      } else {
+        const errorText = await response.text();
+        toast({
+          title: "Payment Failed",
+          description: `Failed to pay fines: ${errorText}`,
+          variant: "destructive",
+          duration: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Error paying fines:', error);
+      toast({
+        title: "Payment Error",
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: "destructive",
+        duration: 3000
+      });
+    }
+  }, [currentZone, playthroughId, currentReputation, playerGold, toast]);
+
+  const handlePerformAction = useCallback(
+    async (actionId: string) => {
+      const manager = actionManagerRef.current;
+      if (!manager || !selectedNPCId) return;
+
+      const context = buildActionContext({
+        targetId: selectedNPCId,
+        energy: playerEnergy,
+        playerMesh: playerMeshRef.current,
+        worldData
+      });
+
+      // Check if action is allowed by rules
+      const ruleEnforcer = ruleEnforcerRef.current;
+      if (ruleEnforcer) {
+        const actionDefinition = findActionDefinition(worldData, actionId);
+        const actionType = actionDefinition?.category || 'social';
+
+        const playerMesh = playerMeshRef.current;
+        const targetNPCInstance = npcMeshesRef.current.get(selectedNPCId);
+        const settlementInfo = playerMesh ? ruleEnforcer.isInSettlement(playerMesh.position) : { inSettlement: false };
+
+        const gameContext = {
+          playerId: 'player',
+          playerPosition: playerMesh?.position,
+          playerEnergy,
+          targetNPCId: selectedNPCId,
+          targetNPCPosition: targetNPCInstance?.mesh.position,
+          actionId,
+          actionType,
+          inSettlement: settlementInfo.inSettlement,
+          settlementId: settlementInfo.settlementId,
+          nearNPC: true
+        };
+
+        const ruleCheck = ruleEnforcer.canPerformAction(actionId, actionType, gameContext);
+
+        if (!ruleCheck.allowed) {
+          toast({
+            title: "Action Restricted",
+            description: ruleCheck.reason || "This action is not allowed here",
+            variant: "destructive",
+            duration: 4000
+          });
+
+          if (ruleCheck.violatedRule) {
+            ruleEnforcer.recordViolation(
+              ruleCheck.violatedRule,
+              gameContext,
+              ruleCheck.reason || "Action attempted"
+            );
+          }
+
+          return; // Don't perform the action
+        }
+      }
+
+      setActionInProgress(true);
+      try {
+        const result = await manager.performAction(actionId, context);
+        const actionDefinition = findActionDefinition(worldData, actionId);
+        const actionName = actionDefinition?.name || "Action";
+        const targetName = selectedNPC?.name || "NPC";
+
+        setActionFeedback({
+          actionId,
+          actionName,
+          targetName,
+          result,
+          timestamp: Date.now()
+        });
+
+        if (result.energyUsed) {
+          setPlayerEnergy((energy) => Math.max(0, energy - result.energyUsed));
+        }
+
+        // Record play trace if we have a playthrough
+        if (playthroughId && token) {
+          try {
+            await fetch(`/api/playthroughs/${playthroughId}/traces`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                actionType: 'action_performed',
+                actionId,
+                targetCharacterId: selectedNPCId,
+                metadata: {
+                  actionName,
+                  targetName,
+                  success: result.success,
+                  energyUsed: result.energyUsed,
+                  narrativeText: result.narrativeText,
+                },
+              }),
+            });
+          } catch (traceError) {
+            // Don't fail the action if trace recording fails
+            console.error('Failed to record play trace:', traceError);
+          }
+        }
+
+        toast({
+          title: result.success ? `${actionName} succeeded` : `${actionName} failed`,
+          description: result.narrativeText || result.message,
+          variant: result.success ? "default" : "destructive"
+        });
+      } catch (error) {
+        console.error("Failed to perform action", error);
+        toast({
+          title: "Action error",
+          description: error instanceof Error ? error.message : String(error),
+          variant: "destructive"
+        });
+      } finally {
+        setActionInProgress(false);
+      }
+    },
+    [playerEnergy, selectedNPCId, selectedNPC, toast, worldData, playthroughId, token]
+  );
+
   const initializeScene = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1736,93 +2012,6 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     }
   }, [currentZone, playthroughId, toast]);
 
-  // Handle fine payment - allows player to pay outstanding fines with gold
-  const handlePayFines = useCallback(async () => {
-    if (!currentZone || !playthroughId || !currentReputation) {
-      toast({
-        title: "Cannot Pay Fines",
-        description: "No active reputation record",
-        variant: "destructive",
-        duration: 3000
-      });
-      return;
-    }
-
-    const fineAmount = currentReputation.outstandingFines || 0;
-
-    // Check if player has enough gold
-    if (playerGold < fineAmount) {
-      toast({
-        title: "Insufficient Gold",
-        description: `You need ${fineAmount} gold but only have ${playerGold}`,
-        variant: "destructive",
-        duration: 4000
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `/api/playthroughs/${playthroughId}/reputations/settlement/${currentZone.id}/pay-fines`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-
-        // Deduct gold from player
-        setPlayerGold(prev => Math.max(0, prev - fineAmount));
-
-        // Update reputation state
-        setCurrentReputation({
-          ...currentReputation,
-          outstandingFines: result.outstandingFines || 0,
-          score: result.newScore,
-          standing: result.newStanding
-        });
-
-        // Update reputation UI
-        guiManagerRef.current?.updateReputation({
-          settlementName: currentZone.name,
-          score: result.newScore,
-          standing: result.newStanding,
-          isBanned: currentReputation.isBanned,
-          violationCount: currentReputation.violationCount,
-          outstandingFines: result.outstandingFines || 0
-        });
-
-        // Show success notification
-        toast({
-          title: "Fines Paid",
-          description: `Paid ${fineAmount} gold. Your reputation has improved slightly.`,
-          duration: 4000
-        });
-      } else {
-        const errorText = await response.text();
-        toast({
-          title: "Payment Failed",
-          description: `Failed to pay fines: ${errorText}`,
-          variant: "destructive",
-          duration: 3000
-        });
-      }
-    } catch (error) {
-      console.error('Error paying fines:', error);
-      toast({
-        title: "Payment Error",
-        description: error instanceof Error ? error.message : 'Unknown error',
-        variant: "destructive",
-        duration: 3000
-      });
-    }
-  }, [currentZone, playthroughId, currentReputation, playerGold, toast]);
-
   // Zone detection system - monitors player position and tracks zone transitions
   useEffect(() => {
     const scene = sceneRef.current;
@@ -2681,71 +2870,6 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
 
   const combinedError = sceneErrorMessage || worldError || playerError;
 
-  const handleToggleFullscreen = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const elem: any = canvas.parentElement ?? canvas;
-    if (!document.fullscreenElement) {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch((err: unknown) => {
-          console.error("Failed to enter fullscreen", err);
-        });
-      }
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen().catch((err: unknown) => {
-        console.error("Failed to exit fullscreen", err);
-      });
-    }
-  }, []);
-
-  const handleToggleDebug = () => {
-    const scene = sceneRef.current;
-    if (!scene) return;
-
-    if (scene.debugLayer.isVisible()) {
-      scene.debugLayer.hide();
-    } else {
-      scene.debugLayer.show({ overlay: true });
-    }
-  };
-
-  const handleToggleVR = useCallback(() => {
-    const vrManager = vrManagerRef.current;
-    const scene = sceneRef.current;
-
-    if (!vrManager || !scene) return;
-
-    // Initialize VR if not already initialized
-    if (!vrManager.isInitialized()) {
-      const ground = scene.getMeshByName("ground") as Mesh | null;
-      vrManager.initializeVR(ground || undefined).then((success) => {
-        if (success) {
-          setVRSupported(true);
-          toast({
-            title: "VR Ready",
-            description: "Click 'Toggle VR Mode' again to enter VR",
-            duration: 3000
-          });
-        } else {
-          toast({
-            title: "VR Not Supported",
-            description: "WebXR is not available on this device",
-            variant: "destructive",
-            duration: 3000
-          });
-        }
-      });
-    } else {
-      // Toggle VR session
-      if (isVRMode) {
-        vrManager.exitVR();
-      } else {
-        vrManager.enterVR();
-      }
-    }
-  }, [isVRMode, toast]);
-
   const handleApplyGroundTexture = useCallback(
     (assetId: string) => {
       const textureManager = textureManagerRef.current;
@@ -2823,129 +2947,6 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       });
     },
     [toast]
-  );
-
-  const handlePerformAction = useCallback(
-    async (actionId: string) => {
-      const manager = actionManagerRef.current;
-      if (!manager || !selectedNPCId) return;
-
-      const context = buildActionContext({
-        targetId: selectedNPCId,
-        energy: playerEnergy,
-        playerMesh: playerMeshRef.current,
-        worldData
-      });
-
-      // Check if action is allowed by rules
-      const ruleEnforcer = ruleEnforcerRef.current;
-      if (ruleEnforcer) {
-        const actionDefinition = findActionDefinition(worldData, actionId);
-        const actionType = actionDefinition?.category || 'social';
-
-        const playerMesh = playerMeshRef.current;
-        const targetNPCInstance = npcMeshesRef.current.get(selectedNPCId);
-        const settlementInfo = playerMesh ? ruleEnforcer.isInSettlement(playerMesh.position) : { inSettlement: false };
-
-        const gameContext = {
-          playerId: 'player',
-          playerPosition: playerMesh?.position,
-          playerEnergy,
-          targetNPCId: selectedNPCId,
-          targetNPCPosition: targetNPCInstance?.mesh.position,
-          actionId,
-          actionType,
-          inSettlement: settlementInfo.inSettlement,
-          settlementId: settlementInfo.settlementId,
-          nearNPC: true
-        };
-
-        const ruleCheck = ruleEnforcer.canPerformAction(actionId, actionType, gameContext);
-
-        if (!ruleCheck.allowed) {
-          toast({
-            title: "Action Restricted",
-            description: ruleCheck.reason || "This action is not allowed here",
-            variant: "destructive",
-            duration: 4000
-          });
-
-          if (ruleCheck.violatedRule) {
-            ruleEnforcer.recordViolation(
-              ruleCheck.violatedRule,
-              gameContext,
-              ruleCheck.reason || "Action attempted"
-            );
-          }
-
-          return; // Don't perform the action
-        }
-      }
-
-      setActionInProgress(true);
-      try {
-        const result = await manager.performAction(actionId, context);
-        const actionDefinition = findActionDefinition(worldData, actionId);
-        const actionName = actionDefinition?.name || "Action";
-        const targetName = selectedNPC?.name || "NPC";
-
-        setActionFeedback({
-          actionId,
-          actionName,
-          targetName,
-          result,
-          timestamp: Date.now()
-        });
-
-        if (result.energyUsed) {
-          setPlayerEnergy((energy) => Math.max(0, energy - result.energyUsed));
-        }
-
-        // Record play trace if we have a playthrough
-        if (playthroughId && token) {
-          try {
-            await fetch(`/api/playthroughs/${playthroughId}/traces`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                actionType: 'action_performed',
-                actionId,
-                targetCharacterId: selectedNPCId,
-                metadata: {
-                  actionName,
-                  targetName,
-                  success: result.success,
-                  energyUsed: result.energyUsed,
-                  narrativeText: result.narrativeText,
-                },
-              }),
-            });
-          } catch (traceError) {
-            // Don't fail the action if trace recording fails
-            console.error('Failed to record play trace:', traceError);
-          }
-        }
-
-        toast({
-          title: result.success ? `${actionName} succeeded` : `${actionName} failed`,
-          description: result.narrativeText || result.message,
-          variant: result.success ? "default" : "destructive"
-        });
-      } catch (error) {
-        console.error("Failed to perform action", error);
-        toast({
-          title: "Action error",
-          description: error instanceof Error ? error.message : String(error),
-          variant: "destructive"
-        });
-      } finally {
-        setActionInProgress(false);
-      }
-    },
-    [playerEnergy, selectedNPCId, selectedNPC, toast, worldData, playthroughId, token]
   );
 
   // Handle quest objective completion
