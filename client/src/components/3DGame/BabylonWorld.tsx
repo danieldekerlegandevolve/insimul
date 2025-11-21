@@ -10,6 +10,7 @@ import {
   HemisphericLight,
   Mesh,
   MeshBuilder,
+  ParticleSystem,
   PointerEventTypes,
   Ray,
   Scene,
@@ -256,6 +257,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const npcMeshesRef = useRef<Map<string, NPCInstance>>(new Map());
   const settlementMeshesRef = useRef<Map<string, Mesh>>(new Map());
   const settlementRoadMeshesRef = useRef<Mesh[]>([]);
+  const zoneBoundaryMeshesRef = useRef<Map<string, { boundary: Mesh; particles?: ParticleSystem }>>(new Map());
   const guiManagerRef = useRef<BabylonGUIManager | null>(null);
   const chatPanelRef = useRef<BabylonChatPanel | null>(null);
   const questTrackerRef = useRef<BabylonQuestTracker | null>(null);
@@ -279,6 +281,9 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const [actionFeedback, setActionFeedback] = useState<ActionFeedback | null>(null);
   const [actionInProgress, setActionInProgress] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  // Zone detection state
+  const [currentZone, setCurrentZone] = useState<{ id: string; name: string; type: string } | null>(null);
   const [playthroughId, setPlaythroughId] = useState<string | null>(null);
 
   const [availableTextures, setAvailableTextures] = useState<VisualAsset[]>([]);
@@ -363,6 +368,9 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       });
       questTrackerRef.current = questTracker;
 
+      // Initialize zone audio
+      initializeZoneAudio(scene);
+
       setSceneStatus("ready");
     } catch (error) {
       console.error("Failed to initialize Babylon scene", error);
@@ -393,6 +401,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       disposeAllNPCMeshes(npcMeshesRef);
       disposeAllSettlementMeshes(settlementMeshesRef);
       disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
+      disposeAllZoneBoundaries(zoneBoundaryMeshesRef);
+      disposeZoneAudio();
       setSceneStatus("idle");
       setPlayerStatus("idle");
       setNPCStatus("idle");
@@ -798,15 +808,18 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     if (!scene || sceneStatus !== "ready" || !worldData) {
       disposeAllSettlementMeshes(settlementMeshesRef);
       disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
+      disposeAllZoneBoundaries(zoneBoundaryMeshesRef);
       return;
     }
 
     disposeAllSettlementMeshes(settlementMeshesRef);
     disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
+    disposeAllZoneBoundaries(zoneBoundaryMeshesRef);
 
     const settlements = worldData.settlements.slice(0, MAX_SETTLEMENTS_3D);
     const settlementMap = new Map<string, Mesh>();
     const positions: { id: string; position: Vector3 }[] = [];
+    const boundaryData: { id: string; settlement: SettlementSummary; position: Vector3 }[] = [];
 
     settlements.forEach((settlement, index) => {
       const mesh = spawnSettlementMesh({
@@ -821,6 +834,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       if (mesh) {
         settlementMap.set(settlement.id, mesh);
         positions.push({ id: settlement.id, position: mesh.position.clone() });
+        boundaryData.push({ id: settlement.id, settlement, position: mesh.position.clone() });
       }
     });
 
@@ -829,9 +843,14 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     const roadMeshes = createSettlementRoads(scene, positions, worldTheme);
     settlementRoadMeshesRef.current = roadMeshes;
 
+    // Create visual zone boundaries
+    const zoneBoundaries = createZoneBoundaries(scene, boundaryData);
+    zoneBoundaryMeshesRef.current = zoneBoundaries;
+
     return () => {
       disposeAllSettlementMeshes(settlementMeshesRef);
       disposeAllSettlementRoadMeshes(settlementRoadMeshesRef);
+      disposeAllZoneBoundaries(zoneBoundaryMeshesRef);
     };
   }, [worldData, sceneStatus, worldId, terrainSize, worldTheme]);
 
@@ -850,6 +869,144 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
     ground.scaling.z = scale;
     ground.metadata = { ...(ground.metadata || {}), terrainSize };
   }, [terrainSize, sceneStatus]);
+
+  // Zone detection system - monitors player position and tracks zone transitions
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const playerMesh = playerMeshRef.current;
+
+    if (!scene || !playerMesh || sceneStatus !== "ready") return;
+    if (zoneBoundaryMeshesRef.current.size === 0) return;
+
+    const checkZones = () => {
+      if (!playerMesh) return;
+
+      const playerPos = playerMesh.position;
+      let foundZone: { id: string; name: string; type: string } | null = null;
+
+      // Check each zone boundary
+      zoneBoundaryMeshesRef.current.forEach((zoneData, settlementId) => {
+        const boundary = zoneData.boundary;
+        const zoneCenter = boundary.position;
+        const zoneRadius = boundary.metadata?.zoneRadius || 0;
+        const zoneName = boundary.metadata?.zoneType || "unknown";
+
+        // Calculate distance from player to zone center
+        const dx = playerPos.x - zoneCenter.x;
+        const dz = playerPos.z - zoneCenter.z;
+        const distance = Math.sqrt(dx * dx + dz * dz);
+
+        // Check if player is within zone radius
+        if (distance <= zoneRadius) {
+          // Get settlement name from worldData
+          const settlement = worldData?.settlements.find(s => s.id === settlementId);
+          foundZone = {
+            id: settlementId,
+            name: settlement?.name || "Unknown",
+            type: zoneName
+          };
+        }
+      });
+
+      // Check if zone changed
+      if (foundZone && (!currentZone || currentZone.id !== foundZone.id)) {
+        // Entered a new zone
+        setCurrentZone(foundZone);
+
+        // Play enter sound
+        playZoneEnterSound();
+
+        // Show toast notification
+        toast({
+          title: `Entering ${foundZone.name}`,
+          description: `Zone type: ${foundZone.type}`,
+          duration: 3000
+        });
+      } else if (!foundZone && currentZone) {
+        // Exited a zone
+
+        // Play exit sound
+        playZoneExitSound();
+
+        toast({
+          title: `Leaving ${currentZone.name}`,
+          description: "Entering wilderness",
+          duration: 3000
+        });
+        setCurrentZone(null);
+      }
+    };
+
+    // Register the zone check to run every frame
+    const observer = scene.onBeforeRenderObservable.add(checkZones);
+
+    return () => {
+      if (observer) {
+        scene.onBeforeRenderObservable.remove(observer);
+      }
+    };
+  }, [sceneStatus, playerStatus, worldData, currentZone, toast]);
+
+  // Minimap update system - refreshes minimap with current positions
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const playerMesh = playerMeshRef.current;
+    const gui = guiManagerRef.current;
+
+    if (!scene || !playerMesh || !gui || sceneStatus !== "ready") return;
+    if (zoneBoundaryMeshesRef.current.size === 0) return;
+
+    // Update minimap periodically (every 100ms to balance performance and smoothness)
+    const updateMinimap = () => {
+      if (!playerMesh || !gui) return;
+
+      const settlements: Array<{
+        id: string;
+        name: string;
+        position: { x: number; z: number };
+        type: string;
+        zoneType: string;
+      }> = [];
+
+      // Collect settlement data
+      zoneBoundaryMeshesRef.current.forEach((zoneData, settlementId) => {
+        const boundary = zoneData.boundary;
+        const settlement = worldData?.settlements.find(s => s.id === settlementId);
+
+        if (settlement && boundary.position) {
+          settlements.push({
+            id: settlementId,
+            name: settlement.name,
+            position: {
+              x: boundary.position.x,
+              z: boundary.position.z
+            },
+            type: settlement.settlementType?.toLowerCase() || "town",
+            zoneType: boundary.metadata?.zoneType || "safe"
+          });
+        }
+      });
+
+      gui.updateMinimap({
+        settlements,
+        playerPosition: {
+          x: playerMesh.position.x,
+          z: playerMesh.position.z
+        },
+        worldSize: terrainSize
+      });
+    };
+
+    // Initial update
+    updateMinimap();
+
+    // Set up periodic updates
+    const intervalId = setInterval(updateMinimap, 100);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [sceneStatus, playerStatus, worldData, terrainSize]);
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -1582,6 +1739,16 @@ function disposeAllSettlementRoadMeshes(roadsRef: MutableRefObject<Mesh[]>) {
   roadsRef.current = [];
 }
 
+function disposeAllZoneBoundaries(
+  boundaryRef: MutableRefObject<Map<string, { boundary: Mesh; particles?: ParticleSystem }>>
+) {
+  boundaryRef.current.forEach((entry) => {
+    entry.particles?.dispose();
+    entry.boundary?.dispose(false, true);
+  });
+  boundaryRef.current.clear();
+}
+
 function meshHasRenderableGeometry(mesh?: AbstractMesh | null): mesh is Mesh {
   return !!mesh && typeof mesh.getTotalVertices === "function" && mesh.getTotalVertices() > 0;
 }
@@ -1971,6 +2138,278 @@ function createRoadBetween(scene: Scene, from: Vector3, to: Vector3, theme: Worl
   road.isPickable = false;
 
   return road;
+}
+
+function createZoneBoundaries(
+  scene: Scene,
+  settlements: { id: string; settlement: SettlementSummary; position: Vector3 }[]
+): Map<string, { boundary: Mesh; particles?: ParticleSystem }> {
+  const boundaryMap = new Map<string, { boundary: Mesh; particles?: ParticleSystem }>();
+
+  settlements.forEach(({ id, settlement, position }) => {
+    try {
+      const type = settlement.settlementType?.toLowerCase() ?? "town";
+
+      // Calculate zone radius based on settlement type
+      const baseSize = type === "city" ? 24 : type === "village" ? 14 : 18;
+      const buildingRadius = baseSize * 1.6;
+      const zoneRadius = buildingRadius * 1.8; // Extend beyond buildings
+
+      // Determine zone color based on settlement type
+      // Can be extended to check specific rules for more granular colors
+      let zoneColor: Color3;
+      let zoneName: string;
+
+      if (type === "city") {
+        // Cities: Blue glow (neutral zone)
+        zoneColor = new Color3(0.3, 0.5, 0.9);
+        zoneName = "neutral";
+      } else if (type === "village") {
+        // Villages: Amber glow (caution zone)
+        zoneColor = new Color3(0.9, 0.6, 0.2);
+        zoneName = "caution";
+      } else {
+        // Towns: Green glow (safe zone)
+        zoneColor = new Color3(0.2, 0.8, 0.3);
+        zoneName = "safe";
+      }
+
+      // Create boundary torus (ring)
+      const boundaryRing = MeshBuilder.CreateTorus(
+        `zone-boundary-${id}`,
+        {
+          diameter: zoneRadius * 2,
+          thickness: 1.5,
+          tessellation: 48
+        },
+        scene
+      );
+
+      boundaryRing.position = position.clone();
+      boundaryRing.position.y = 2; // Float above ground
+      boundaryRing.rotation.x = Math.PI / 2; // Rotate to be horizontal
+      boundaryRing.checkCollisions = false;
+      boundaryRing.isPickable = false;
+
+      // Create semi-transparent glowing material
+      const boundaryMat = new StandardMaterial(`zone-boundary-mat-${id}`, scene);
+      boundaryMat.diffuseColor = zoneColor;
+      boundaryMat.emissiveColor = zoneColor.scale(0.6);
+      boundaryMat.alpha = 0.5;
+      boundaryMat.specularColor = Color3.Black();
+      boundaryRing.material = boundaryMat;
+
+      // Create ground circle markers
+      const groundMarker = MeshBuilder.CreateDisc(
+        `zone-ground-${id}`,
+        {
+          radius: zoneRadius,
+          tessellation: 64
+        },
+        scene
+      );
+
+      groundMarker.position = position.clone();
+      groundMarker.position.y = 0.1; // Slightly above ground
+      groundMarker.rotation.x = Math.PI / 2;
+      groundMarker.checkCollisions = false;
+      groundMarker.isPickable = false;
+
+      const groundMat = new StandardMaterial(`zone-ground-mat-${id}`, scene);
+      groundMat.diffuseColor = zoneColor;
+      groundMat.emissiveColor = zoneColor.scale(0.3);
+      groundMat.alpha = 0.15;
+      groundMat.specularColor = Color3.Black();
+      groundMarker.material = groundMat;
+      groundMarker.parent = boundaryRing;
+
+      // Create particle system for zone boundary
+      const particleSystem = new ParticleSystem(`zone-particles-${id}`, 300, scene);
+      particleSystem.particleTexture = new Texture("https://assets.babylonjs.com/textures/flare.png", scene);
+
+      // Emit particles from the boundary ring
+      particleSystem.emitter = boundaryRing;
+      particleSystem.minEmitBox = new Vector3(-zoneRadius, 0, -zoneRadius);
+      particleSystem.maxEmitBox = new Vector3(zoneRadius, 5, zoneRadius);
+
+      particleSystem.color1 = new Color4(zoneColor.r, zoneColor.g, zoneColor.b, 0.8);
+      particleSystem.color2 = new Color4(zoneColor.r, zoneColor.g, zoneColor.b, 0.4);
+      particleSystem.colorDead = new Color4(zoneColor.r, zoneColor.g, zoneColor.b, 0.0);
+
+      particleSystem.minSize = 0.3;
+      particleSystem.maxSize = 0.8;
+
+      particleSystem.minLifeTime = 1.0;
+      particleSystem.maxLifeTime = 2.5;
+
+      particleSystem.emitRate = 20;
+
+      particleSystem.blendMode = ParticleSystem.BLENDMODE_ADD;
+
+      particleSystem.gravity = new Vector3(0, 0.5, 0);
+
+      particleSystem.direction1 = new Vector3(-0.2, 0.5, -0.2);
+      particleSystem.direction2 = new Vector3(0.2, 1, 0.2);
+
+      particleSystem.minAngularSpeed = 0;
+      particleSystem.maxAngularSpeed = Math.PI;
+
+      particleSystem.minEmitPower = 0.5;
+      particleSystem.maxEmitPower = 1.5;
+      particleSystem.updateSpeed = 0.01;
+
+      particleSystem.start();
+
+      // Store boundary and particles
+      boundaryRing.metadata = {
+        ...(boundaryRing.metadata || {}),
+        settlementId: id,
+        zoneType: zoneName,
+        zoneRadius
+      };
+
+      boundaryMap.set(id, { boundary: boundaryRing, particles: particleSystem });
+    } catch (error) {
+      console.warn(`Failed to create zone boundary for settlement ${id}`, error);
+    }
+  });
+
+  return boundaryMap;
+}
+
+// Audio system for zone transitions and rule violations
+let zoneEnterSound: Sound | null = null;
+let zoneExitSound: Sound | null = null;
+let ruleViolationSound: Sound | null = null;
+let ruleWarningSound: Sound | null = null;
+
+function initializeZoneAudio(scene: Scene) {
+  try {
+    // Zone transition sounds
+    // Enter zone: Pleasant ascending tone
+    zoneEnterSound = new Sound(
+      "zoneEnter",
+      "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3", // Notification sound
+      scene,
+      null,
+      {
+        loop: false,
+        autoplay: false,
+        volume: 0.3
+      }
+    );
+
+    // Exit zone: Neutral descending tone
+    zoneExitSound = new Sound(
+      "zoneExit",
+      "https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3", // Different notification
+      scene,
+      null,
+      {
+        loop: false,
+        autoplay: false,
+        volume: 0.3
+      }
+    );
+
+    // Rule violation sounds
+    // Warning: Subtle alert sound for first-time violations
+    ruleWarningSound = new Sound(
+      "ruleWarning",
+      "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3", // Warning tone
+      scene,
+      null,
+      {
+        loop: false,
+        autoplay: false,
+        volume: 0.4
+      }
+    );
+
+    // Violation: More serious sound for repeated violations
+    ruleViolationSound = new Sound(
+      "ruleViolation",
+      "https://assets.mixkit.co/active_storage/sfx/2577/2577-preview.mp3", // Error/violation sound
+      scene,
+      null,
+      {
+        loop: false,
+        autoplay: false,
+        volume: 0.5
+      }
+    );
+  } catch (error) {
+    console.warn("Failed to initialize zone audio", error);
+  }
+}
+
+function playZoneEnterSound() {
+  try {
+    if (zoneEnterSound && zoneEnterSound.isReady()) {
+      zoneEnterSound.play();
+    }
+  } catch (error) {
+    console.warn("Failed to play zone enter sound", error);
+  }
+}
+
+function playZoneExitSound() {
+  try {
+    if (zoneExitSound && zoneExitSound.isReady()) {
+      zoneExitSound.play();
+    }
+  } catch (error) {
+    console.warn("Failed to play zone exit sound", error);
+  }
+}
+
+/**
+ * Play a warning sound for first-time or minor rule violations
+ * Call this when the rule engine detects a violation that should issue a warning
+ *
+ * Example usage:
+ * if (ruleEngine.checkViolation(action) && violationCount === 1) {
+ *   playRuleWarningSound();
+ * }
+ */
+function playRuleWarningSound() {
+  try {
+    if (ruleWarningSound && ruleWarningSound.isReady()) {
+      ruleWarningSound.play();
+    }
+  } catch (error) {
+    console.warn("Failed to play rule warning sound", error);
+  }
+}
+
+/**
+ * Play a violation sound for repeated or serious rule violations
+ * Call this when the rule engine detects a major violation or repeated offense
+ *
+ * Example usage:
+ * if (ruleEngine.checkViolation(action) && violationCount > 2) {
+ *   playRuleViolationSound();
+ * }
+ */
+function playRuleViolationSound() {
+  try {
+    if (ruleViolationSound && ruleViolationSound.isReady()) {
+      ruleViolationSound.play();
+    }
+  } catch (error) {
+    console.warn("Failed to play rule violation sound", error);
+  }
+}
+
+function disposeZoneAudio() {
+  zoneEnterSound?.dispose();
+  zoneExitSound?.dispose();
+  ruleWarningSound?.dispose();
+  ruleViolationSound?.dispose();
+  zoneEnterSound = null;
+  zoneExitSound = null;
+  ruleWarningSound = null;
+  ruleViolationSound = null;
 }
 
 let npcTemplateMesh: Mesh | null = null;
