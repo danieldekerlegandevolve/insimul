@@ -43,6 +43,9 @@ import { BabylonMinimap } from "@/components/3DGame/BabylonMinimap";
 import { BabylonInventory, InventoryItem } from "@/components/3DGame/BabylonInventory";
 import { BabylonRulesPanel, Rule } from "@/components/3DGame/BabylonRulesPanel";
 import { RuleEnforcer, RuleViolation } from "@/components/3DGame/RuleEnforcer";
+import { CombatSystem, DamageResult } from "@/components/3DGame/CombatSystem";
+import { HealthBar } from "@/components/3DGame/HealthBar";
+import { CombatUI } from "@/components/3DGame/CombatUI";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -279,6 +282,10 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const inventoryRef = useRef<BabylonInventory | null>(null);
   const rulesPanelRef = useRef<BabylonRulesPanel | null>(null);
   const ruleEnforcerRef = useRef<RuleEnforcer | null>(null);
+  const combatSystemRef = useRef<CombatSystem | null>(null);
+  const combatUIRef = useRef<CombatUI | null>(null);
+  const playerHealthBarRef = useRef<HealthBar | null>(null);
+  const npcHealthBarsRef = useRef<Map<string, HealthBar>>(new Map());
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -295,6 +302,9 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const [npcStatus, setNPCStatus] = useState<NPCStatus>("idle");
   const [npcInfos, setNPCInfos] = useState<NPCDisplayInfo[]>([]);
   const [selectedNPCId, setSelectedNPCId] = useState<string | null>(null);
+  const [combatTargetId, setCombatTargetId] = useState<string | null>(null);
+  const [playerHealth, setPlayerHealth] = useState<number>(100);
+  const [isInCombat, setIsInCombat] = useState<boolean>(false);
 
   const [actionFeedback, setActionFeedback] = useState<ActionFeedback | null>(null);
   const [actionInProgress, setActionInProgress] = useState<boolean>(false);
@@ -444,6 +454,108 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
         });
       });
       ruleEnforcerRef.current = ruleEnforcer;
+
+      // Initialize combat system
+      const combatSystem = new CombatSystem(scene);
+      combatSystem.setOnDamageDealt((result: DamageResult) => {
+        // Show damage number
+        if (combatUIRef.current) {
+          const targetEntity = combatSystem.getEntity(result.targetId);
+          if (targetEntity?.mesh) {
+            combatUIRef.current.showDamageNumber(
+              result.actualDamage,
+              targetEntity.mesh.position,
+              result.didCrit,
+              result.didDodge
+            );
+          }
+
+          // Update combat log
+          const attacker = isInCombat && combatTargetId ? combatSystem.getEntity('player') : null;
+          const attackerName = result.targetId === 'player' ?
+            (combatTargetId ? combatSystem.getEntity(combatTargetId)?.name : 'Enemy') :
+            'You';
+
+          combatUIRef.current.showDamageDealt(
+            attackerName,
+            result.targetName,
+            result.actualDamage,
+            result.didCrit,
+            result.didDodge
+          );
+        }
+
+        // Update health bars
+        if (result.targetId === 'player') {
+          setPlayerHealth(result.remainingHealth);
+          if (playerHealthBarRef.current) {
+            playerHealthBarRef.current.updateHealth(result.remainingHealth / 100);
+          }
+        } else {
+          const healthBar = npcHealthBarsRef.current.get(result.targetId);
+          if (healthBar) {
+            const entity = combatSystem.getEntity(result.targetId);
+            if (entity) {
+              healthBar.updateHealth(entity.health / entity.maxHealth);
+            }
+          }
+        }
+
+        // Check if killed
+        if (result.wasKilled) {
+          if (result.targetId === 'player') {
+            toast({
+              title: "You were defeated!",
+              description: "Press F to respawn",
+              variant: "destructive",
+              duration: 5000
+            });
+          } else {
+            toast({
+              title: `${result.targetName} defeated!`,
+              description: "Victory!",
+              duration: 3000
+            });
+          }
+        }
+      });
+
+      combatSystem.setOnEntityDeath((entityId: string, killedBy: string) => {
+        if (combatUIRef.current) {
+          const entity = combatSystem.getEntity(entityId);
+          const killer = combatSystem.getEntity(killedBy);
+          if (entity && killer) {
+            combatUIRef.current.showEntityDeath(entity.name, killer.name);
+          }
+        }
+
+        // Exit combat when enemy dies
+        if (entityId === combatTargetId) {
+          setCombatTargetId(null);
+          setIsInCombat(false);
+          combatSystem.exitCombat('player');
+        }
+      });
+
+      combatSystem.setOnCombatStart((attackerId: string, targetId: string) => {
+        if (combatUIRef.current) {
+          const attacker = combatSystem.getEntity(attackerId);
+          const target = combatSystem.getEntity(targetId);
+          if (attacker && target) {
+            combatUIRef.current.showCombatStart(attacker.name, target.name);
+          }
+        }
+
+        if (attackerId === 'player' || targetId === 'player') {
+          setIsInCombat(true);
+        }
+      });
+
+      combatSystemRef.current = combatSystem;
+
+      // Initialize combat UI
+      const combatUI = new CombatUI(scene, guiManager.advancedTexture);
+      combatUIRef.current = combatUI;
 
       // Initialize procedural generators
       const buildingGenerator = new ProceduralBuildingGenerator(scene);
@@ -807,6 +919,25 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
 
         playerControllerRef.current = controller;
         playerMeshRef.current = preparedPlayerMesh;
+
+        // Register player in combat system
+        if (combatSystemRef.current) {
+          combatSystemRef.current.registerEntity(
+            'player',
+            'Player',
+            100, // maxHealth
+            preparedPlayerMesh,
+            1.0, // attackPower
+            10, // defense
+            0.15 // dodgeChance
+          );
+
+          // Create player health bar
+          const playerHealthBar = new HealthBar(scene, preparedPlayerMesh, 2.8);
+          playerHealthBar.show(); // Always show player health
+          playerHealthBarRef.current = playerHealthBar;
+        }
+
         setPlayerStatus("ready");
       } catch (error) {
         if (cancelled) return;
@@ -885,6 +1016,24 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
               type: 'npc',
               label: formatCharacterName(character)
             });
+          }
+
+          // Register NPC in combat system
+          if (combatSystemRef.current) {
+            combatSystemRef.current.registerEntity(
+              character.id,
+              formatCharacterName(character),
+              80 + Math.random() * 40, // maxHealth 80-120
+              instance.mesh,
+              0.8 + Math.random() * 0.4, // attackPower 0.8-1.2
+              Math.floor(Math.random() * 20), // defense 0-20
+              0.05 + Math.random() * 0.15 // dodgeChance 5-20%
+            );
+
+            // Create NPC health bar
+            const npcHealthBar = new HealthBar(scene, instance.mesh, 2.5);
+            npcHealthBarsRef.current.set(character.id, npcHealthBar);
+            // Health bars hidden by default, shown when damaged
           }
 
           infos.push({
@@ -1478,6 +1627,127 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
             title: "Rules Panel",
             description: "View active world rules",
             duration: 1500
+          });
+        }
+      }
+
+      // F key - Attack (or respawn if dead)
+      if (event.code === 'KeyF' && !event.repeat) {
+        event.preventDefault();
+
+        const combatSystem = combatSystemRef.current;
+        const ruleEnforcer = ruleEnforcerRef.current;
+        const playerMesh = playerMeshRef.current;
+
+        if (!combatSystem || !playerMesh) return;
+
+        const playerEntity = combatSystem.getEntity('player');
+
+        // Check if player is dead -> respawn
+        if (playerEntity && !playerEntity.isAlive) {
+          combatSystem.revive('player', 1.0); // Full health
+          setPlayerHealth(100);
+          if (playerHealthBarRef.current) {
+            playerHealthBarRef.current.updateHealth(1.0);
+          }
+          setCombatTargetId(null);
+          setIsInCombat(false);
+
+          toast({
+            title: "Respawned!",
+            description: "You have been restored to full health",
+            duration: 2000
+          });
+          return;
+        }
+
+        // Attack current target
+        if (combatTargetId) {
+          // Check if combat is allowed by rules
+          if (ruleEnforcer) {
+            const settlementInfo = ruleEnforcer.isInSettlement(playerMesh.position);
+            const gameContext = {
+              playerId: 'player',
+              playerPosition: playerMesh.position,
+              actionType: 'combat',
+              inSettlement: settlementInfo.inSettlement,
+              settlementId: settlementInfo.settlementId
+            };
+
+            const combatAllowed = ruleEnforcer.canPerformAction('attack', 'combat', gameContext);
+
+            if (!combatAllowed.allowed) {
+              toast({
+                title: "Combat Restricted",
+                description: combatAllowed.reason || "Combat is not allowed here",
+                variant: "destructive",
+                duration: 3000
+              });
+
+              if (combatAllowed.violatedRule) {
+                ruleEnforcer.recordViolation(
+                  combatAllowed.violatedRule,
+                  gameContext,
+                  "Attempted combat in restricted area"
+                );
+              }
+              return;
+            }
+          }
+
+          // Check range
+          if (!combatSystem.isInRange('player', combatTargetId)) {
+            toast({
+              title: "Out of Range",
+              description: "Move closer to attack",
+              variant: "destructive",
+              duration: 2000
+            });
+            return;
+          }
+
+          // Check cooldown
+          if (!combatSystem.canAttack('player')) {
+            return; // Silently fail, still on cooldown
+          }
+
+          // Perform attack
+          combatSystem.attack('player', combatTargetId);
+        } else {
+          toast({
+            title: "No Target",
+            description: "Press T to target nearest enemy",
+            variant: "destructive",
+            duration: 2000
+          });
+        }
+      }
+
+      // T key - Target nearest NPC
+      if (event.code === 'KeyT' && !event.repeat) {
+        event.preventDefault();
+
+        const combatSystem = combatSystemRef.current;
+        if (!combatSystem) return;
+
+        const nearestId = combatSystem.getNearestEnemy('player', false);
+
+        if (nearestId) {
+          setCombatTargetId(nearestId);
+          setSelectedNPCId(nearestId);
+
+          const target = combatSystem.getEntity(nearestId);
+          toast({
+            title: "Target Locked",
+            description: `Targeting ${target?.name || 'Enemy'}. Press F to attack.`,
+            duration: 2000
+          });
+        } else {
+          toast({
+            title: "No Targets",
+            description: "No enemies nearby",
+            variant: "destructive",
+            duration: 2000
           });
         }
       }
