@@ -76,6 +76,7 @@ export class BabylonGUIManager {
   private onBackPressed: (() => void) | null = null;
   private onFullscreenPressed: (() => void) | null = null;
   private onDebugPressed: (() => void) | null = null;
+  private onVRToggled: (() => void) | null = null;
 
   constructor(scene: Scene, config: GUIConfig) {
     this.scene = scene;
@@ -176,6 +177,7 @@ export class BabylonGUIManager {
 
     // Buttons
     const buttonsData = [
+      { text: "🥽 Toggle VR Mode", callback: () => this.onVRToggled?.() },
       { text: "🖥️ Fullscreen", callback: () => this.onFullscreenPressed?.() },
       { text: "🔧 Toggle Debug", callback: () => this.onDebugPressed?.() },
       { text: "⬅️ Back to Menu", callback: () => this.onBackPressed?.() }
@@ -693,6 +695,10 @@ export class BabylonGUIManager {
 
   public setOnDebugPressed(callback: () => void) {
     this.onDebugPressed = callback;
+  }
+
+  public setOnVRToggled(callback: () => void) {
+    this.onVRToggled = callback;
   }
 
   public dispose() {

@@ -46,6 +46,8 @@ import { RuleEnforcer, RuleViolation } from "@/components/3DGame/RuleEnforcer";
 import { CombatSystem, DamageResult } from "@/components/3DGame/CombatSystem";
 import { HealthBar } from "@/components/3DGame/HealthBar";
 import { CombatUI } from "@/components/3DGame/CombatUI";
+import { VRManager } from "@/components/3DGame/VRManager";
+import { VRUIPanel } from "@/components/3DGame/VRUIPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -286,6 +288,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const combatUIRef = useRef<CombatUI | null>(null);
   const playerHealthBarRef = useRef<HealthBar | null>(null);
   const npcHealthBarsRef = useRef<Map<string, HealthBar>>(new Map());
+  const vrManagerRef = useRef<VRManager | null>(null);
+  const vrUIPanelsRef = useRef<Map<string, VRUIPanel>>(new Map());
 
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>("idle");
   const [sceneErrorMessage, setSceneErrorMessage] = useState<string>("");
@@ -305,6 +309,8 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
   const [combatTargetId, setCombatTargetId] = useState<string | null>(null);
   const [playerHealth, setPlayerHealth] = useState<number>(100);
   const [isInCombat, setIsInCombat] = useState<boolean>(false);
+  const [isVRMode, setIsVRMode] = useState<boolean>(false);
+  const [vrSupported, setVRSupported] = useState<boolean>(false);
 
   const [actionFeedback, setActionFeedback] = useState<ActionFeedback | null>(null);
   const [actionInProgress, setActionInProgress] = useState<boolean>(false);
@@ -366,6 +372,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       guiManager.setOnBackPressed(() => onBack());
       guiManager.setOnFullscreenPressed(() => handleToggleFullscreen());
       guiManager.setOnDebugPressed(() => handleToggleDebug());
+      guiManager.setOnVRToggled(() => handleToggleVR());
       guiManager.setOnNPCSelected((npcId) => setSelectedNPCId(npcId));
       guiManager.setOnActionSelected((actionId) => handlePerformAction(actionId));
 
@@ -556,6 +563,37 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       // Initialize combat UI
       const combatUI = new CombatUI(scene, guiManager.advancedTexture);
       combatUIRef.current = combatUI;
+
+      // Initialize VR manager
+      const vrManager = new VRManager(scene);
+      vrManager.setOnSessionStart(() => {
+        setIsVRMode(true);
+        toast({
+          title: 'VR Mode Activated',
+          description: 'You are now in VR mode',
+        });
+      });
+      vrManager.setOnSessionEnd(() => {
+        setIsVRMode(false);
+        toast({
+          title: 'VR Mode Deactivated',
+          description: 'You have exited VR mode',
+        });
+      });
+      vrManager.setOnTriggerPressed((hand) => {
+        // VR trigger pressed - perform attack if in combat
+        if (combatTargetId && combatSystemRef.current) {
+          const playerEntity = combatSystemRef.current.getEntity('player');
+          if (playerEntity && playerEntity.isAlive) {
+            // Check if in range and can attack
+            if (combatSystemRef.current.isInRange('player', combatTargetId) &&
+                combatSystemRef.current.canAttack('player')) {
+              combatSystemRef.current.attack('player', combatTargetId);
+            }
+          }
+        }
+      });
+      vrManagerRef.current = vrManager;
 
       // Initialize procedural generators
       const buildingGenerator = new ProceduralBuildingGenerator(scene);
@@ -1751,6 +1789,45 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
           });
         }
       }
+
+      // V key - Toggle VR Mode
+      if (event.code === 'KeyV' && !event.repeat) {
+        event.preventDefault();
+
+        const vrManager = vrManagerRef.current;
+        const scene = sceneRef.current;
+
+        if (!vrManager || !scene) return;
+
+        // Initialize VR if not already initialized
+        if (!vrManager.isInitialized()) {
+          const ground = scene.getMeshByName("ground") as Mesh | null;
+          vrManager.initializeVR(ground || undefined).then((success) => {
+            if (success) {
+              setVRSupported(true);
+              toast({
+                title: "VR Ready",
+                description: "Press V again to enter VR mode",
+                duration: 3000
+              });
+            } else {
+              toast({
+                title: "VR Not Supported",
+                description: "WebXR is not available on this device",
+                variant: "destructive",
+                duration: 3000
+              });
+            }
+          });
+        } else {
+          // Toggle VR session
+          if (isVRMode) {
+            vrManager.exitVR();
+          } else {
+            vrManager.enterVR();
+          }
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -1937,6 +2014,42 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       scene.debugLayer.show({ overlay: true });
     }
   };
+
+  const handleToggleVR = useCallback(() => {
+    const vrManager = vrManagerRef.current;
+    const scene = sceneRef.current;
+
+    if (!vrManager || !scene) return;
+
+    // Initialize VR if not already initialized
+    if (!vrManager.isInitialized()) {
+      const ground = scene.getMeshByName("ground") as Mesh | null;
+      vrManager.initializeVR(ground || undefined).then((success) => {
+        if (success) {
+          setVRSupported(true);
+          toast({
+            title: "VR Ready",
+            description: "Click 'Toggle VR Mode' again to enter VR",
+            duration: 3000
+          });
+        } else {
+          toast({
+            title: "VR Not Supported",
+            description: "WebXR is not available on this device",
+            variant: "destructive",
+            duration: 3000
+          });
+        }
+      });
+    } else {
+      // Toggle VR session
+      if (isVRMode) {
+        vrManager.exitVR();
+      } else {
+        vrManager.enterVR();
+      }
+    }
+  }, [isVRMode, toast]);
 
   const handleApplyGroundTexture = useCallback(
     (assetId: string) => {
