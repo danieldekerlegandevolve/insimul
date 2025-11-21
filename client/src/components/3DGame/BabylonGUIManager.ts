@@ -533,7 +533,7 @@ export class BabylonGUIManager {
   private createReputationPanel() {
     const panel = new Rectangle("reputationPanel");
     panel.width = "220px";
-    panel.height = "120px";
+    panel.height = "160px"; // Increased height for fine payment button
     panel.background = "rgba(0, 0, 0, 0.75)";
     panel.color = "white";
     panel.thickness = 2;
@@ -613,6 +613,24 @@ export class BabylonGUIManager {
     warningText.height = "16px";
     warningText.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
     stack.addControl(warningText);
+
+    // Pay Fines button
+    const payFinesBtn = Button.CreateSimpleButton("payFinesBtn", "Pay Fines (50g)");
+    payFinesBtn.width = "200px";
+    payFinesBtn.height = "28px";
+    payFinesBtn.color = "white";
+    payFinesBtn.background = "rgba(76, 175, 80, 0.8)"; // Green
+    payFinesBtn.cornerRadius = 5;
+    payFinesBtn.fontSize = 12;
+    payFinesBtn.fontWeight = "bold";
+    payFinesBtn.paddingTop = "4px";
+    payFinesBtn.isVisible = false; // Hidden until there are fines
+    payFinesBtn.onPointerClickObservable.add(() => {
+      if (this.onPayFines) {
+        this.onPayFines();
+      }
+    });
+    stack.addControl(payFinesBtn);
 
     this.reputationPanel = panel;
     this.advancedTexture.addControl(panel);
@@ -1025,6 +1043,19 @@ export class BabylonGUIManager {
         warningText.color = "#FFC107";
       } else {
         warningText.text = "";
+      }
+    }
+
+    // Show/hide Pay Fines button based on outstanding fines
+    const payFinesBtn = this.reputationPanel.getDescendants().find(
+      (c) => c.name === "payFinesBtn"
+    ) as Button;
+    if (payFinesBtn) {
+      if (data.outstandingFines > 0 && !data.isBanned) {
+        payFinesBtn.isVisible = true;
+        payFinesBtn.textBlock!.text = `Pay Fines (${data.outstandingFines}g)`;
+      } else {
+        payFinesBtn.isVisible = false;
       }
     }
   }

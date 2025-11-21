@@ -360,6 +360,7 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       guiManager.setOnDebugPressed(() => handleToggleDebug());
       guiManager.setOnNPCSelected((npcId) => setSelectedNPCId(npcId));
       guiManager.setOnActionSelected((actionId) => handlePerformAction(actionId));
+      guiManager.setOnPayFines(() => handlePayFines());
 
       guiManagerRef.current = guiManager;
 
@@ -1172,6 +1173,93 @@ export function BabylonWorld({ worldId, worldName, worldType, onBack }: BabylonW
       });
     }
   }, [currentZone, playthroughId, toast]);
+
+  // Handle fine payment - allows player to pay outstanding fines with gold
+  const handlePayFines = useCallback(async () => {
+    if (!currentZone || !playthroughId || !currentReputation) {
+      toast({
+        title: "Cannot Pay Fines",
+        description: "No active reputation record",
+        variant: "destructive",
+        duration: 3000
+      });
+      return;
+    }
+
+    const fineAmount = currentReputation.outstandingFines || 0;
+
+    // Check if player has enough gold
+    if (playerGold < fineAmount) {
+      toast({
+        title: "Insufficient Gold",
+        description: `You need ${fineAmount} gold but only have ${playerGold}`,
+        variant: "destructive",
+        duration: 4000
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/playthroughs/${playthroughId}/reputations/settlement/${currentZone.id}/pay-fines`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+
+        // Deduct gold from player
+        setPlayerGold(prev => Math.max(0, prev - fineAmount));
+
+        // Update reputation state
+        setCurrentReputation({
+          ...currentReputation,
+          outstandingFines: result.outstandingFines || 0,
+          score: result.newScore,
+          standing: result.newStanding
+        });
+
+        // Update reputation UI
+        guiManagerRef.current?.updateReputation({
+          settlementName: currentZone.name,
+          score: result.newScore,
+          standing: result.newStanding,
+          isBanned: currentReputation.isBanned,
+          violationCount: currentReputation.violationCount,
+          outstandingFines: result.outstandingFines || 0
+        });
+
+        // Show success notification
+        toast({
+          title: "Fines Paid",
+          description: `Paid ${fineAmount} gold. Your reputation has improved slightly.`,
+          duration: 4000
+        });
+      } else {
+        const errorText = await response.text();
+        toast({
+          title: "Payment Failed",
+          description: `Failed to pay fines: ${errorText}`,
+          variant: "destructive",
+          duration: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Error paying fines:', error);
+      toast({
+        title: "Payment Error",
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: "destructive",
+        duration: 3000
+      });
+    }
+  }, [currentZone, playthroughId, currentReputation, playerGold, toast]);
 
   // Zone detection system - monitors player position and tracks zone transitions
   useEffect(() => {
